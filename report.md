@@ -26,9 +26,11 @@ Sparse autoencoders (SAEs) are the workhorse of mechanistic interpretability: th
 
 ---
 
-## 1. Why this problem (and why it beats the alternatives for "useful to AI research")
+## 1. Motivation: when is an SAE feature real?
 
-Interpretability's load-bearing assumption is that SAE features correspond to the model's "real" features. Identifiability theory asks when that assumption is provable and when it is provably false. Among the candidate problems from earlier in this session (scaling-law derivations, generalization theory, debate soundness, expressivity limits), this is the one where a single GPU and one session can produce a complete verified result: the theory is low-dimensional and exactly solvable, and the predictions are testable in minutes on an L4. Sufficient-condition theory saw real progress in 2025 (Cui et al. 2506.15963; Nguyen et al. 2506.14002; unified SDL theory 2512.05534); the *failure-boundary* side addressed here is the less-occupied edge.
+Interpretability's load-bearing assumption is that SAE latents correspond to the model's "real" features — safety-relevant claims (this latent detects deception, this one mediates a capability) are built on top of that correspondence holding. Feature absorption is the sharpest known counterexample: a child concept silently merges into a parent latent, so the parent appears to "turn off" exactly on the inputs where the distinction matters most, and a practitioner reading the dictionary has no way to tell absorbed latents from faithful ones by inspection.
+
+The phenomenon has been documented empirically (Chanin et al., §10) but not characterized quantitatively: *when*, as a function of the SAE's own hyperparameters and the data's co-occurrence statistics, does absorption happen — and can it be fixed by changing the objective rather than by hoping optimization avoids it? This report answers both questions exactly, in a toy model low-dimensional enough to solve in closed form and cheap enough to validate on a single GPU in minutes per experiment, then tests the answers against SGD-trained SAEs and pre-registered remedies.
 
 ## 2. Model
 
