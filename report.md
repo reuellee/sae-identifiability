@@ -277,3 +277,18 @@ Solving C(λ) = 1: **λ_crit = [(12 − 6√2) − √((12 − 6√2)² − 8)]/
 **Absorption-risk audit: robust null.** Two criteria sets (v1 strict share; v2 statistical enrichment + directionality) both find zero hierarchical latent pairs in a public GPT-2-small SAE over 500k tokens. Readings: absorbed/composed children lack their own latents by construction (theory-consistent), hierarchical structure may be weak in this layer/corpus, or co-activation criteria are the wrong instrument. No claim made; audit v3 should decompose latents directly (meta-SAE-style) rather than search surviving pairs.
 
 *(Process note: this section was twice revised after adversarial review — `results/round6/REVIEW_D12.md` and the disambiguation batch `results/round6/SUMMARY2.md` — with v1 claims withdrawn where their controls failed. The toy-model results (§8, §12, rounds 1–5) are unaffected: they are exactly verified and pre-registered.)*
+
+## 15. The capacity-limited test: the regime structure confirmed on real data
+
+The decisive experiment (48 runs, m ∈ {128, 256} vs the previous 1536; `experiments/capacity_limited_test.py`, pre-registered):
+
+| regime | vanilla at ε = 0.002 | oracle weighting | residual weighting |
+|---|---|---|---|
+| spare capacity (m = 1536, §14) | composition triple, child present (0.82) — no harm | harmful | ≈ vanilla |
+| **scarce capacity (m = 128/256)** | **true harmful absorption**: composite 0.99, child ≈ 0.74 = the composite's own shadow — no independent child latent | **full rescue: child cos = 1.00 (7/8 seeds), composite drops to the child's shadow (0.71) — the faithful configuration** | ≈ vanilla (no rescue) |
+
+Positive control holds in both regimes (ε = 0.05: child 0.95+ even at m = 128).
+
+**Reading.** This completes the theory's story on real data, in both directions: absorption harms exactly where Theorem 2 lives (capacity-limited), composition replaces it exactly where §4 predicts (spare capacity), and the inverse-density remedy — harmful where nothing needs fixing — **works essentially perfectly where absorption actually bites**. The regime boundary, not any single condition, is the validated object.
+
+**The one open engineering problem, precisely characterized.** The oracle-free residual estimator fails in the capacity-limited regime for an identifiable reason: with scarce capacity, background reconstruction error is large everywhere, so rare-event residuals no longer stand out and the clamped weights lose their signal. The fix is structural, not parametric: weight by novelty relative to a *separately fit background model* (two-stage: train a background SAE, use ITS residual as the weight for the main SAE), which restores the rare-event signal the oracle exploits. That is the next pre-registerable experiment, and the last step between the theory and a practical method.
