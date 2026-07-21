@@ -27,8 +27,9 @@ validation) are running — results land here as they complete.
    faithful-vs-absorbed pairs. The true global optimum at β ≥ β\*, small ε, is an
    **anti-rotated absorbed pair** {≈−40°, ≈+46°}: the composite keeps absorbing
    while the parent rotates to make the pair near-orthogonal, zeroing the penalty.
-   Corrected boundary ε\*\*(β): the penalty shrinks the absorption region at most
-   ~4× (optimum near β ≈ β\*), **never eliminates it**, and larger β makes it
+   Corrected boundary ε\*\*(β): in its domain p₀ ≲ √2·q (co-occurrence-dominated
+   hierarchies; above that ratio penalties genuinely work), the penalty shrinks the
+   absorption region at most ~4× (optimum near β ≈ β\*), **never eliminates it**, and larger β makes it
    *worse* (ε\*\* increases in β, saturating as both branches become orthogonal
    frames competing only on rotation angle). Caught by pre-registration +
    GPU falsification; see `theory/theory_merged.py`.

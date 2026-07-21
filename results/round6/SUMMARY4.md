@@ -26,3 +26,9 @@
 - bgrel eps=0.05 s1: child=0.955 comp=0.878 parent=0.992 route=1.0
 - bgrel eps=0.05 s2: child=0.95 comp=0.883 parent=0.993 route=1.0
 - bgrel eps=0.05 s3: child=0.955 comp=0.873 parent=0.993 route=1.0
+
+## 15b mechanism numbers (from run log bgrel_v2.log, committed here for auditability)
+- background SAE median clean residual: 201.9 (normalized activations, m=128)
+- injected event residual delta (analytic, AMP=5, novel directions): +25 (solo) to +50 (joint)
+- resulting bg-relative weight leverage: ~(202+25..50)/202 ≈ 1.12–1.25x, vs oracle child-solo leverage 1/(4*eps) = 125x at eps=0.002
+- and the weight cannot distinguish child-solo from parent-solo from joint (all similarly novel)

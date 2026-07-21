@@ -2,7 +2,7 @@
 is scarce, and does event-weighting then fix it? (The decisive method question
 identified after the disambiguation round.)
 
-Same injected-pair setup on real GPT-2 layer-6 activations, but m in {128, 256}
+Same injected-pair setup on real GPT-2 layer-6 activations, but m = 128
 (vs 1536 before): latent slots are now scarce relative to the background's
 effective feature load, so the pair must COMPETE for representation -- the
 regime of Theorem 2 and of production SAEs on full LLMs.
@@ -20,7 +20,7 @@ PRE-REGISTERED PREDICTIONS:
 Failure of P1 = real-data injected pairs do not reproduce capacity-limited
 absorption at these settings (honest negative; regime still untested).
 
-Grid: m in {128, 256} x {vanilla, oracle, residual} x eps {0.002, 0.05} x 4
+Grid: m = 128 x {vanilla, oracle, residual} x eps {0.002, 0.05} x 4
 seeds = 48 runs (two batched groups). Metrics: decoder max-cos to child/comp/
 parent + routing score P(best-child latent fires | realistic child-solo probe).
 Output: SUMMARY4.md, results_bgrel_v2.csv, bgrel_done.flag.

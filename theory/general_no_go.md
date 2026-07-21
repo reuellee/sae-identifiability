@@ -59,7 +59,7 @@ on random orthonormal dictionaries to 2×10⁻¹⁵.)
 **The one-line mechanism of absorption under orthogonality.** The gain function
 (c − λ/2)₊² is *superadditive under energy concentration*: an event of norm r
 reconstructed by ONE aligned column gains (r − λ/2)², while split across two
-columns at 45° it gains 2(r/√2 − λ/2)² — smaller by (2 − √2)λr − λ²/4·(…) > 0.
+columns at 45° it gains 2(r/√2 − λ/2)² — smaller by (√2 − 1)λr − λ²/4 > 0 (leading order in λ).
 The soft-threshold tax λ/2 is paid **once per active coordinate**. Absorption is the
 objective's preference for paying it once on frequent co-occurrence events; no
 function of decoder angles can see this, because it lives in the codes.
