@@ -18,7 +18,9 @@ Sparse autoencoders (SAEs) are the workhorse of mechanistic interpretability: th
 
 4. **With spare capacity, the objective wants *composition* (Remark, §4).** For any ε > 0 the unconstrained optimum is the redundant triple {parent, child, composite}: even ideal SAE training on ideal data does not return the generative feature ontology — it adds frequent feature combinations as first-class latents. Capacity scarcity (real SAEs cannot afford a latent per combination) is what converts this into the absorption tradeoff of Theorem 2.
 
-5. **GPU experiments agree.** SGD-trained SAEs on an L4 track the predicted transition across a 135-run grid over (λ, ε, q); the logged latent geometry separates objective-driven absorption from optimization-dynamics effects; a further 24-run phase diagram maps classical recovery against the worst-case sufficiency bound.
+5. **GPU experiments agree — and falsified one theorem productively.** SGD-trained SAEs track the predicted transition across a 135-run grid plus a 1,040-run fine measurement (transition at 0.58–0.70·ε\* with the λq scaling collapse intact; the lead factor is consistent with encoder shrinkage). A 144-run oracle-init study splits classical recovery into three regimes: trainability-limited (k ≤ 8, fixed by dead-latent reinit), optimization-barrier (k = 16), and a genuine stability limit (k ≥ 24, where even the true dictionary decays).
+
+6. **The pre-registered coherence-penalty prediction was refuted, and the refutation became the deepest result (§7.1b).** The predicted critical penalty β\* misses the true global optimum: an **anti-rotated absorbed pair** — the composite keeps absorbing while the parent latent rotates to zero the pair's coherence. Corrected boundary ε\*\*(β): a Gram penalty shrinks the absorption region at most ~4× (best near β ≈ β\*), *never* eliminates it, and stronger penalties make it **worse** (ε\*\* increases in β; at β → ∞ orthogonality merely re-parameterizes absorption as a frame rotation). No orthogonality-type penalty can close the evasion — it cannot distinguish faithful orthogonal frames from absorbed ones. GPU-validated at 160 runs (basin fractions cross at ≈ 0.6·ε\*\*, same shrinkage lead as the vanilla transition).
 
 **Practitioner rule of thumb that falls out of the theorem:** to resolve a child feature that occurs alone with probability ε against a parent it co-occurs with at rate q, the sparsity coefficient must satisfy **λ ≲ ε / (1.17 q)**. Hierarchical concept pairs with tiny ε are unresolvable at any practical λ — and at ε = 0, unresolvable at all.
 
@@ -104,9 +106,9 @@ Classical sparse-coding theory gives the matching positive regime: if all featur
 
 Characterizing the failure is half a solution; the other half is an objective that provably avoids it. Two remedies were analyzed exactly (`verify_remedies.py`, `matryoshka_multichild.py`), one simple and new-ish, one being the field's leading method.
 
-### 7.1 Coherence penalty: an exact threshold
+### 7.1 Coherence penalty: an exact threshold — **[SUPERSEDED by §7.1b: the GPU experiment refuted this analysis and the corrected scan shows why]**
 
-Add β·Σ_{i<j}⟨d_i, d_j⟩² to the SAE loss (decoder-Gram penalty). The faithful dictionary pays nothing (orthonormal truth); the absorbed dictionary pays β/2; the redundant triple pays β. Machine-verified thresholds:
+Add β·Σ_{i<j}⟨d_i, d_j⟩² to the SAE loss (decoder-Gram penalty). The faithful dictionary pays nothing (orthonormal truth); the absorbed dictionary pays β/2; the redundant triple pays β. Machine-verified thresholds *for the faithful-vs-absorbed comparison* (the flaw, exposed in §8: these are not the only competing configurations):
 
 - **β > β\*(λ, q) = λq(8 − 4√2 − λ)/2 ≈ 1.17·λq** makes the faithful dictionary beat the absorbed one **for every ε ≥ 0** (ε = 0 is the worst case, and the derivative in ε is strictly negative), and β\*/2 already eliminates the redundant triple.
 - The same continuity caveat applies as in Result 3: just above β\* the global optimum is a partially-tilted dictionary (73° at 1.2β\*, 83° at 3β\* for λ = q = 0.2); full faithfulness is approached asymptotically. β\* is the exact crossover of the pure strategies.
@@ -114,6 +116,19 @@ Add β·Σ_{i<j}⟨d_i, d_j⟩² to the SAE loss (decoder-Gram penalty). The fai
 - Scope caveat: the penalty is only unbiased when true features are (near-)orthogonal; genuinely correlated feature *directions* would be distorted by large β. The usable window is β\* < β ≪ the scale set by true-feature coherence.
 
 Note what β\* does at the ε = 0 wall: the data cannot distinguish the hierarchical from the flat ontology (Theorem 1), and the penalized objective resolves the tie by preferring the orthogonal (hierarchical) reading — a modeling choice made explicit, not a violation of Theorem 1.
+
+### 7.1b Corrected theory: the anti-rotation evasion (found by pre-registered falsification)
+
+The GPU experiment (§8, C1) refuted the §7.1 prediction, and running the refutation to ground exposed the error: §7.1 compared only the *faithful* and *absorbed* pure strategies. Scanning the exact population loss over **all** unit-norm 1- and 2-latent in-plane dictionaries (`theory/theory_merged.py`; full angle range including negative angles) shows that for β ≥ β\* and small ε the true global optimum is neither — it is the **anti-rotated absorbed pair** {≈ −40°, +46°}: the composite latent continues to absorb the child at ≈ 45°, while the *parent* latent rotates to the far side of the parent direction, driving the pair's inner product toward zero. The penalty is evaded, absorption survives.
+
+The corrected picture (λ = q = p₀ = 0.2; all values from the exact scan, independently re-derived adversarially in `theory/verify_anti_rotation.py`):
+
+- **Corrected boundary ε\*\*(β):** faithful beats anti-rotated only for ε > ε\*\*(β), with ε\*\*(β\*) ≈ 0.0112, ε\*\*(2β\*) ≈ 0.0128, ε\*\*(4β\*) ≈ 0.0141, ε\*\*(16β\*) ≈ 0.0188, saturating at ε\*\*(∞) ≈ 0.0224 — versus the vanilla ε\* ≈ 0.0486.
+- **The penalty helps, but is bounded and non-monotone:** at its best (β ≈ β\*) it shrinks the absorption region ~4×; it **never eliminates it** (no β rescues ε < ε\*\*(β\*)); and **ε\*\* is *increasing* in β** — overdosing the penalty makes absorption *harder* to remove, because the anti-rotated branch is *more orthogonal* than the tilted faithful branch, so a stronger orthogonality reward favors it more.
+- **β → ∞ limit:** both branches are forced into exactly orthogonal frames and the competition reduces to a single parameter — the frame's rotation angle. The absorbed frame {−44°, 46°} puts one axis on the composite; the faithful frame {−8°, 82°} keeps one near the child; ε\*\*(∞) is where the optimal frame angle jumps. Orthogonality constraints do not kill absorption; they merely re-parameterize it.
+- **Why no Gram-type penalty can close this:** the penalty rewards decoder orthogonality, and the anti-rotated configuration is (near-)orthogonal — a Gram penalty cannot distinguish a faithful orthogonal frame from an absorbed one. Variants (|⟨d_i,d_j⟩|, sign-restricted penalties) face the same obstruction. What *does* distinguish the two is the **code**: the anti config reconstructs parent-solo events 2-sparsely where faithful does it 1-sparsely — suggesting remedies must weight reconstruction/sparsity per event (cf. weighted SAEs, arXiv:2506.15963) rather than shape the dictionary Gram.
+
+Methodologically: this correction exists because the prediction was pre-registered, the experiment was allowed to falsify it, and the falsification was chased into the exact model rather than absorbed into hand-waving. The machine-checked §7.1 algebra was *correct* — for the wrong configuration space.
 
 ### 7.2 Matryoshka SAEs: the mechanism found, exactly — and its failure modes
 
@@ -158,13 +173,35 @@ Methods proposed for the absorption/identifiability cluster, per the survey pass
 | C2 | real Matryoshka (prefixes 1,2,4,8,16,32), single child, ε ∈ {0, .01} | absorption **persists** (φ ≈ 45°) — single-child hierarchies unrescuable |
 | C3 | two-child model, vanilla vs Matryoshka, ε ∈ {0, .01} | vanilla → absorbed (composites, no child latents); Matryoshka → faithful (children recovered) via prefix scarcity |
 
-[RESULTS-C]
+**Results and honest scoring (all pre-registered predictions, rounds 1–3; round-2/3 experiments used batched training — hundreds of SAEs per einsum program — enabling 16 seeds and fine grids; code `sae_round2.py`, `sae_round3.py`):**
+
+| sub-exp | prediction | verdict |
+|---|---|---|
+| C1 | φ: 45°→~90° as β crosses β\*, at every ε incl. 0 | **REFUTED** — φ stuck at 34–46° for ε ≤ 0.01 at all β up to 4β\* |
+| C2 | Matryoshka, single child: absorption persists | **Confirmed** (no faithful child latent; geometry is a *merged* single latent at ~33°, see below) |
+| C3 | vanilla two-child: absorbed | **Confirmed** 6/6 (composites at cos 0.98–0.99, no child latents) |
+| C3 | Matryoshka two-child: faithful via prefix scarcity | **Partial** — composites weakened (0.98→0.83–0.89), child-*dominant* latents appear (max cos up to 0.89), but they are hedged blends (e.g. a c₁-latent carrying +0.41 parent and −0.29 c₂), not clean recovery. The idealized prefix-scarcity account predicts the right direction and overpredicts its completeness. |
+
+**The C1 refutation, run to ground (this became the main result of the session).** The logged latent geometry ruled out both initial hypotheses: latents stay fully in-plane at all β (ρ ≈ 0.96–0.99 — no escape into the 62 background dimensions), and the failure is not penalty diffusion over the 496 background Gram pairs. Re-scanning the exact 2D model over *all* 1- and 2-latent dictionaries — including negative angles the original derivation never considered — found the real mechanism: for β ≥ β\* and small ε the global optimum is an **anti-rotated absorbed pair** {≈ −40°, +46°}: the composite latent keeps absorbing while the *parent* latent rotates to the other side of it, making the pair near-orthogonal and the penalty ≈ 0. The original §7.1 threshold compared only the two named pure strategies and missed this branch. See §7.1b for the corrected theory; independent adversarial verification in `theory/verify_anti_rotation.py`.
+
+SGD exhibits exactly the three basins the corrected landscape predicts: anti-rotated (latents at −31…−39° *and* +45–46°), a merged single latent at ~34° (exact loss 0.162–0.178 — a genuine optimization trap, worse than both optima), and faithful {≈5°, 85°} — with seed-splits precisely where the exact losses are near-degenerate (e.g. 0.1150 vs 0.1174 at ε = 0.02, 4β\*).
+
+**Round-3 boundary validation (160 runs, 8 seeds × 10 ε × 2 β).** At β = β\*, the faithful-basin fraction crosses 50% between ε = 0.004 and 0.007 and reaches 7–8/8 above 0.01 — the corrected-boundary structure (anti below, faithful above), with the crossing leading the predicted ε\*\*(β\*) = 0.0112 by a factor ≈ 0.6. At β = 4β\* the picture degrades exactly as the corrected theory predicts (∂ε\*\*/∂β > 0): faithful majorities are unreliable until ε ≈ 0.03, with severe multistability (anti + merged basins persisting). Overdosing the penalty is empirically worse than β ≈ β\*, and the merged trap appears *only* at 4β\*.
+
+**Round-2 fine transition measurement (1,040 runs, 16 seeds × 13 ε × 5 cells, functional child metric).** The per-seed transition ε_c (φ crossing 67.5°) sits at **0.58–0.70 · ε\*** uniformly across λ spanning 6× and q spanning 2× — the λq scaling collapse holds; the prefactor does not. The exact global-optimum tilt curve puts the 67.5° crossing at ≈ 0.88 ε\*, so SGD leads the *objective's own optimum* by ≈ 25%, and the same ≈ 0.6 lead factor reappears in the round-3 penalty boundary — consistent with a uniform effective-λ rescale from encoder shrinkage (both ε\* and ε\*\* are ∝ λ to first order). Round 1's "midpoint at ε/ε\* = 1" used the max-angle metric, which is biased toward 90° near the transition; the functional metric (child latent = argmax encoder response on a child-solo input) supersedes it.
+
+**Experiment A, resolved (round-2 oracle controls, 144 runs).** Three conditions per (n, k): random init, random + dead-latent reinit, oracle init (decoder = true dictionary). Result — three sharply distinct regimes:
+
+- **k ≤ 8: trainability-limited.** Dead-latent reinit alone lifts recovery from 0.09–0.46 to **0.95–0.97**; oracle init is perfectly stable (1.00). Round 1's low-k failure was pure optimization, and a two-line auxiliary fix recovers essentially everything.
+- **k = 16: optimization-barrier regime.** Reinit helps partially (n=128: 0.60) or barely (n=256: 0.04), yet oracle init remains stable (0.98–1.00) — the truth is still an optimum, but SGD cannot reach it from random init.
+- **k ≥ 24: identifiability/stability limit.** Even oracle init degrades (mmcs 0.59–0.70, frac ≈ 0) — the true dictionary is no longer a stable optimum under superposition interference. The genuine boundary lies between k = 16 and k = 24, ~10× beyond the worst-case Donoho–Elad k\* ≈ 1.5.
 
 ## 9. Implications for practice
 
 - **λ is not a free knob.** ε\* ∝ λq converts the sparsity coefficient into a *resolution limit*: features whose solo rate is below ~1.17·λ·(co-occurrence rate) will be absorbed at the objective's optimum. Choosing λ is choosing which parts of the feature hierarchy to erase.
 - **Hierarchical concepts are the worst case.** For strict hierarchies ("is a token" ⇒ "starts with S"), ε ≈ 0, and absorption is near-inevitable under any L1-type objective — consistent with where absorption is actually observed in LLM SAEs.
 - **Remedies must change the objective, not the optimization.** In the misalignment band, reweighted losses, feature anchoring, or Matryoshka-style hierarchical objectives (per the 2025 literature) attack the right thing; bigger dictionaries, longer training, and better optimizers provably do not.
+- **If you do use a decoder-orthogonality penalty: dose it at β ≈ β\* and expect a bounded effect.** The corrected theory (§7.1b) and the round-3 data agree: the penalty buys roughly a 4× smaller absorption region at β ≈ β\*, degrades beyond that (∂ε\*\*/∂β > 0, plus a merged-latent optimization trap that only appears at high β), and cannot remove absorption at any strength. Penalties that act on the *codes* per event class, not the dictionary Gram, are the open direction.
 - **Interpretability audits should report co-occurrence statistics.** ε and q are measurable on real activation data; the theory says the ratio ε/(λq) predicts which feature pairs are trustworthy.
 
 ## 10. Relation to prior work
@@ -181,7 +218,11 @@ Absorption was documented empirically by Chanin et al. ("A is for Absorption," 2
 
 ## 12. Reproducibility and cost
 
-- `verify_absorption_theory.py` — symbolic KKT enumeration + threshold + global scan (laptop, sympy).
-- `theory_curves.py` — global-optimum angle curves φ\*(ε; λ, q) (laptop, numpy).
-- `sae_experiments.py` — both GPU experiments (dev-gpu, torch 2.5.1+cu121, L4).
-- VM: g2-standard-8 (~$0.99/hr), session ≈ [COST] — stopped at session end.
+- `theory/verify_absorption_theory.py` — symbolic KKT enumeration + threshold + global scan (laptop, sympy).
+- `theory/theory_curves.py` — global-optimum angle curves φ\*(ε; λ, q) (laptop, numpy).
+- `theory/theory_merged.py` — corrected variable-latent-count + penalty scan (§7.1b); pure python, no dependencies.
+- `theory/verify_anti_rotation.py` — independent adversarial re-derivation of §7.1b (Gemini-authored).
+- `experiments/sae_experiments.py`, `sae_remedies.py` — round-1 GPU experiments (torch 2.5.1+cu121, L4).
+- `experiments/sae_round2.py`, `sae_round3.py` — batched suites (run dimension folded into the einsums: ~200 SAEs per training program, ~40× serial wall-clock); `SMOKE=1` for a pipeline check.
+- Raw data: `results/` (one directory per round); analysis scripts in `analysis/`.
+- VM: single g2-standard-8 (NVIDIA L4, ~$0.99/hr), total GPU session ≈ 2.4 h ≈ **$2.40** for all 1,483 trained SAEs across rounds 1–3 (the batched rounds trained 1,344 of them in ~25 GPU-minutes). Orchestration ran on an e2-standard-4. Both stopped at session end.
