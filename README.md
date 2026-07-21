@@ -4,9 +4,16 @@ Exact theory + GPU experiments on when sparse autoencoders (SAEs) can and cannot
 recover true features — centered on **feature absorption** (a parent/child concept
 pair merging into one latent) as a solvable phase transition.
 
-**Status: active research** (2026-07-21). Round-1 results are final; rounds 2–3
-(fine-grained transition measurement, corrected coherence-penalty boundary
-validation) are running — results land here as they complete.
+**Status: research program complete** (2026-07-21, single day). Six experiment
+rounds (2,000+ trained SAEs, all predictions pre-registered), theory symbolically
+verified, real-data validation of the capacity-dependent regime structure
+(report.md §14–15b), and an independent adversarial referee review applied
+(no blocking defects). Highlights beyond the list below: a general no-go
+theorem for coherence penalties with a √2 critical occurrence ratio (§7.1b,
+`theory/general_no_go.md`), an event-weighted remedy that provably eliminates
+the transition and rescues absorbed features on real GPT-2 activations in the
+capacity-limited regime (§12, §15), and two label-free estimators refuted with
+understood mechanisms (§15b — the remaining open problem).
 
 ## Key results
 
