@@ -152,3 +152,21 @@ basin rather than merely re-ranking optima.
 | D | ε\*\*_∞(λ) → 0 as λ → 0 | monotone, PASS |
 | E | critical ratio p₀\* ≈ √2·q(1+O(λ)) | vanishes at 0.29–0.31 vs predicted 0.294, PASS |
 | — | finite-β flip in the p₀ > p₀\* regime | faithful from β = β\* at p₀=0.35, ε=0.002 |
+
+## Round-5 GPU test of the corollary (scored post-hoc, predictions above unchanged)
+
+96 batched runs (`experiments/sae_round5.py`, `results/round5/`): p₀ ∈ {0.20, 0.35} ×
+β ∈ {0, 1, 4}β\* × ε ∈ {0.002, 0.01} × 8 seeds.
+
+- **P1 CONFIRMED**: p₀ = 0.35, β ≥ β\*: majority faithful at every cell, including
+  5/8 (φ_med 72°) at the hardest point (β\*, ε = 0.002); 8/8 at (4β\*, 0.01).
+- **P2 CONFIRMED**: p₀ = 0.35, β = 0: 0/8 faithful (φ ≈ 46°) — the rescue is the
+  penalty's, not the occurrence statistics' alone.
+- **P3 PARTIAL**: the p₀ = 0.20 control stays absorbed at the median at β\*
+  (φ_med 45.6° vs 72.3° at p₀ = 0.35 — the regime contrast in the predicted
+  direction), but at 4β\* more seeds escape to faithful (5/8 at ε = 0.002) than
+  the equilibrium theory allows, replicating round 3's high-β anomaly. This is a
+  genuine dynamics-vs-objective gap: at strong penalties SGD's basin selection
+  favors the faithful frame more than global optimality predicts. The corollary's
+  equilibrium claim stands (verified exactly); its translation to SGD basin
+  fractions is quantitative only at moderate β.
