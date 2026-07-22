@@ -38,9 +38,13 @@ identifiability prediction (§16).
    angles rather than jumping (report §5) — ε\* organizes, not equals, the
    practical transition. 135 GPU runs collapse onto a single sigmoid under
    ε/ε\* rescaling (empirical midpoint at 0.58–0.70·ε\*).
-3. **Practitioner rule of thumb:** λ is a resolution limit — feature pairs with
-   ε ≲ 1.17·λq get absorbed *at the objective's optimum*; more compute/data
-   provably cannot help. Only changing the objective (or λ) can.
+3. **Practitioner rule of thumb:** λ sets a resolution *scale* — in the
+   capacity-limited two-latent model, 1.17·λq is the characteristic scale of
+   the absorption transition (exact as the pure-strategy crossover; the global
+   two-latent optimum crosses its midpoint at ≈ 0.88·ε\*, SGD at 0.58–0.70·ε\*).
+   Deep inside it (ε ≪ 1.17·λq), absorption is the population optimum of the
+   objective under the two-latent constraint — there, more compute/data cannot
+   help; only changing the objective, λ, or capacity can.
 4. **Coherence-penalty remedy: pre-registered prediction REFUTED, theory
    corrected.** The predicted critical penalty β\* was derived by comparing only
    faithful-vs-absorbed pairs. The true global optimum at β ≥ β\*, small ε, is an
@@ -110,7 +114,20 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
 - Theory claims are computationally verified (symbolic KKT enumeration in sympy /
   exact numeric scans — verification scripts, not a formal proof assistant), and
   every experimental analysis script is in `analysis/`.
-- Environment: theory scripts run on stock python3 (+ sympy/numpy where noted);
-  GPU experiments used torch 2.x/CUDA on a single NVIDIA L4 (GCP g2), CPU-smoke
-  verified on torch 1.13. Result tables cite their source CSVs in `results/`;
-  per-round provenance is in the git history (each round lands as one commit).
+- Environment: theory scripts run on stock python3 (`theory_merged.py`: no deps;
+  `verify_*`: sympy/numpy — CPU-verified on Debian 12, python 3.11.2,
+  numpy 1.24.2, torch 1.13.1+cpu for SMOKE runs). GPU experiments ran on a
+  single NVIDIA L4 (GCP g2, image `dev-gpu-img-tmp`, torch 2.x/CUDA; the exact
+  version is printed at the top of each run log in `results/`).
+- Result-table provenance (results CSV → commit that produced it):
+  | results | commit |
+  |---|---|
+  | round 1 (`results/round1/`) | `bdcc552` |
+  | rounds 2–3 (`results/round2/`, `round3/`) | `3b62c27` |
+  | round 4 + OrtSAE-style (`results/round4/`) | `82d2b60` |
+  | round 5 critical ratio (`results/round5/`) | `aecffd8` |
+  | §14 POC/audit (`results/round6/`) | `ee9d1b8`, bounded `d47c5db` |
+  | disambiguation (`results/round6/`) | `08ac574` |
+  | §15 capacity-limited (`results/round6/`) | `196df8c` |
+  | §15b bg-relative (`results/round6/`) | `05861b0` |
+  | Arm A (`results/prereg_armA/`) | `53b7e01` (pre-results lock: `cfd3e09`) |

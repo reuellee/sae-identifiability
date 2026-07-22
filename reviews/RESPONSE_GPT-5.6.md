@@ -77,3 +77,32 @@ with an exact pure-strategy crossover, a rotation blind spot for Gram
 penalties, and an oracle-level repair"* — is adopted as the paper's identity
 (new title). The two empirical actions it forced (m ≥ 33 rerun; natural-pair
 benchmark) are now queued experiments rather than framing debt.
+
+---
+
+## Round 2 (same day): reviewer's follow-up on the revision
+
+Verdict received: upgrade to "credible, workshop-ready technical report."
+Remaining items, all applied:
+
+1. **Theorem 1b duplicate-atom counterexample — accepted, fixed.** The reviewer
+   is right that ‖f‖₁ is invariant to splitting a coefficient across duplicate
+   collinear columns, so "extra atoms stay unused" was still too strong.
+   Restated (§3 + executive summary): the *set of active directions*
+   {a_p, a_m} is unique; dictionary columns and codes are non-unique under
+   permutation, duplication with code-splitting, and unused atoms. Parameter
+   assumptions now explicit (p₀, q > 0; 0 < λ < 2 so r ≥ λ/2 for both events).
+2. **Practitioner rule — accepted, reworded** (report + README): 1.17·λq is
+   the characteristic *scale* of the transition (exact only as the
+   pure-strategy crossover; global two-latent midpoint ≈ 0.88·ε\*, SGD
+   0.58–0.70·ε\*), and "more compute cannot help" is scoped to the population
+   optimum under the two-latent capacity constraint.
+3. **Evidence tiers — accepted.** §7.1b headline now labels
+   (proved) rotation blindness / (analytic reduction) in-plane frame
+   competition / (numerical) finite-β boundaries and mixed-configuration
+   search explicitly.
+4. **m = 34/40 rerun + reproducibility.** The capacity rerun is bundled into
+   the in-flight GPU session (results will land in `results/capacity_m33/`).
+   README now pins the CPU verification environment exactly and carries a
+   results-CSV → commit provenance table. Full lockfile still TODO (the GPU
+   image's torch version is recorded in run logs).
