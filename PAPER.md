@@ -3,8 +3,7 @@
 **Living paper draft.** This document is the formal distillation of `report.md`
 (the session-log-style record) at the current repository state; claims follow
 the guardrails established in `reviews/`. Experimental provenance: README
-table (results CSV → commit). *Round 8 results pending; sections marked
-&#9203; will be updated when they land.*
+table (results CSV → commit). *Current through round 8.*
 
 ---
 
@@ -331,16 +330,34 @@ full scan yields a *real-background candidate list* of unknown status).
 $\hat\rho \approx 0.75$ vs true $0.5$ — the counting estimator assumes
 gating, which real (leaky) activations violate.
 
-**Round 8 (&#9203; in flight).** Pre-registered before results
-(`notes/prereg-round8-scaling-robustness.md`, incl. a pre-collection
-amendment adopting width-specific endpoints, stage-separated reporting, a
-corrected candidate-stability matcher, and all-pairs specificity readouts):
-v1.2 ($L_{\text{HI}} = 1.9$, calibrated on Arm 2) as a same-domain
-resampling-stability test with 24 fresh seeds per width; a
-proportional-scale null calibration $(d, m)$ from $(64, 32)$ to
-$(512, 256)$; nonorthogonal-child, prevalence-stress, and TopK robustness
-cells. A no-injection real-background null, fixed-dimension width sweep, and
-an overcomplete $m > d$ setting are queued as round 8b.
+**Round 8 (completed; pre-registered with a pre-collection amendment adopting
+width-specific endpoints, stage-separated reporting, and a corrected
+candidate-stability matcher).** v1.2 ($L_{\text{HI}} = 1.9$, calibrated on
+Arm 2, otherwise frozen) passed its **width-specific** held-out endpoints on
+fresh same-domain runs: recall $24/24 = 1.000$ at **each** of $m = 128$ and
+$m = 256$ (48/48 formation; lift clusters $1.975 \pm 0.026$ and
+$2.055 \pm 0.024$, both clear of the cutoff; exact binomial 95% lower bound
+$\approx 0.86$ per width), faithful oracle-pair flags $0.000$. Scope:
+same-domain resampling stability, not cross-domain transfer. Stage
+separation: orientation accuracy by the rarity rule is $0.88 / 0.75$;
+child-residual recovery is $0.990 \pm 0.001$ under **oracle** orientation at
+both widths versus $0.948 / 0.909$ automatic — residualization is
+near-perfect and *orientation is the pipeline's weakest stage* (it fails
+completely, $0.00$, under a prevalence-inversion stress cell, as
+pre-registered; a containment-based orientation rule is the queued fix).
+$\hat\rho \approx 0.75$ remains leak-inflated. Proportional-scale null
+calibration: v1.1 produced **zero** null false positives at every scale from
+$(d, m) = (64, 32)$ to $(512, 256)$ — the overlap veto fully suppresses the
+splitting-doublet mode — with recall $1.000$ on formed runs throughout and
+declining formation at the largest scale ($4/8$, disclosed). Robustness:
+detection and recovery survive child–parent cosine $0.3$ (7/7) but detection
+degrades at $0.5$ (3/6, pair cosine approaches the band edge); **the
+detector signature and gated absorption survive TopK encoders** ($k{=}4$,
+$\lambda{=}0$; 6/6 flagged, child recovery $0.999$). Every faithful-control
+SAE still carries $\ge 1$ full-scan real-background flag (candidate counts
+do not separate conditions), so all-pairs specificity on un-injected real
+backgrounds — with a fixed-dimension width sweep and an overcomplete
+$m > d$ setting — remains the round-8b gap.
 
 ## 9. Related work
 

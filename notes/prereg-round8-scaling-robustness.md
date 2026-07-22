@@ -122,3 +122,22 @@ seen (the GPU session is mid-run; collection has not occurred):
 6. **Terminology.** "Natural-absorption candidate list" → **"real-background
    candidate list"** (candidates in SAEs trained on real activations; their
    status as natural absorbed pairs is unknown pending adjudication).
+
+---
+
+## Outcome (2026-07-22, post-run): all confirmatory endpoints pass width-specifically
+
+- **E1: T1a = T1b = 1.000** (24/24 per width, 48/48 formed; lifts 1.975±0.026
+  / 2.055±0.024 vs L_HI=1.9; binomial 95% lower ≈ 0.86/width), **T2 = 0.000**
+  both widths. Same-domain resampling stability of v1.2 confirmed.
+- **Stage endpoints:** orientation 0.88/0.75; child recovery 0.990±0.001
+  oracle-oriented vs 0.948/0.909 auto — orientation isolated as the weak
+  stage; ρ̂ 0.75 (leak, as expected).
+- **E2:** zero null FPs at all four scales (soft expectation exceeded);
+  recall 1.000 on formed; formation 4/8 at (512,256), disclosed.
+- **E3:** angle 0.3 robust (7/7); angle 0.5 detection 3/6; prevalence ρ=0.6
+  orientation 0.00 (registered prediction confirmed) with detection 6/6;
+  TopK: 6/6 flagged, recovery 0.999 — signature survives hard sparsity.
+- **S1:** corrected matcher only; see results/round8/s1_stability.log.
+Full readout: `results/round8/SUMMARY.md`. Round 8b (no-injection real
+background null, fixed-d width sweep, overcomplete) remains queued.

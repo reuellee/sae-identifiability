@@ -1,0 +1,78 @@
+/home/reuellee_gmail_com/sae_identifiability/experiments/round8_realdata.py:69: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  bg = torch.load(ACT).float()
+bg torch.Size([500000, 768]) device=cuda
+  [m=128 0/20000] (0s)
+  [m=128 4000/20000] (116s)
+  [m=128 8000/20000] (231s)
+  [m=128 12000/20000] (347s)
+  [m=128 16000/20000] (463s)
+[m=128 eps=0.002 s8] abs=1 tp_flagged=1 tp_cos=0.5843 tp_lift=1.9367 n_flags=4
+[m=128 eps=0.002 s9] abs=1 tp_flagged=1 tp_cos=0.5922 tp_lift=2.0069 n_flags=4
+[m=128 eps=0.002 s10] abs=1 tp_flagged=1 tp_cos=0.5894 tp_lift=1.9792 n_flags=4
+[m=128 eps=0.002 s11] abs=1 tp_flagged=1 tp_cos=0.5866 tp_lift=1.9159 n_flags=4
+[m=128 eps=0.002 s12] abs=1 tp_flagged=1 tp_cos=0.5951 tp_lift=2.0345 n_flags=4
+[m=128 eps=0.002 s13] abs=1 tp_flagged=1 tp_cos=0.5976 tp_lift=1.9561 n_flags=4
+[m=128 eps=0.002 s14] abs=1 tp_flagged=1 tp_cos=0.5812 tp_lift=1.9741 n_flags=4
+[m=128 eps=0.002 s15] abs=1 tp_flagged=1 tp_cos=0.5835 tp_lift=1.9623 n_flags=4
+[m=128 eps=0.002 s16] abs=1 tp_flagged=1 tp_cos=0.5887 tp_lift=1.9962 n_flags=4
+[m=128 eps=0.002 s17] abs=1 tp_flagged=1 tp_cos=0.6019 tp_lift=1.959 n_flags=4
+[m=128 eps=0.002 s18] abs=1 tp_flagged=1 tp_cos=0.5804 tp_lift=1.978 n_flags=4
+[m=128 eps=0.002 s19] abs=1 tp_flagged=1 tp_cos=0.587 tp_lift=1.947 n_flags=4
+[m=128 eps=0.002 s20] abs=1 tp_flagged=1 tp_cos=0.5981 tp_lift=1.9715 n_flags=4
+[m=128 eps=0.002 s21] abs=1 tp_flagged=1 tp_cos=0.5795 tp_lift=1.9937 n_flags=4
+[m=128 eps=0.002 s22] abs=1 tp_flagged=1 tp_cos=0.5948 tp_lift=2.0095 n_flags=4
+[m=128 eps=0.002 s23] abs=1 tp_flagged=1 tp_cos=0.5782 tp_lift=2.0034 n_flags=4
+[m=128 eps=0.002 s24] abs=1 tp_flagged=1 tp_cos=0.5956 tp_lift=1.9986 n_flags=4
+[m=128 eps=0.002 s25] abs=1 tp_flagged=1 tp_cos=0.5806 tp_lift=1.9842 n_flags=4
+[m=128 eps=0.002 s26] abs=1 tp_flagged=1 tp_cos=0.5884 tp_lift=1.9712 n_flags=4
+[m=128 eps=0.002 s27] abs=1 tp_flagged=1 tp_cos=0.5967 tp_lift=1.956 n_flags=5
+[m=128 eps=0.002 s28] abs=1 tp_flagged=1 tp_cos=0.5899 tp_lift=1.9519 n_flags=4
+[m=128 eps=0.002 s29] abs=1 tp_flagged=1 tp_cos=0.5893 tp_lift=1.9811 n_flags=4
+[m=128 eps=0.002 s30] abs=1 tp_flagged=1 tp_cos=0.587 tp_lift=1.9921 n_flags=4
+[m=128 eps=0.002 s31] abs=1 tp_flagged=1 tp_cos=0.5826 tp_lift=1.9519 n_flags=4
+[m=128 eps=0.05 s8] abs=0 tp_flagged=0 tp_cos=0.2787 tp_lift=1.6348 n_flags=3
+[m=128 eps=0.05 s9] abs=0 tp_flagged=0 tp_cos=0.2853 tp_lift=1.6744 n_flags=3
+[m=128 eps=0.05 s10] abs=0 tp_flagged=0 tp_cos=0.3083 tp_lift=1.6759 n_flags=3
+[m=128 eps=0.05 s11] abs=0 tp_flagged=0 tp_cos=0.275 tp_lift=1.6037 n_flags=3
+[m=128 eps=0.05 s12] abs=0 tp_flagged=0 tp_cos=0.2958 tp_lift=1.6835 n_flags=3
+[m=128 eps=0.05 s13] abs=0 tp_flagged=0 tp_cos=0.3008 tp_lift=1.6803 n_flags=3
+[m=128 eps=0.05 s14] abs=0 tp_flagged=0 tp_cos=0.2827 tp_lift=1.6617 n_flags=3
+[m=128 eps=0.05 s15] abs=0 tp_flagged=0 tp_cos=0.2935 tp_lift=1.6532 n_flags=3
+  [m=256 0/20000] (0s)
+  [m=256 4000/20000] (138s)
+  [m=256 8000/20000] (276s)
+  [m=256 12000/20000] (414s)
+  [m=256 16000/20000] (552s)
+[m=256 eps=0.002 s8] abs=1 tp_flagged=1 tp_cos=0.6015 tp_lift=2.0372 n_flags=10
+[m=256 eps=0.002 s9] abs=1 tp_flagged=1 tp_cos=0.608 tp_lift=2.0747 n_flags=7
+[m=256 eps=0.002 s10] abs=1 tp_flagged=1 tp_cos=0.6047 tp_lift=2.0636 n_flags=12
+[m=256 eps=0.002 s11] abs=1 tp_flagged=1 tp_cos=0.6061 tp_lift=2.0221 n_flags=12
+[m=256 eps=0.002 s12] abs=1 tp_flagged=1 tp_cos=0.6117 tp_lift=2.0992 n_flags=11
+[m=256 eps=0.002 s13] abs=1 tp_flagged=1 tp_cos=0.6122 tp_lift=2.0331 n_flags=10
+[m=256 eps=0.002 s14] abs=1 tp_flagged=1 tp_cos=0.5967 tp_lift=2.0764 n_flags=12
+[m=256 eps=0.002 s15] abs=1 tp_flagged=1 tp_cos=0.5994 tp_lift=2.052 n_flags=11
+[m=256 eps=0.002 s16] abs=1 tp_flagged=1 tp_cos=0.6075 tp_lift=2.0655 n_flags=12
+[m=256 eps=0.002 s17] abs=1 tp_flagged=1 tp_cos=0.6151 tp_lift=2.028 n_flags=13
+[m=256 eps=0.002 s18] abs=1 tp_flagged=1 tp_cos=0.6002 tp_lift=2.0677 n_flags=8
+[m=256 eps=0.002 s19] abs=1 tp_flagged=1 tp_cos=0.6015 tp_lift=2.0295 n_flags=14
+[m=256 eps=0.002 s20] abs=1 tp_flagged=1 tp_cos=0.6188 tp_lift=2.0365 n_flags=14
+[m=256 eps=0.002 s21] abs=1 tp_flagged=1 tp_cos=0.592 tp_lift=2.0791 n_flags=11
+[m=256 eps=0.002 s22] abs=1 tp_flagged=1 tp_cos=0.6123 tp_lift=2.0657 n_flags=9
+[m=256 eps=0.002 s23] abs=1 tp_flagged=1 tp_cos=0.597 tp_lift=2.1143 n_flags=10
+[m=256 eps=0.002 s24] abs=1 tp_flagged=1 tp_cos=0.6093 tp_lift=2.0397 n_flags=12
+[m=256 eps=0.002 s25] abs=1 tp_flagged=1 tp_cos=0.595 tp_lift=2.0648 n_flags=10
+[m=256 eps=0.002 s26] abs=1 tp_flagged=1 tp_cos=0.6065 tp_lift=2.0412 n_flags=14
+[m=256 eps=0.002 s27] abs=1 tp_flagged=1 tp_cos=0.6147 tp_lift=2.0298 n_flags=9
+[m=256 eps=0.002 s28] abs=1 tp_flagged=1 tp_cos=0.6078 tp_lift=2.0346 n_flags=7
+[m=256 eps=0.002 s29] abs=1 tp_flagged=1 tp_cos=0.6046 tp_lift=2.0715 n_flags=12
+[m=256 eps=0.002 s30] abs=1 tp_flagged=1 tp_cos=0.606 tp_lift=2.06 n_flags=9
+[m=256 eps=0.002 s31] abs=1 tp_flagged=1 tp_cos=0.606 tp_lift=2.0247 n_flags=11
+[m=256 eps=0.05 s8] abs=0 tp_flagged=0 tp_cos=0.2819 tp_lift=1.7468 n_flags=10
+[m=256 eps=0.05 s9] abs=0 tp_flagged=0 tp_cos=0.2908 tp_lift=1.7832 n_flags=7
+[m=256 eps=0.05 s10] abs=0 tp_flagged=0 tp_cos=0.3154 tp_lift=1.7741 n_flags=7
+[m=256 eps=0.05 s11] abs=0 tp_flagged=0 tp_cos=0.279 tp_lift=1.7161 n_flags=9
+[m=256 eps=0.05 s12] abs=0 tp_flagged=0 tp_cos=0.3062 tp_lift=1.8041 n_flags=11
+[m=256 eps=0.05 s13] abs=0 tp_flagged=0 tp_cos=0.3033 tp_lift=1.7767 n_flags=13
+[m=256 eps=0.05 s14] abs=0 tp_flagged=0 tp_cos=0.2888 tp_lift=1.7693 n_flags=8
+[m=256 eps=0.05 s15] abs=0 tp_flagged=0 tp_cos=0.2967 tp_lift=1.757 n_flags=9
+wrote /home/reuellee_gmail_com/sae_identifiability/experiments/../results/round8/r8e1_runs.csv (64 rows)
