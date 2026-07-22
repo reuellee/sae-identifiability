@@ -1,0 +1,79 @@
+# Response to the external GPT-5.6 review (2026-07-22)
+
+Review archived verbatim at `EXTERNAL_REVIEW_GPT-5.6_2026-07-22.md`. Verdict
+accepted: **major revision, applied same day.** Point-by-point:
+
+## Accepted and fixed
+
+**R1. "ε\* is a candidate-dictionary loss crossover, not the global transition."**
+Accepted for the *headline language*, with one factual correction to the review
+(below). All uses of "exact phase boundary" replaced by "exact pure-strategy
+crossover" (title, executive summary item 2, §4 heading, README); §4 gains an
+explicit framing note (global 2-latent optimum tilts continuously; its 67.5°
+crossing sits at ≈ 0.88·ε\*; ε\* upper-bounds and organizes the transition).
+*Factual note:* the intermediate angles the review cites (69°/80°/85°) are
+quoted from this report's own §5 (Result 3), which has framed the continuous
+tilt as a headline result — "ε\* marking the exact point where the pure
+absorbed strategy loses to the pure faithful one" — since round 1, and §8 has
+carried the 0.88·ε\* global-optimum crossing figure. The defect was branding
+("exact phase boundary" in title/headings), not a missing distinction. Both
+are now consistent.
+
+**R2. Theorem 1b uniqueness over-claim.** Accepted, exactly right: unused atoms
+attain the bound. Statement corrected in §3 and the executive summary to
+"active dictionary unique up to permutation and unused atoms," with an inline
+correction note.
+
+**R5. The m = 32 capacity confound.** Accepted — the sharpest catch in the
+review. 30 background features + parent + child + composite = 33 > 32, so the
+round-1 "dynamics gap" claim (SGD avoids the triple *even without scarcity*)
+was untestable in that architecture and is **withdrawn** (§8, struck and
+corrected in place). Note the report's own §14 (m = 1536) already showed
+triples forming in every spare-capacity condition, corroborating the review.
+Rerun at m ∈ {32, 34, 40} implemented (`experiments/capacity_m33_rerun.py`,
+prediction pre-registered in the script header: triples appear with headroom);
+results will replace the withdrawn claim either way.
+
+**R6. "Semi-synthetic" labeling.** Accepted. §14 retitled "Semi-synthetic
+results: synthetic-pair injection into real GPT-2 activations" with a scoping
+note; README updated; the audits' null result (no natural-absorption positive
+observation yet) stated explicitly.
+
+**R-framing. "Machine-checked" → "computationally verified."** Accepted
+throughout (title line, §4, README): sympy symbolic enumeration + exact scans,
+explicitly "not a proof assistant." The referee review is now labeled
+"fresh-context LLM referee (adversarial, not external human peer review)."
+"Research program complete (single day)" replaced by "actively developed
+technical report."
+
+**R7. Reproducibility metadata.** Partially applied (environment note +
+provenance-by-commit in README). A pinned lockfile and per-table commit hashes
+remain TODO.
+
+## Accepted in substance, already present in the report
+
+**R3. No-go scope.** The proven scope (m ≤ d, orthonormal frames, L1,
+non-pair latents off the pair plane; mixed configurations excluded by search
+not proof; overcomplete open) has been stated in §7.1b and
+`theory/general_no_go.md` since the general derivation landed, including the
+p₀\* domain boundary where penalties *do* work. We agree the executive-summary
+sentence read stronger than the body; it already carries the domain-boundary
+caveat, and the body scope governs. TopK/JumpReLU and the overcomplete case
+are explicitly open problems (§10, memory of the program); a TopK extension is
+on the queue.
+
+**R4. Oracle-dependence of the weighting remedy.** Agreed and long-standing:
+§15's own language is "the oracle result stands as the theory validation; the
+practical estimator remains future work," after §15b refuted two label-free
+substitutes with mechanisms. "Diagnostic existence result" is a fair summary
+and §12/§15 now read that way. The successor line of work (Arm A → the
+pair-identification pre-registration in `notes/prereg-pair-identification.md`)
+is precisely the attempt to close this gap label-free.
+
+## Net effect
+
+The review's bottom-line reframe — *"a solvable model of feature absorption
+with an exact pure-strategy crossover, a rotation blind spot for Gram
+penalties, and an oracle-level repair"* — is adopted as the paper's identity
+(new title). The two empirical actions it forced (m ≥ 33 rerun; natural-pair
+benchmark) are now queued experiments rather than framing debt.

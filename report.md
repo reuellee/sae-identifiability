@@ -1,14 +1,14 @@
-# Feature Absorption in Sparse Autoencoders is a Phase Transition: an Exact Boundary, a Non-Identifiability Wall, and GPU-Verified Predictions
+# A Solvable Model of Feature Absorption in L1 Sparse Autoencoders: an Exact Pure-Strategy Crossover, a Non-Identifiability Wall, and GPU-Verified Predictions
 
-*Session report — 2026-07-21. Theory machine-verified symbolically; experiments run on GCP `dev-gpu` (NVIDIA L4).*
+*Session report — 2026-07-21, revised 2026-07-22 after external review (`reviews/EXTERNAL_REVIEW_GPT-5.6_2026-07-22.md`). Theory computationally verified (sympy symbolic enumeration + exact numeric scans — not a proof assistant); experiments run on GCP `dev-gpu` (NVIDIA L4).*
 
 ## Executive summary
 
 Sparse autoencoders (SAEs) are the workhorse of mechanistic interpretability: they decompose neural activations into "features," and safety-relevant claims are increasingly built on top of those features. The known failure mode called **feature absorption** — the SAE merges a parent concept and a child concept into one latent, so the parent feature appears to "turn off" exactly where it matters — has so far been an empirical phenomenon. This report makes it a theorem:
 
-1. **A non-identifiability wall (Theorems 1, 1b).** When a child feature *never* occurs without its parent, the hierarchical ("faithful") and merged ("absorbed") feature ontologies generate *identical* data distributions — no method, present or future, can distinguish them from activations alone. Moreover, at this wall the absorbed dictionary is the *unique global optimum of the SAE objective over all dictionaries of any size* (two-line proof via ‖f‖₁ ≥ ‖Df‖). Absorption at the boundary is not a bug; it is both the information-theoretic truth and the objective's exact preference.
+1. **A non-identifiability wall (Theorems 1, 1b).** When a child feature *never* occurs without its parent, the hierarchical ("faithful") and merged ("absorbed") feature ontologies generate *identical* data distributions — no method, present or future, can distinguish them from activations alone. Moreover, at this wall the absorbed configuration is the global optimum of the SAE objective over dictionaries of any size, and the *active* dictionary attaining it is unique up to permutation and unused atoms (two-line proof via ‖f‖₁ ≥ ‖Df‖). Absorption at the boundary is not a bug; it is both the information-theoretic truth and the objective's exact preference.
 
-2. **An exact phase boundary (Theorem 2, machine-checked).** Away from the wall, let ε be the probability the child occurs alone, q the probability parent and child co-occur, and λ the SAE's L1 coefficient. The SAE objective *globally prefers the wrong (absorbed) dictionary* precisely when
+2. **An exact pure-strategy crossover (Theorem 2, computationally verified).** Away from the wall, let ε be the probability the child occurs alone, q the probability parent and child co-occur, and λ the SAE's L1 coefficient. Among per-pair 2-latent dictionaries, the objective prefers the pure absorbed dictionary over the pure faithful one precisely when
 
    **ε < ε\*(λ, q) = λq(8 − 4√2 − λ) / (2(1 − (2 − √2)λ)) ≈ 1.17 λq** (small λ).
 
@@ -63,9 +63,11 @@ Consequently no procedure operating on activations can decide whether the "child
 
 ‖x − Df‖² + λ‖f‖₁ ≥ min_{t ≥ 0} (r − t)² + λt = λr − λ²/4,
 
-with equality iff the active latents all point exactly at x/r. Summing over the ε = 0 event distribution, L(D) ≥ p₀(λ − λ²/4) + q(√2λ − λ²/4), and this bound is attained exactly by the absorbed dictionary {a_p, (a_p + a_c)/√2} — and only by dictionaries containing those two directions. Absorption at the wall is not just preferred over the faithful dictionary; it is the unique optimum over *every* dictionary of every size. ∎
+with equality iff the active latents all point exactly at x/r. Summing over the ε = 0 event distribution, L(D) ≥ p₀(λ − λ²/4) + q(√2λ − λ²/4), and this bound is attained exactly by dictionaries containing the two directions {a_p, (a_p + a_c)/√2} — and only by those. The *active* dictionary is therefore unique up to permutation; a larger dictionary attains the bound iff its additional atoms stay unused. *(Correction after external review: the earlier "unique optimum over every dictionary of every size" was too strong — unused atoms are free.)* ∎
 
-## 4. Theorem 2 — the exact phase boundary (machine-checked)
+## 4. Theorem 2 — the exact pure-strategy crossover (computationally verified)
+
+*(Framing, post-review: ε\* is the exact loss crossover between the two named candidate dictionaries — pure faithful vs pure 45° absorbed. It is **not** the transition point of the continuously optimized dictionary, which tilts smoothly through intermediate angles (Result 3, §5); the global 2-latent optimum's 67.5° crossing sits at ≈ 0.88·ε\*. ε\* upper-bounds and organizes the practical transition; its empirical content is the λq scaling collapse of §8.)*
 
 For each event, the optimal nonnegative code is a 2D nonnegative lasso; enumerating KKT cases gives closed-form event losses (verified symbolically by exhaustive case enumeration in `verify_absorption_theory.py`; all six forms confirmed to 1e-9 over λ ∈ [0.01, 0.5]):
 
@@ -161,7 +163,7 @@ Methods proposed for the absorption/identifiability cluster, per the survey pass
 
 ![Scaling collapse](figures/fig2_collapse.png)
 
-- **The dynamics gap, demonstrated.** In all 135 latent inventories there is not a single "triple" solution (separate parent, child, *and* composite latents) — even though for every ε > 0 the triple is the unconstrained objective's true optimum (§4 Remark). SGD invariably lands on the 2-latent competition instead, which means the capacity-limited Theorem 2 — not the unconstrained optimum — is the correct predictor of trained SAE behavior. Absorption in practice is thus doubly robust: the objective prefers it under capacity scarcity, and optimization dynamics select it even without scarcity.
+- **CORRECTED (external review, 2026-07-22) — the "dynamics gap" inference was invalid as stated.** In all 135 latent inventories there is not a single "triple" solution (separate parent, child, *and* composite latents) — but at m = 32 with 30 background features + parent + child, the triple needs **33** columns, so it was *architecturally impossible*, not avoided by dynamics. The prior conclusion "optimization dynamics select absorption even without scarcity" is withdrawn; these runs are capacity-constrained by exactly one slot. Consistently, §14's spare-capacity runs (m = 1536) form the triple in *every* condition. A dedicated rerun at m ∈ {32, 34, 40} (`experiments/capacity_m33_rerun.py`, pre-registered prediction: triples appear once headroom exists) resolves which regime the m = 32 grid actually probed; if confirmed, absorption is a capacity-scarcity phenomenon throughout — which *sharpens*, not weakens, Theorem 2's claim to be the operative regime for real (always capacity-scarce) SAEs.
 
 **Experiment A (classical recovery).** Random unit-column dictionaries in d = 64 with n ∈ {128, 256} features (coherence μ ≈ 0.45–0.52, so worst-case k\* ≈ 1.5–1.6), k-sparse data, TopK SAEs with oracle k, mean-max cosine similarity (MMCS) and fraction of features recovered above 0.9.
 
@@ -264,7 +266,9 @@ Solving C(λ) = 1: **λ_crit = [(12 − 6√2) − √((12 − 6√2)² − 8)]/
 - Raw data: `results/` (one directory per round); analysis scripts in `analysis/`.
 - VM: single g2-standard-8 (NVIDIA L4, ~$0.99/hr), total GPU session ≈ 2.4 h ≈ **$2.40** for all 1,575 trained SAEs across rounds 1–3 (the batched rounds trained 1,368 of them in ~25 GPU-minutes). Orchestration ran on an e2-standard-4. Both stopped at session end.
 
-## 14. Real-activation results (POC, method eval, audit; final after two adversarial-review rounds)
+## 14. Semi-synthetic results: synthetic-pair injection into real GPT-2 activations (POC, method eval, audit; final after two adversarial-review rounds)
+
+*(Terminology, post-review: every "real-data" experiment in §14–15 injects a synthetic parent/child pair into real GPT-2-small layer-6 activations — realistic background statistics, synthetic hierarchy. The natural-feature audits (v1, v2) found no qualifying natural pairs, so the project has no positive natural-absorption observation yet; claims are scoped accordingly.)*
 
 **What transferred, cleanly.** Absorption phenomenology on real GPT-2-small layer-6 activations (injected pair, 36+36 runs): positive controls perfect (routing 1.00, child cos 0.90 at ε = 0.05); at low ε a strong composite-aligned latent forms (cos 0.96–0.98) alongside parent — the absorption signature, not undertraining. Most strikingly, **§4's spare-capacity composition prediction is confirmed on real data**: with m = 1536 ≫ active features, *every* condition forms the redundant composite+parent+child triple (child-aligned latent at cos 0.8+ present throughout) — the configuration the toy theory predicts for unconstrained capacity, and which SGD never found at m = 32.
 

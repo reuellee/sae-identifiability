@@ -1,0 +1,7 @@
+device=cpu threads=4 smoke=False
+  [pilot R=8 m=32 step 0/15000] mean_rec=3.4386 (0s)
+  [pilot R=8 m=32 step 2000/15000] mean_rec=0.3317 (457s)
+  [pilot R=8 m=32 step 4000/15000] mean_rec=0.3432 (874s)
+  [pilot R=8 m=32 step 6000/15000] mean_rec=0.3452 (1289s)
+  [pilot R=8 m=32 step 8000/15000] mean_rec=0.3518 (1705s)
+  [pilot R=8 m=32 step 10000/15000] mean_rec=0.3534 (2176s)

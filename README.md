@@ -1,31 +1,43 @@
-# SAE Identifiability: Feature Absorption as a Phase Transition
+# A Solvable Model of Feature Absorption in L1 Sparse Autoencoders
 
 Exact theory + GPU experiments on when sparse autoencoders (SAEs) can and cannot
 recover true features — centered on **feature absorption** (a parent/child concept
-pair merging into one latent) as a solvable phase transition.
+pair merging into one latent) in an analytically solvable model.
 
-**Status: research program complete** (2026-07-21, single day). Six experiment
-rounds (2,000+ trained SAEs, all predictions pre-registered), theory symbolically
-verified, real-data validation of the capacity-dependent regime structure
-(report.md §14–15b), and an independent adversarial referee review applied
-(no blocking defects). Highlights beyond the list below: a general no-go
-theorem for coherence penalties with a √2 critical occurrence ratio (§7.1b,
-`theory/general_no_go.md`), an event-weighted remedy that provably eliminates
-the transition and rescues absorbed features on real GPT-2 activations in the
-capacity-limited regime (§12, §15), and two label-free estimators refuted with
-understood mechanisms (§15b — the remaining open problem).
+**Status: actively developed technical report** (started 2026-07-21; revised
+2026-07-22 after an external review — `reviews/EXTERNAL_REVIEW_GPT-5.6_2026-07-22.md`
+and the point-by-point response beside it). Seven experiment rounds so far
+(2,500+ trained SAEs, all confirmatory predictions pre-registered), theory
+computationally verified (sympy — not a proof assistant), semi-synthetic
+validation of the capacity-dependent regime structure on real GPT-2 activations
+(report.md §14–15b), plus a fresh-context LLM referee pass (adversarial, not
+external human peer review). Highlights beyond the list below: a no-go
+theorem for coherence penalties in the undercomplete orthonormal setting, with
+a √2 critical occurrence ratio (§7.1b, `theory/general_no_go.md`); an
+event-weighted remedy that provably eliminates the toy-model transition and
+rescues injected absorbed features on real GPT-2 activations in the
+capacity-limited regime (§12, §15 — oracle-dependent: a diagnostic existence
+result, not yet a practical method); two label-free estimators refuted with
+understood mechanisms (§15b); and the Arm A discovery that trained absorption
+is *gated* ("leaky"), inverting both halves of a pre-registered
+identifiability prediction (§16).
 
 ## Key results
 
 1. **Non-identifiability wall** (ε = 0: child never appears without parent):
-   the absorbed dictionary is the *unique global optimum over dictionaries of any
-   size*, and the faithful/absorbed ontologies are information-theoretically
+   the absorbed configuration is the global optimum over dictionaries of any
+   size — the *active* dictionary is unique up to permutation and unused
+   atoms — and the faithful/absorbed ontologies are information-theoretically
    indistinguishable. Two-line proof via ‖f‖₁ ≥ ‖Df‖.
-2. **Exact phase boundary** (machine-checked, sympy):
-   absorption is globally preferred iff
+2. **Exact pure-strategy crossover** (computationally verified, sympy):
+   among per-pair 2-latent dictionaries, the pure absorbed dictionary beats the
+   pure faithful one iff
    **ε < ε\*(λ, q) = λq(8 − 4√2 − λ) / (2(1 − (2 − √2)λ)) ≈ 1.17 λq**,
    where ε = P(child solo), q = P(parent∧child), λ = L1 coefficient.
-   135 GPU runs collapse onto a single sigmoid under ε/ε\* rescaling.
+   The continuously optimized dictionary tilts smoothly through intermediate
+   angles rather than jumping (report §5) — ε\* organizes, not equals, the
+   practical transition. 135 GPU runs collapse onto a single sigmoid under
+   ε/ε\* rescaling (empirical midpoint at 0.58–0.70·ε\*).
 3. **Practitioner rule of thumb:** λ is a resolution limit — feature pairs with
    ε ≲ 1.17·λq get absorbed *at the objective's optimum*; more compute/data
    provably cannot help. Only changing the objective (or λ) can.
@@ -50,7 +62,7 @@ Full write-up: [`report.md`](report.md).
 ## Layout
 
 - `report.md` — the main report (theory + experiments; updated as rounds land)
-- `theory/` — machine-checked proofs and exact scans
+- `theory/` — computationally verified derivations and exact scans
   (`verify_absorption_theory.py`, `verify_remedies.py`, `matryoshka_multichild.py`,
   `theory_curves.py`, `theory_merged.py` — the corrected variable-latent-count +
   penalty analysis; pure python, no deps)
@@ -63,10 +75,13 @@ Full write-up: [`report.md`](report.md).
 - `ops/` — GCP supervision script (crash-restart chain, result collection,
   auto-stop)
 - `notes/` — follow-up theory notes on the §15b open problem (label-free frequency
-  estimation): `label-free-frequency-identifiability.md` (a no-go for binarized
-  co-firing signatures + a within-composite bimodality estimator, with the
-  topic-model/tensor identifiability backbone) and its `prereg-*` experiment spec
-  (**theory + pre-registered predictions; not yet run**)
+  estimation): `label-free-frequency-identifiability.md` + its pre-registration
+  (**Arm A run 2026-07-22: both hypotheses inverted** — trained absorption is
+  gated/leaky; see report §16 and `results/prereg_armA/SUMMARY.md`), and
+  `prereg-pair-identification.md` (the successor experiment: label-free
+  detection of absorbed pairs)
+- `reviews/` — adversarial review artifacts: fresh-context LLM referee reports,
+  the external GPT-5.6 review (2026-07-22), and point-by-point responses
 
 ## Reproducing
 
@@ -92,5 +107,10 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
 
 - All C-experiment predictions were **pre-registered** before results; scoring is
   reported honestly including the refuted C1 prediction (which produced result 4).
-- Theory claims are machine-verified (symbolic KKT enumeration / exact numeric
-  scans), and every experimental analysis script is in `analysis/`.
+- Theory claims are computationally verified (symbolic KKT enumeration in sympy /
+  exact numeric scans — verification scripts, not a formal proof assistant), and
+  every experimental analysis script is in `analysis/`.
+- Environment: theory scripts run on stock python3 (+ sympy/numpy where noted);
+  GPU experiments used torch 2.x/CUDA on a single NVIDIA L4 (GCP g2), CPU-smoke
+  verified on torch 1.13. Result tables cite their source CSVs in `results/`;
+  per-round provenance is in the git history (each round lands as one commit).
