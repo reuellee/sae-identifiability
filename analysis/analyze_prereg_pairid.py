@@ -89,3 +89,63 @@ for cond in ("F", "N"):
     print(f"{cond}: n_flagged/SAE = {np.mean([r['n_flagged'] for r in c]):.3f}"
           + (f", cos_child={np.mean(g(c,'cos_child')):.3f} (faithful check)"
              if cond == "F" else ""))
+
+# ---------------------------------------------------------------- bootstrap CIs
+# Pre-registered: seed bootstrap, 10k draws, np seed 0 (implemented post-Arm-1
+# after external research review flagged the omission; deterministic given data).
+print("\n=== Seed-bootstrap 95% CIs (10,000 draws, np.random.default_rng(0)) ===")
+rng = np.random.default_rng(0)
+def seed_boot(pairs_by_seed, stat, n=10000):
+    """pairs_by_seed: dict seed -> list of values; resample seeds, pool, stat."""
+    seeds = sorted(pairs_by_seed)
+    vals = []
+    for _ in range(n):
+        pick = rng.choice(seeds, len(seeds), replace=True)
+        pool = [v for s in pick for v in pairs_by_seed[s]]
+        if pool: vals.append(stat(pool))
+    return np.percentile(vals, [2.5, 97.5])
+
+def by_seed(rs, key):
+    d = {}
+    for r in rs:
+        if not math.isnan(r.get(key, float("nan"))):
+            d.setdefault(int(r["seed"]), []).append(r[key])
+    return d
+
+if Aab:
+    lo, hi = seed_boot(by_seed(Aab, "tp_flagged"), np.mean)
+    print(f"D1 recall:        point {np.mean([r['tp_flagged'] for r in Aab]):.4f}  CI [{lo:.3f}, {hi:.3f}]"
+          f"  -> CI {'establishes' if lo >= 0.90 else 'does NOT establish'} population >= 0.90")
+if CD:
+    lo, hi = seed_boot(by_seed(CD, "tp_flagged"), np.mean)
+    print(f"D2a CD flag rate: point {cd_rate:.4f}  CI [{lo:.3f}, {hi:.3f}]"
+          f"  -> CI {'establishes' if hi <= 0.10 else 'does NOT establish'} population <= 0.10")
+lo, hi = seed_boot(by_seed(fp_pool, "fp_count"), np.mean)
+print(f"D2b fp/SAE:       point {fp:.4f}  CI [{lo:.3f}, {hi:.3f}]"
+      f"  -> CI {'establishes' if hi <= 0.10 else 'does NOT establish'} population <= 0.10")
+if cr:
+    lo, hi = seed_boot(by_seed(flA, "child_res_cos"), np.median)
+    print(f"D3 median cos:    point {med:.4f}  CI [{lo:.3f}, {hi:.3f}]"
+          f"  -> CI {'establishes' if lo > 0.9 else 'does NOT establish'} population > 0.9")
+if errs:
+    err_by_seed = {}
+    for r in flA0:
+        if not math.isnan(r.get("rho_hat", float("nan"))):
+            err_by_seed.setdefault(int(r["seed"]), []).append(abs(r["rho_hat"] - r["rho"]))
+    lo, hi = seed_boot(err_by_seed, np.mean)
+    print(f"D4 |rho err|:     point {m4:.4f}  CI [{lo:.4f}, {hi:.4f}]"
+          f"  -> CI {'establishes' if hi <= 0.03 else 'does NOT establish'} population <= 0.03")
+
+# ---------------------------------------------------------------- scaling metrics
+print("\n=== Scaling metrics (post-review addition) ===")
+n_pairs = 32 * 31 // 2
+fp_per_M = fp / n_pairs * 1e6
+rec_pt = np.mean([r["tp_flagged"] for r in Aab]) if Aab else float("nan")
+print(f"false positives per million candidate pairs (m=32): {fp_per_M:.0f}")
+print("precision at assumed absorbed-pair prevalence (per candidate pair):")
+for prev in (1e-3, 1e-4, 1e-5):
+    fpr_pair = fp / n_pairs
+    prec = prev * rec_pt / (prev * rec_pt + (1 - prev) * fpr_pair)
+    print(f"  prevalence {prev:.0e}: precision {prec:.3f}")
+print("NOTE: 32-latent scale only (496 pairs/SAE); production-width null")
+print("calibration is an open item (see review response).")

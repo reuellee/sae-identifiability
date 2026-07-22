@@ -22,6 +22,22 @@ understood mechanisms (§15b); and the Arm A discovery that trained absorption
 is *gated* ("leaky"), inverting both halves of a pre-registered
 identifiability prediction (§16).
 
+**Abstract-level claim (scoped, post-review):** We study feature absorption in
+a controlled sparse-autoencoder model. A capacity-limited L1 objective can
+prefer composite decoder directions over a planted child feature, while
+additional dictionary headroom frequently permits redundant
+parent–child–composite representations. In trained models, decoder-level
+absorption can coexist with code-level separation through encoder gating —
+dictionary identifiability and code identifiability are distinct properties.
+On matched synthetic data, a detector combining decoder geometry with code
+co-firing identifies many planted parent/composite pairs and recovers the
+residual child direction; on semi-synthetic real activations its statistic
+separates absorbed from faithful pairs cleanly but the toy-locked cutoff was
+knife-edge (pass at m=256, fail at m=128, recorded as registered). The
+detector remains a **synthetic proof of concept**: cutoff transfer, scaling
+to large overcomplete dictionaries, robustness to nonorthogonality, and
+practical false-positive control are open problems.
+
 ## Key results
 
 1. **Non-identifiability wall** (ε = 0: child never appears without parent):
@@ -133,3 +149,6 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
   | §15 capacity-limited (`results/round6/`) | `196df8c` |
   | §15b bg-relative (`results/round6/`) | `05861b0` |
   | Arm A (`results/prereg_armA/`) | `53b7e01` (pre-results lock: `cfd3e09`) |
+  | capacity m≥33 rerun (`results/capacity_m33/`) | `319fa1f`-adjacent (pre-results lock: `0cba6b2`) |
+  | pair-ID Arm 1 (`results/prereg_pairid/`) | `06d3005` (structure lock `e586f02`, threshold lock pre-run) |
+  | pair-ID Arm 2 held-out (`results/prereg_pairid/arm2_runs.csv`) | `319fa1f` (v1.1 frozen pre-run: `06d3005`-adjacent) |

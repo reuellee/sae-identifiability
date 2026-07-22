@@ -7,13 +7,23 @@ weights saved (`weights_arm1.pt`).
 
 ## Registered verdicts (v1.0, confirmatory)
 
-| # | Metric | Result | Threshold | Verdict |
-|---|---|---|---|---|
-| D1 | recall on absorbed A-runs (73/96 formed, disclosed) | **0.9315** | ≥ 0.90 | **PASS** |
-| D2a | planted correlated-independent pair flag rate | **0.0625** | ≤ 0.10 | **PASS** |
-| D2b | false-positive pairs/SAE (A,CD,F,N) | 0.1062 | ≤ 0.10 | INCONCLUSIVE (by 0.006) |
-| D3 | median child-direction recovery from pair geometry | **0.9791** (orientation 100%) | > 0.9 | **PASS** |
-| D4 | mean \|ρ̂−ρ\| by signature counting, σ=0 (locked scoping) | **0.0134** | ≤ 0.03 | **PASS** |
+| # | Metric | Point | 10k seed-boot 95% CI | Threshold | Verdict |
+|---|---|---|---|---|---|
+| D1 | recall on absorbed A-runs (73/96 formed, disclosed) | **0.9315** | [0.851, 1.000] | ≥ 0.90 | point PASS; CI does not establish |
+| D2a | planted correlated-independent pair flag rate | **0.0625** | [0.000, 0.156] | ≤ 0.10 | point PASS; CI does not establish |
+| D2b | false-positive pairs/SAE (A,CD,F,N) | 0.1062 | [0.062, 0.150] | ≤ 0.10 | INCONCLUSIVE (by 0.006) |
+| D3 | median child-direction recovery from pair geometry | **0.9791** (orientation 100%) | [0.976, 0.983] | > 0.9 | **PASS (CI-established)** |
+| D4 | mean \|ρ̂−ρ\| by signature counting, σ=0 (locked scoping) | **0.0134** | [0.002, 0.032] | ≤ 0.03 | point PASS; CI does not establish |
+
+*(CIs: pre-registered 10,000-draw seed bootstrap, np seed 0 — implemented in
+`analysis/analyze_prereg_pairid.py` after external research review flagged the
+omission. With 16 seeds/cell, only D3 is established at population level; the
+other metrics passed as point estimates. Scaling context, same script: v1.0
+FP ≈ 214/million candidate pairs at m=32; precision 0.81/0.30/0.04 at assumed
+absorbed-pair prevalence 1e-3/1e-4/1e-5 — production-width null calibration
+required before practical-use claims. D3 additionally validates
+implementation + pair-ID jointly in the MATCHED ORTHOGONAL synthetic model
+only.)*
 
 The two-sided lift rule performed exactly as pilot-calibrated: σ=0 absorbed
 pairs flag via lift ≪ 1 (gating), σ=0.1 via lift ≈ 3 (leak coupling); recall
@@ -30,10 +40,13 @@ background feature (cos 0.7–0.87 to it) and co-firing with its main latent at
 lift 10–12.6. Splits have a signature absorbed pairs lack — **containment**
 (overlap = P(∧)/min(P) ≈ 0.95–1.0 vs ≤ 0.81 for true pairs). v1.1 adds
 `overlap < 0.9`; re-scored on Arm 1 as disclosed training data
-(`arm1_v11_rescore.csv`): D1 0.918, D2a 0.0625, **D2b 0.031** — all
-thresholds met. v1.1 is locked, unchanged, for the Arm 2 held-out
-confirmatory transfer (real GPT-2 activations, capacity-limited m=128/256).
-Arm 1's confirmatory record remains the v1.0 table above.
+(`arm1_v11_rescore.csv`): D1 0.918, D2a 0.0625, **D2b 0.031**. **These v1.1
+numbers are development-set performance, not confirmation** — v1.0 exposed
+the feature-splitting confound, v1.1 was derived from it and evaluated on the
+same data. v1.1 was frozen (commit `06d3005`-adjacent, pre-Arm-2) for the
+Arm 2 held-out transfer (real GPT-2 activations, capacity-limited m=128/256),
+which ran without any tuning. Arm 1's confirmatory record remains the v1.0
+table above.
 
 ## Significance
 

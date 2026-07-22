@@ -1,4 +1,4 @@
-# Capacity rerun (m ∈ {32, 34, 40}): the reviewer was right — one slot of headroom and SGD finds the triple
+# Capacity rerun (m ∈ {32, 34, 40}): in this generative model, nominal headroom moves SGD from absorption toward redundant composition
 
 288 runs (2 cells × 6 ε/ε\* × 3 widths × 8 seeds), round-2 trainer/event model,
 one L4 session (`m33.log`, 357 s). Pre-registered K1–K3 in
@@ -18,15 +18,20 @@ Full grid in `m33_runs.csv` (per-seed rows; dispersion visible per cell).
 
 **The withdrawn round-1 claim is now refuted in its original form, not just
 unsupported.** "Optimization dynamics select absorption even without capacity
-scarcity" is the opposite of what happens: give SGD one latent of genuine
-headroom (m = 34 = 30 bg + 3 + 1 spare) and it finds the redundant triple —
-the unconstrained population optimum — in most ε > 0 runs, and the practical
-transition moves toward "child represented whenever ε > 0."
+scarcity" is the opposite of what happens in this setup: give SGD one latent
+of nominal headroom (m = 34 = 30 bg + 3 + 1 spare) and it frequently finds
+the redundant triple — the unconstrained population optimum — and the
+practical transition moves toward "child represented whenever ε > 0."
+Scope: this supports capacity scarcity as the operative cause of the
+two-latent transition *in this synthetic generative model and training setup*
+(exact config in report §8); it does not show every form of absorption in
+practical SAEs is capacity-caused. Whether all 30 background directions
+remain recovered when a triple forms was NOT measured (weights not retained).
 
 This *sharpens* the paper's story rather than weakening it:
 
 - Theorem 2's capacity-limited two-latent competition is the operative
-  mechanism for absorption, full stop. The round-1/2 quantitative agreement
+  mechanism for absorption in this model. The round-1/2 quantitative agreement
   (λq scaling collapse, 0.58–0.70·ε\* midpoint) is the m = 32 constrained
   regime behaving as the theory says — and that is the *realistic* regime,
   since real SAEs cannot afford a latent per feature combination.

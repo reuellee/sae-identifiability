@@ -1,7 +1,11 @@
 # Pre-registration: label-free identification of absorbed (parent, composite) pairs
 
 **Date:** 2026-07-22
-**Status:** pre-registered, **not yet run** (confirmatory arm). Successor to
+**Status:** Arm 1 completed (v1.0 confirmatory verdicts below); detector v1.1 frozen
+pre-Arm-2 (development-set performance on Arm 1, not confirmation); Arm 2 held-out
+transfer completed (knife-edge partial — see outcome sections at the end).
+*Original pre-run status preserved below for chronology.* Originally: pre-registered,
+not yet run (confirmatory arm). Successor to
 `notes/prereg-bimodality-estimator.md` (Arm A outcome: trained absorption is *gated* —
 a parent-aligned latent plus an encoder-gated composite with near-disjoint firing — and,
 given the pair, binarized signature counting recovers ρ to ≤ 0.02). This experiment tests

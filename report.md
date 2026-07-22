@@ -163,7 +163,7 @@ Methods proposed for the absorption/identifiability cluster, per the survey pass
 
 ![Scaling collapse](figures/fig2_collapse.png)
 
-- **CORRECTED (external review) and RESOLVED (rerun, same day) — the "dynamics gap" claim was not just unsupported but false.** The original observation (0 triples in 135 runs) was an artifact: at m = 32 with 30 background features + parent + child, the triple needs **33** columns — architecturally impossible, not avoided by dynamics. The pre-registered rerun at m ∈ {32, 34, 40} (`experiments/capacity_m33_rerun.py`, 288 runs, K1–K3 all confirmed; `results/capacity_m33/SUMMARY.md`) settles it: one slot of genuine headroom (m = 34) and SGD finds the redundant triple in 69% of ε > 0 runs, with the functional child transition moving from 0.5–0.75·ε\* (m = 32, matching round 2) to below 0.25·ε\* (m = 40). **Absorption is a capacity-scarcity phenomenon throughout** — which sharpens Theorem 2's claim to be the operative regime for real (always capacity-scarce) SAEs, and makes §14's m = 1536 composition result continuous with the toy model: composition begins at literally one spare slot.
+- **CORRECTED (external review) and RESOLVED (rerun, same day) — the "dynamics gap" claim was not just unsupported but false.** The original observation (0 triples in 135 runs) was an artifact: at m = 32 with 30 background features + parent + child, the triple needs **33** columns — architecturally impossible, not avoided by dynamics. The pre-registered rerun at m ∈ {32, 34, 40} (`experiments/capacity_m33_rerun.py`, 288 runs, K1–K3 all confirmed; `results/capacity_m33/SUMMARY.md`) settles it: one slot of genuine headroom (m = 34) and SGD finds the redundant triple in 69% of ε > 0 runs, with the functional child transition moving from 0.5–0.75·ε\* (m = 32, matching round 2) to below 0.25·ε\* (m = 40). **In this generative model, nominal dictionary headroom substantially changes the learned solution from absorption toward redundant composition, supporting capacity scarcity as the operative cause of the two-latent transition in this synthetic setup** — which sharpens Theorem 2's claim to be the operative regime for real (always capacity-scarce) SAEs, and makes §14's m = 1536 composition result continuous with the toy model: composition frequently appears with one nominal spare slot. (Setup adjacent to this conclusion: d = 64, 30 orthonormal Bernoulli(0.08) background features, untied ReLU encoder + unit-norm decoder, nonnegative-L1 objective, Adam 15k steps, batch 2048, 8 seeds/cell; whether all 30 background directions remain recovered when a triple forms was **not measured** — m33 weights were not retained — and is an open check for the next width run.)
 
 **Experiment A (classical recovery).** Random unit-column dictionaries in d = 64 with n ∈ {128, 256} features (coherence μ ≈ 0.45–0.52, so worst-case k\* ≈ 1.5–1.6), k-sparse data, TopK SAEs with oracle k, mean-max cosine similarity (MMCS) and fraction of features recovered above 0.9.
 
@@ -336,9 +336,14 @@ Two disclosed structural findings: absorption *formation* is trainability-limite
 faithfulness), and multi-child cells at realistic rates erase children outright (0/16
 mono-composites), so H4 was untestable as configured.
 
-**Reading.** The practical landscape flips: the hard part of label-free frequency recovery
-is not estimation given the pair — counting suffices — but **pair identification**. That
-problem now has a concrete geometric target (two unit-norm decoders ≈ 45° apart with
+**Reading.** Two distinct notions must be separated: **dictionary identifiability** (does
+the decoder basis contain a child atom?) and **code identifiability** (does the sparse
+code distinguish child events?). These runs show dictionary-level absorption *without*
+code-level information loss — the decoder absorbs the child direction while encoder
+gating preserves the child-event distinction in the activation pattern. The practical
+landscape flips accordingly: the hard part of label-free frequency recovery is not
+estimation given the pair — counting suffices — but **pair identification**. That problem
+now has a concrete geometric target (two unit-norm decoders ≈ 45° apart with
 near-disjoint firing), which is the natural next pre-registerable scan, and the missing
 piece between §15's validated oracle remedy and a deployable label-free method.
 
@@ -380,9 +385,30 @@ audit-v3 scan (0.03% of latent pairs flagged on real background features) double
 program's first **natural-absorption candidate list**, unlocking the natural-feature
 benchmark the external review asked for.
 
-**Where the program now stands.** Absorption is a capacity-scarcity phenomenon (§8,
-corrected + rerun), detectable label-free by a three-statistic test validated in the toy
-model end-to-end (detect → orient → count → ρ̂) and one threshold-recalibration away from
-the same on real activations. The remaining steps to a deployable label-free remedy are
-mechanical and pre-registerable: v1.2 cutoff transfer, a gating-corrected counting
-estimator for leaky regimes, and adjudication of the audit-v3 candidates.
+**Uncertainty (pre-registered 10k seed-bootstrap, added post-hoc after external research
+review flagged the omission — the analysis plan registered it, the scorer initially did
+not implement it).** With 16 seeds/cell, only D3 is established at the population level
+(median child-recovery cos CI [0.976, 0.983] > 0.9). D1 (recall CI [0.851, 1.000]),
+D2a ([0.000, 0.156]), D2b ([0.062, 0.150]) and D4 ([0.002, 0.032]) **passed as point
+estimates; their CIs do not establish the population claims** at these seed counts.
+
+**Scaling honesty.** At m = 32 there are only 496 candidate pairs; v1.0's false-positive
+rate is ≈ 214/million candidate pairs (v1.1 development-set: ≈ 63/M), giving precision
+0.81/0.30/0.04 at assumed absorbed-pair prevalences of 1e-3/1e-4/1e-5 per pair.
+Production-scale SAEs have millions of pairs; width-scaled null calibration, a candidate
+pre-filter, and multiple-comparison control are required before any practical-use claim.
+Likewise the child-residual recovery (D3) validates implementation + pair-ID jointly *in
+the matched orthogonal synthetic model*; generalization to nonorthogonal and natural
+features is untested.
+
+**Where the program now stands.** In this synthetic setup, absorption is driven by
+capacity scarcity (§8, corrected + rerun); dictionary-level absorption coexists with
+code-level separation via encoder gating (§16 — dictionary identifiability and code
+identifiability are distinct properties); and a three-statistic label-free detector is a
+**synthetic proof of concept** — validated end-to-end in the matched toy model
+(detect → orient → count → ρ̂) with a knife-edge partial transfer to semi-synthetic real
+activations. It is not yet a validated practical method: held-out cutoff transfer (v1.2),
+width/overcompleteness scaling, nonorthogonal robustness, encoder-family robustness
+(TopK/JumpReLU), and false-positive control at production scale are open, pre-registerable
+problems, alongside a gating-corrected counting estimator and adjudication of the audit-v3
+candidates.
