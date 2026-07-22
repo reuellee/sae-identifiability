@@ -67,7 +67,7 @@ are round 8b.
 | Cell | formed | flagged | orient | child res (u\*) | note |
 |---|---|---|---|---|---|
 | angle cos=0.3 | 7/8 | 7/7 | 1.00 | 0.942 | detector + recovery robust |
-| angle cos=0.5 | 6/8 | 3/6 | 1.00 | 0.933 | **detection degrades** (pair cos 0.79 nears band edge; lift 3.5) |
+| angle cos=0.5 | 6/8 | 3/6 | 1.00 | 0.933 | **detection degrades**; per-run diagnosis: 1 absorbed seed has an oracle-ID degeneracy (parent and composite argmax collapse to one latent, tp_cos=1.0 — no pair exists to flag), and the other 2 misses have cos in band (0.75/0.78) and lift ≥ 3.4, leaving the **overlap veto by elimination**: as parent–child correlation grows, the true pair's containment rises toward the splitting-doublet signature. A genuine detector boundary — the split/absorbed separation collapses with nonorthogonality. (E2/E3 weights were not retained, so ω could not be recomputed directly; disclosed.) |
 | prevalence ρ=0.6 | 6/8 | 6/6 | **0.00** | 0.649 | registered prediction confirmed: rarity orientation fails when composite is commoner; detection unaffected |
 | TopK (k=4, λ=0) | 6/8 | 6/6 | 1.00 | **0.999** | gated absorption + detector signature survive hard-sparsity encoders |
 

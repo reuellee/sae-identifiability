@@ -244,8 +244,11 @@ $m{=}32$ → 0/96 triples; $m{=}34$ → triples in 69% of $\varepsilon>0$ runs;
 $m{=}40$ → functional transition below $0.25\,\varepsilon^*$. **In this
 generative model, nominal headroom moves the learned solution from absorption
 toward redundant composition** — capacity scarcity is the operative cause of
-the two-latent transition here, and real SAEs (which cannot afford a latent
-per feature combination) live on the scarce side.
+the two-latent transition here. This suggests — a hypothesis following from
+the model, not an evidenced claim — that for real-world models, where the
+landscape of feature combinations is likely far richer than the number of
+available latents, capacity scarcity may be a primary driver of the
+absorption pathology.
 
 ### 6.3 Semi-synthetic regime structure (synthetic pairs injected into real GPT-2 activations)
 
@@ -346,7 +349,10 @@ near-perfect and *orientation is the pipeline's weakest stage* (it fails
 completely, $0.00$, under a prevalence-inversion stress cell, as
 pre-registered; a containment-based orientation rule is the queued fix).
 $\hat\rho \approx 0.75$ remains leak-inflated. Proportional-scale null
-calibration: v1.1 produced **zero** null false positives at every scale from
+calibration (run with v1.1, not v1.2: the $L_{\text{HI}}$ recalibration was
+real-data-specific, and v1.1 preserves comparability with Arm 1's synthetic
+calibration; observed lifts sit $\ge 2.26$ or $\approx 0$, so the outcome is
+threshold-insensitive here): v1.1 produced **zero** null false positives at every scale from
 $(d, m) = (64, 32)$ to $(512, 256)$ — the overlap veto fully suppresses the
 splitting-doublet mode — with recall $1.000$ on formed runs throughout and
 declining formation at the largest scale ($4/8$, disclosed). Robustness:
