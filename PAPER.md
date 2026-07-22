@@ -357,7 +357,13 @@ $\lambda{=}0$; 6/6 flagged, child recovery $0.999$). Every faithful-control
 SAE still carries $\ge 1$ full-scan real-background flag (candidate counts
 do not separate conditions), so all-pairs specificity on un-injected real
 backgrounds — with a fixed-dimension width sweep and an overcomplete
-$m > d$ setting — remains the round-8b gap.
+$m > d$ setting — remains the round-8b gap. Cross-seed clustering of the
+real-background candidates (corrected bijective matcher) shows they are
+**properties of the data, not of a particular SAE**: 3 stable clusters at
+$m = 128$ (two in 8/8 seeds) and 12 at $m = 256$, including a mutual
+4-latent clique — the shortlist for natural-feature adjudication, whose
+status (natural absorption vs. genuinely exclusive correlated families)
+is the program's next empirical question.
 
 ## 9. Related work
 

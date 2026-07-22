@@ -73,8 +73,20 @@ are round 8b.
 
 ## S1 — real-background candidate stability (exploratory; corrected matcher)
 
-See `s1_stability.log` (bijective pair score + all-seed clustering, run
-after the amendment fix and never with the defective matcher).
+Bijective pair score + all-seed union-find clustering (never run with the
+defective matcher). **Seed-stable candidates exist:** m=128 → 3 clusters
+stable in ≥4/8 seeds, two of them in **8/8**; m=256 → 12 clusters (from 85
+raw candidates), several in 8/8, including a mutual 4-latent clique
+{51, 54, 107, 172} whose members pairwise flag each other across seeds — a
+persistent correlated group structure in real GPT-2 layer-6 activations with
+absorption-compatible statistics (cos band + far-from-independent co-firing
++ non-containment). These structures survive SAE re-initialization AND
+different injected-pair directions, so they are properties of the data, not
+of a particular SAE. Status unknown: candidates for natural absorption OR
+genuinely exclusive correlated feature families (the disclosed CDX
+equivalence class). They are the shortlist for the queued natural-feature
+adjudication (top-activating tokens, residual-direction semantics, causal
+tests). Full log: `s1_stability.log`.
 
 ## Costs
 

@@ -3,3 +3,29 @@
 [m=128 seed 2] candidates (non-planted): 3
 [m=128 seed 3] candidates (non-planted): 4
 [m=128 seed 4] candidates (non-planted): 4
+[m=128 seed 5] candidates (non-planted): 3
+[m=128 seed 6] candidates (non-planted): 3
+[m=128 seed 7] candidates (non-planted): 3
+m=128: seed-stable (>=4/8, clustered) candidate clusters: 3  (total candidates 26)
+   cluster incl. pair (12,76), seeds [0, 1, 2, 3, 4, 5, 6, 7]
+   cluster incl. pair (14,25), seeds [0, 1, 2, 3, 4, 5, 6, 7]
+   cluster incl. pair (61,118), seeds [0, 1, 2, 4, 5, 6, 7]
+[m=256 seed 0] candidates (non-planted): 10
+[m=256 seed 1] candidates (non-planted): 11
+[m=256 seed 2] candidates (non-planted): 11
+[m=256 seed 3] candidates (non-planted): 12
+[m=256 seed 4] candidates (non-planted): 13
+[m=256 seed 5] candidates (non-planted): 10
+[m=256 seed 6] candidates (non-planted): 9
+[m=256 seed 7] candidates (non-planted): 9
+m=256: seed-stable (>=4/8, clustered) candidate clusters: 12  (total candidates 85)
+   cluster incl. pair (5,163), seeds [0, 1, 2, 3, 4, 7]
+   cluster incl. pair (19,141), seeds [0, 1, 2, 3, 4, 5, 6, 7]
+   cluster incl. pair (51,54), seeds [0, 1, 2, 3, 4, 5, 6]
+   cluster incl. pair (51,107), seeds [0, 2, 3, 4, 5]
+   cluster incl. pair (51,172), seeds [0, 1, 2, 3, 4, 5, 6]
+   cluster incl. pair (54,107), seeds [0, 2, 3, 4]
+   cluster incl. pair (54,172), seeds [0, 1, 2, 3, 4, 5, 6, 7]
+   cluster incl. pair (107,172), seeds [0, 1, 2, 3, 4, 5, 6]
+   cluster incl. pair (108,226), seeds [0, 1, 2, 3, 4, 5, 6, 7]
+   cluster incl. pair (164,241), seeds [0, 1, 3, 5]
