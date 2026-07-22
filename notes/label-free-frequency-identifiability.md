@@ -1,8 +1,18 @@
 # Label-free frequency identifiability under absorption: a no-go for co-firing signatures and a within-composite estimator
 
 **Date:** 2026-07-22
-**Status:** theory + derivation in the idealized model; GPU validation **pre-registered, not yet run**
-(`notes/prereg-bimodality-estimator.md`). Follow-up to §15b (the open problem).
+**Status:** SUPERSEDED IN PART by Arm A results (same day; `results/prereg_armA/SUMMARY.md`).
+P1's invariance premise **does not transfer to trained SAEs** (§2 re-opened per the
+registered decision rule): trained absorption is *gated* — a parent-aligned latent plus an
+encoder-gated composite — so the binarized code separates the sub-populations nearly
+perfectly (cond. TV ≈ 1.0) and simple signature counting recovers ρ to ≤ 0.02. P2's
+mixture estimator is FALSIFIED at σ=0 (the composite has no host-only mode to fit) and
+works only in a noise window (err 0.0075 at σ=0.1). The §2 algebra stands for its stated
+single-shared-latent model; that model is not what training produces, even capacity-forced.
+Remaining open problem: label-free **pair identification** (the ~45° decoder geometry +
+near-disjoint firing is the obvious signature to scan for).
+Original pre-run status: theory + derivation in the idealized model; GPU validation
+pre-registered (`notes/prereg-bimodality-estimator.md`). Follow-up to §15b (the open problem).
 **Provenance:** derivation with Gemini 2.5 Pro (adversarial theory pass); identifiability
 backbone and novelty check from an adversarially-verified literature sweep (16+ sources,
 claims verified 3-vote). Claims here are analytic in the toy model and a literature

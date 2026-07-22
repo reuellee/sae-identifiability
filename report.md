@@ -298,3 +298,42 @@ Positive control holds in both regimes (ε = 0.05: child 0.95+ even at m = 128).
 Pre-registered prediction: weights from a *separately trained background SAE's* residual (novelty detection) would stand in for oracle event labels in the capacity-limited regime. Result (24 runs, built directly on the validated §15 codebase; vanilla and oracle rows are same-seed deterministic identities with §15 — a code-path integrity check, not independent replication): **no rescue** — bg-relative is indistinguishable from vanilla (child 0.75, composite 0.99), while the oracle again recovers the child (cos ≈ 1.00, 3/4 seeds).
 
 The failure mechanism is quantitative and instructive: the background SAE's clean-data residual is ≈ 202, and injected events add only +25 to +50 — a ~1.25× weight versus the oracle's ~125× — and, decisively, novelty weighting **cannot distinguish event classes**: child-solo, parent-solo, and joint events are all similarly "novel," but the absorption trade is *between* those classes. Novelty ≠ class rarity. Two label-free estimators are now refuted with understood mechanisms (self-residual: signal drowned by background error; background-relative: detects events, not their classes). A working label-free method must estimate *frequencies among the novel directions* (e.g., clustering the residual subspace and weighting clusters by inverse frequency) — genuinely more machinery, left as the open problem. The oracle result stands as the theory validation; the practical estimator remains future work, with the design space now mapped by two informative failures.
+
+## 16. Arm A of the bimodality pre-registration: trained absorption is *leaky*, and both registered routes invert
+
+The §15b arc left one live theoretical thread: the two-sided identifiability note
+(`notes/label-free-frequency-identifiability.md`) — a no-go for recovering the child rate ρ
+from **binarized** co-firing signatures under absorption, plus a **continuous**
+within-composite bimodality estimator predicted to recover ρ where signatures cannot. Both
+were pre-registered with fixed thresholds (`notes/prereg-bimodality-estimator.md`) and run as
+Arm A (256 SAEs, round-2 trainer verbatim, one L4 session ≈ $1.4; analysis choices locked at
+pre-results commit `cfd3e09`; full readout `results/prereg_armA/SUMMARY.md`).
+
+**Both hypotheses failed, in the same direction.** Trained absorbed SAEs are not the
+idealized single-shared-composite of the note's §2/§3 — they are what `theory_merged.py`'s
+absorbed branch always said they were: an in-plane **pair** (parent-aligned latent ≈ 0°,
+composite ≈ 46°) with an **encoder-gated** composite. The composite fires on 100% of
+host+child events (act ≈ 1.28) and essentially never on host-only events (3–20% of them at
+act ≈ 0.01). Consequences, against the registered metrics:
+
+- **H1 (no-go): falsified in mechanism.** The binarized code separates the two
+  sub-populations almost perfectly — TV(host-only vs host+child signatures) = 0.9999;
+  in-plane excess TV 0.044 ≈ the maximum possible leak (P_HOST·Δρ). Absorption hides the
+  child from the *decoder dictionary*, not from the *binarized code*.
+- **H2 (estimator): falsified at σ=0** (mean |ρ̂−ρ| = 0.48, r = 0.23): with the gate closed
+  there is no host-only mode inside the composite to fit. The registered mixture works only
+  in a noise window (err 0.0075 at σ=0.1, n=14) — and at σ ≥ 0.2 absorption itself
+  disappears in favor of faithful child latents (cos 0.80–0.90), a noise-as-remedy lead.
+- **M3 inverted:** given the (parent, composite) pair, simple signature counting —
+  ρ̂ = P(composite fires)/P(composite or parent fires) — recovers ρ to ≤ 0.02 at every ρ.
+
+Two disclosed structural findings: absorption *formation* is trainability-limited in ρ
+(absorbed seeds 4/16 → 14/16 across ρ = 0.02 → 0.20; failures are child-erasure, not
+faithfulness), and multi-child cells at realistic rates erase children outright (0/16
+mono-composites), so H4 was untestable as configured.
+
+**Reading.** The practical landscape flips: the hard part of label-free frequency recovery
+is not estimation given the pair — counting suffices — but **pair identification**. That
+problem now has a concrete geometric target (two unit-norm decoders ≈ 45° apart with
+near-disjoint firing), which is the natural next pre-registerable scan, and the missing
+piece between §15's validated oracle remedy and a deployable label-free method.

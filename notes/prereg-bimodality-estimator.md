@@ -80,3 +80,28 @@ sees no labels. Run only if Arm A confirms H2.
 - **H1 confirmed, H2 falsified:** the no-go stands but the escape fails — publish the no-go
   alone (still resolves the binarized route) and fall back to Matryoshka architecturally.
 - **H1 falsified:** re-open §2; a binarized signal exists after all.
+
+---
+
+## Outcome (2026-07-22, post-run — original text above unmodified)
+
+Run on one L4 session (256 SAEs, ~$1.4), pre-results commit `cfd3e09`; scored
+by `analysis/analyze_prereg_armA.py`; full readout `results/prereg_armA/SUMMARY.md`.
+
+- **H1: falsified in mechanism.** Registered excess TV 0.0215 (CI [0.0210,
+  0.0220], excludes 0) — attenuated only by background dilution; in-plane
+  excess TV 0.044 ≈ the maximum possible leak, and TV(host-only vs host+child
+  signatures) = 0.9999. Decision rule taken: **re-open §2 of the
+  identifiability note.**
+- **H2: FALSIFIED at σ=0** (mean err 0.483, r 0.234): trained absorption is
+  encoder-gated (composite ~never fires on host-only events, act ≈ 0.01 vs
+  1.28), so there is no second mode to fit. Works at σ=0.1 (err 0.0075).
+- **M3 inverted:** the binarized signature-count route beats the mixture
+  estimator at every ρ (err ≤ 0.02), given the oracle-identified pair.
+- **H3 premise inverted:** estimator improves with σ up to 0.1; absorption
+  itself vanishes at σ ≥ 0.2 (SAEs go faithful — noise-as-remedy, new lead).
+- **H4 untestable as configured:** m ≥ 2 children at these rates are erased,
+  not absorbed (0/16 mono-composites).
+- Disclosed exclusions: absorption-formation is trainability-limited at low ρ
+  (4/16 absorbed at ρ=0.02 → 14/16 at ρ=0.20); non-absorbed runs are
+  child-erased, not faithful.

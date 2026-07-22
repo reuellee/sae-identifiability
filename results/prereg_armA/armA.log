@@ -1,0 +1,34 @@
+device=cuda threads=8 smoke=False
+  [RSM R=192 m=32 step 0/15000] mean_rec=4.4199 (1s)
+  [RSM R=192 m=32 step 2000/15000] mean_rec=0.9494 (47s)
+  [RSM R=192 m=32 step 4000/15000] mean_rec=0.9536 (93s)
+  [RSM R=192 m=32 step 6000/15000] mean_rec=0.9588 (139s)
+  [RSM R=192 m=32 step 8000/15000] mean_rec=0.9613 (185s)
+  [RSM R=192 m=32 step 10000/15000] mean_rec=0.9645 (231s)
+  [RSM R=192 m=32 step 12000/15000] mean_rec=0.9643 (277s)
+  [RSM R=192 m=32 step 14000/15000] mean_rec=0.9655 (323s)
+  [RSM eval 16/192]
+  [RSM eval 32/192]
+  [RSM eval 48/192]
+  [RSM eval 64/192]
+  [RSM eval 80/192]
+  [RSM eval 96/192]
+  [RSM eval 112/192]
+  [RSM eval 128/192]
+  [RSM eval 144/192]
+  [RSM eval 160/192]
+  [RSM eval 176/192]
+  [RSM eval 192/192]
+  [X R=64 m=31 step 0/15000] mean_rec=3.0179 (0s)
+  [X R=64 m=31 step 2000/15000] mean_rec=0.0970 (12s)
+  [X R=64 m=31 step 4000/15000] mean_rec=0.1100 (23s)
+  [X R=64 m=31 step 6000/15000] mean_rec=0.1188 (35s)
+  [X R=64 m=31 step 8000/15000] mean_rec=0.1217 (46s)
+  [X R=64 m=31 step 10000/15000] mean_rec=0.1255 (58s)
+  [X R=64 m=31 step 12000/15000] mean_rec=0.1277 (69s)
+  [X R=64 m=31 step 14000/15000] mean_rec=0.1297 (81s)
+  [X eval 16/64]
+  [X eval 32/64]
+  [X eval 48/64]
+  [X eval 64/64]
+wrote /home/reuellee_gmail_com/sae_identifiability/experiments/../results/prereg_armA/armA_runs.csv (256 rows) total 5551s
