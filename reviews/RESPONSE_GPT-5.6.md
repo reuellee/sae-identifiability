@@ -83,7 +83,9 @@ benchmark) are now queued experiments rather than framing debt.
 ## Round 2 (same day): reviewer's follow-up on the revision
 
 Verdict received: upgrade to "credible, workshop-ready technical report."
-Remaining items, all applied:
+All requested theoretical and framing revisions have been applied. The
+controlled capacity rerun and complete GPU environment pinning remain open
+implementation items, tracked in §"Pending" below. Item-by-item:
 
 1. **Theorem 1b duplicate-atom counterexample — accepted, fixed.** The reviewer
    is right that ‖f‖₁ is invariant to splitting a coefficient across duplicate
@@ -106,3 +108,42 @@ Remaining items, all applied:
    README now pins the CPU verification environment exactly and carries a
    results-CSV → commit provenance table. Full lockfile still TODO (the GPU
    image's torch version is recorded in run logs).
+
+---
+
+## Round 3: final revision brief (docx), applied
+
+Completed in this pass: README uniqueness sentence replaced with the
+reviewer's exact formulation; Theorem 1b equality condition tightened to
+"iff the set of directions used with positive probability is exactly
+{a_p, a_m}" (both directions must occur); response-status language made
+exact; repo-wide consistency pass (4 stale "machine-checked/verified"
+phrasings, "Theorem 1b's unique global optimum" → "optimal active-direction
+set", §11's "closed-form phase boundary" → "pure-strategy crossover", figure
+alt-text); `ENVIRONMENT.md` added with the pinned CPU verification stack,
+exact run commands, and the list of results independently rerun from a clean
+environment (theory_merged, symbolic_verify — all checks pass —, analyze_ab
+on committed CSVs, Arm A CPU smoke).
+
+## Pending (tracked, not claimed done)
+
+- **m ∈ {32, 34, 40} capacity rerun:** pre-registered (K1–K3 in
+  `experiments/capacity_m33_rerun.py`), bundled into the in-flight GPU
+  session; results will land in `results/capacity_m33/` and be reported
+  whichever way they fall.
+- **Pair-ID Arm 1 confirmatory run:** locked prereg, same GPU session;
+  `results/prereg_pairid/`.
+- **Full GPU lockfile:** pip freeze capture from the session box, to be
+  committed with the session results.
+- **Natural-feature absorption benchmark** (review R6 second half): open;
+  the audit-v3 scan inside pair-ID Arm 2 is the next step toward it.
+
+## Declined / archival-scope note
+
+Historical artifacts are not retro-edited: `results/round*/SUMMARY*.md`,
+`reviews/*` (including the archived referee report) and
+`docs_novelty_adjudication.md` are point-in-time records of what was believed
+when they were written; the live claims of the project are those in
+`report.md`, `README.md`, `theory/`, and `notes/`. Editing dated records to
+match later understanding would falsify the provenance trail this repository
+is explicitly organized around (pre-registration → result → correction).

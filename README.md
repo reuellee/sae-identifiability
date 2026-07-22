@@ -26,8 +26,10 @@ identifiability prediction (§16).
 
 1. **Non-identifiability wall** (ε = 0: child never appears without parent):
    the absorbed configuration is the global optimum over dictionaries of any
-   size — the *active* dictionary is unique up to permutation and unused
-   atoms — and the faithful/absorbed ontologies are information-theoretically
+   size — the set of active *directions* is unique; dictionary columns and
+   sparse codes remain non-unique under permutation, duplicate collinear atoms
+   with coefficient splitting, and the presence of unused atoms — and the
+   faithful/absorbed ontologies are information-theoretically
    indistinguishable. Two-line proof via ‖f‖₁ ≥ ‖Df‖.
 2. **Exact pure-strategy crossover** (computationally verified, sympy):
    among per-pair 2-latent dictionaries, the pure absorbed dictionary beats the

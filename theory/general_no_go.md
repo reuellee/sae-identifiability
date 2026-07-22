@@ -1,6 +1,6 @@
 # The no-go theorem in general dimension: derivation, scope, and a new critical ratio
 
-*Companion to §7.1b of report.md. Every numbered claim below is machine-verified by
+*Companion to §7.1b of report.md. Every numbered claim below is computationally verified (sympy/exact scans, not a proof assistant) by
 `general_no_go_check.py` (checks A–E, all passing); the verification uses a code path
 independent of the earlier event-loss enumeration, and reproduces its numbers.*
 
