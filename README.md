@@ -79,7 +79,9 @@ practical false-positive control are open problems.
    (GPU-confirmed); two-child rescue under rich metrics was a *partial* rescue in
    round 3 (child-dominant latents, not a clean fix).
 
-Full write-up: [`report.md`](report.md).
+Full write-up: [`PAPER.md`](PAPER.md) (formal paper draft, math notation) and
+[`report.md`](report.md) (the round-by-round session record). Plan:
+[`RESEARCH_PLAN.md`](RESEARCH_PLAN.md).
 
 ## Layout
 

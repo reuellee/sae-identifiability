@@ -1,0 +1,404 @@
+# A Solvable Model of Feature Absorption in $L_1$ Sparse Autoencoders
+
+**Living paper draft.** This document is the formal distillation of `report.md`
+(the session-log-style record) at the current repository state; claims follow
+the guardrails established in `reviews/`. Experimental provenance: README
+table (results CSV → commit). *Round 8 results pending; sections marked
+&#9203; will be updated when they land.*
+
+---
+
+## Abstract
+
+We study feature absorption — a sparse autoencoder (SAE) merging a parent
+concept and a child concept into one latent — in an analytically solvable
+model. At zero child-solo probability the hierarchical and merged ontologies
+are observationally equivalent, and the merged configuration is the global
+optimum of the SAE objective: the set of active dictionary *directions* is
+uniquely determined, though columns and codes are not. Away from that wall we
+derive the exact loss crossover between the pure faithful and pure absorbed
+candidate dictionaries,
+$\varepsilon^*(\lambda,q) = \frac{\lambda q\,(8-4\sqrt2-\lambda)}{2\,(1-(2-\sqrt2)\lambda)} \approx 1.17\,\lambda q,$
+and show that the continuously optimized dictionary instead tilts smoothly
+through intermediate angles, with its functional midpoint near
+$0.88\,\varepsilon^*$ and SGD's near $0.58$–$0.70\,\varepsilon^*$. A
+controlled width experiment shows capacity scarcity is the operative cause of
+the two-latent transition in this model: with one nominal spare slot, SGD
+frequently finds the redundant parent–child–composite triple instead of
+absorbing. Pairwise-coherence (Gram) penalties have a proved rotation blind
+spot on orthonormal frames and cannot remove absorption in the
+co-occurrence-dominated regime $p_0 < p_0^*(\lambda,q) \approx \sqrt2\,q$;
+inverse-density event weighting removes the transition exactly but requires
+an oracle. In trained models, decoder-level absorption coexists with
+code-level separation through encoder gating — dictionary identifiability and
+code identifiability are distinct properties — and a detector combining
+decoder geometry with code co-firing identifies planted parent/composite
+pairs on matched synthetic data and partially transfers, with strong width
+dependence, to semi-synthetic GPT-2 activations. The detector remains a
+synthetic proof of concept: all-pairs specificity on real backgrounds,
+orientation, scaling, and cutoff transfer are open, pre-registered problems.
+
+---
+
+## 1. Introduction
+
+Interpretability pipelines increasingly treat SAE latents as *the* features
+of a model, and safety-relevant claims inherit that assumption. Feature
+absorption [Chanin et al., 2024] is the sharpest known counterexample: a
+child concept (e.g. *short*) merges into a latent that also carries its
+parent (*starts with S*), so the parent latent appears to switch off exactly
+where the distinction matters. Prior work documented the phenomenon
+empirically and gave qualitative mechanisms; this project makes the failure
+mode exact in a toy model, maps where remedies can and cannot work, and
+develops (through pre-registered rounds, including refuted predictions) a
+label-free detector for absorbed pairs.
+
+Method note: every confirmatory experiment in this project was pre-registered
+(hypotheses, thresholds, falsifiers committed before results), failures are
+reported as first-class results, and post-hoc refinements are labeled
+development-set work until they pass held-out data. Theory is computationally
+verified (sympy symbolic enumeration and exact numeric scans — not a proof
+assistant).
+
+## 2. Model
+
+Work in the plane spanned by orthonormal feature directions $a_p$ (parent)
+and $a_c$ (child) in $\mathbb{R}^d$; background features are orthonormal to
+the pair and handled independently. Each sample activates
+
+- both features (coefficients 1) with probability $q$ ("joint"),
+- the parent alone with probability $p_0$,
+- the child alone with probability $\varepsilon$,
+- neither, otherwise.
+
+An SAE with unit-norm decoder columns $D$ and nonnegative code $f$ pays the
+population loss
+$$\mathcal{L}(D) \;=\; \mathbb{E}_x\Big[\min_{f\ge 0}\;\lVert x - Df\rVert^2 + \lambda \lVert f\rVert_1\Big].$$
+Two pure candidate dictionaries compete in the pair plane: **faithful**
+$\{a_p, a_c\}$ and **absorbed** $\{a_p, a_m\}$ with
+$a_m = (a_p + a_c)/\sqrt2$.
+
+## 3. The non-identifiability wall ($\varepsilon = 0$)
+
+**Theorem 1 (observational equivalence).** At $\varepsilon = 0$ the
+hierarchical model (features $\{a_p, a_c\}$, joint w.p. $q$, parent-solo
+w.p. $p_0$) and the flat model (features $\{a_p, a_m\}$, $a_m$ alone with
+coefficient $\sqrt2$ w.p. $q$, $a_p$ alone w.p. $p_0$) induce the same
+distribution over activations. *Proof.* Both place mass $q$ at
+$a_p + a_c = \sqrt2\, a_m$ and mass $p_0$ at $a_p$. $\square$
+
+No procedure operating on activations alone can decide which ontology is
+"real": the feature ontology is undetermined by the data.
+
+**Theorem 1b (active directions at the wall).** Assume $p_0, q > 0$ and
+$0 < \lambda < 2$ (so $r = \lVert x \rVert \ge \lambda/2$ for both event
+types). For any dictionary $D$ with unit-norm columns and any $f \ge 0$,
+$\lVert Df\rVert \le \lVert f\rVert_1$ gives, for a sample of norm $r$,
+$$\lVert x - Df\rVert^2 + \lambda\lVert f\rVert_1 \;\ge\; \min_{t\ge 0}\,(r-t)^2 + \lambda t \;=\; \lambda r - \tfrac{\lambda^2}{4},$$
+with equality iff all active atoms point at $x/r$. Summing over events,
+$\mathcal{L}(D) \ge p_0(\lambda - \tfrac{\lambda^2}{4}) + q(\sqrt2\lambda - \tfrac{\lambda^2}{4})$,
+attained **iff the set of directions used with positive probability is
+exactly $\{a_p, a_m\}$**. The *set of active directions* is unique;
+dictionary columns and codes are not — permutation, duplicate collinear
+columns with arbitrarily split coefficients, and unused atoms all attain the
+bound. $\square$
+
+*(Two scope corrections in this statement — active directions rather than
+"unique dictionary", and duplicates-may-be-active — are due to external
+review; see `reviews/`.)*
+
+## 4. The exact pure-strategy crossover
+
+For each event the optimal nonnegative code is a 2-D nonnegative lasso;
+enumerating KKT cases gives closed-form event losses (verified symbolically):
+
+| event | faithful | absorbed |
+|---|---|---|
+| joint ($q$) | $2\lambda - \lambda^2/2$ | $\sqrt2\lambda - \lambda^2/4$ |
+| parent solo ($p_0$) | $\lambda - \lambda^2/4$ | $\lambda - \lambda^2/4$ |
+| child solo ($\varepsilon$) | $\lambda - \lambda^2/4$ | $\tfrac12 + \tfrac{\sqrt2\lambda}{2} - \tfrac{\lambda^2}{4}$ |
+
+Parent-solo terms cancel, so $p_0$ plays no role. Subtracting,
+
+$$\mathcal{L}_{\text{faithful}} - \mathcal{L}_{\text{absorbed}} \;=\; q\Big[(2-\sqrt2)\lambda - \tfrac{\lambda^2}{4}\Big] \;-\; \varepsilon\Big[\tfrac12 - \tfrac{(2-\sqrt2)\lambda}{2}\Big],$$
+
+which is positive (absorption preferred among the two pure candidates) iff
+
+$$\boxed{\;\varepsilon \;<\; \varepsilon^*(\lambda, q) \;=\; \frac{\lambda q\,(8 - 4\sqrt2 - \lambda)}{2\,\big(1 - (2-\sqrt2)\lambda\big)} \;\approx\; 1.172\,\lambda q \quad (\lambda \to 0).\;}$$
+
+**Scope.** $\varepsilon^*$ is the exact crossover of the two *pure candidate
+dictionaries* under the two-latent capacity constraint — not the transition
+point of the continuously optimized dictionary:
+
+**Result 3 (continuous tilt).** Scanning all unit-norm 2-latent dictionaries,
+the global optimum interpolates: at $\varepsilon = 0$ it is exactly the
+absorbed pair $(0^\circ, 45^\circ)$; near and above $\varepsilon^*$ the
+child-side latent sits at intermediate angles (e.g. $69^\circ$ at
+$0.9\,\varepsilon^*$, $80^\circ$ at $2\varepsilon^*$, $85^\circ$ at
+$4\varepsilon^*$ for $\lambda{=}0.1, q{=}0.2$), approaching $90^\circ$
+asymptotically. The functional $67.5^\circ$ crossing of the tilt curve sits
+at $\approx 0.88\,\varepsilon^*$. This is an exact mechanism for the
+empirically reported "feature hedging" [Minder et al., 2025].
+
+**Remark (redundant triple; spare capacity).** For $\varepsilon > 0$ and
+$\lambda < 1/(2-\sqrt2)$, the unconstrained global optimum is the triple
+$\{a_p, a_c, a_m\}$: joint events fire the composite, solo events their own
+atoms, and every event attains the per-sample bound. Ideal SAE training with
+unlimited capacity does *not* return the generative ontology — it adds
+frequent combinations as first-class latents ("composition").
+
+**Practitioner scale.** $1.17\,\lambda q$ is the characteristic scale of the
+absorption transition, exact only as the pure-strategy crossover. Deep inside
+it ($\varepsilon \ll 1.17\lambda q$), absorption is the population optimum of
+this objective under the two-latent constraint — within that scope more
+compute or data cannot help; changing the objective, $\lambda$, or capacity
+can.
+
+## 5. Remedies
+
+### 5.1 Coherence (Gram) penalties: a rotation blind spot
+
+Adding $\beta \sum_{i<j}\langle d_i, d_j\rangle^2$ suggests a critical
+strength $\beta^*(\lambda,q) = \tfrac{\lambda q}{2}(8-4\sqrt2-\lambda)$ above
+which the faithful pair beats the absorbed pair for all $\varepsilon \ge 0$.
+This pre-registered prediction was **refuted** by GPU experiment, and the
+refutation is the sharper result. The true optimum at $\beta \ge \beta^*$,
+small $\varepsilon$, is an **anti-rotated absorbed pair**
+$\{\approx -40^\circ, +46^\circ\}$: the composite keeps absorbing while the
+parent rotates to zero the pair's Gram entry.
+
+Evidence tiers, kept separate:
+
+- *(proved)* every penalty that is a function of pairwise decoder inner
+  products is constant on the manifold of orthonormal frames; hence no such
+  penalty distinguishes the faithful frame $\{0^\circ, 90^\circ\}$ from the
+  anti-rotated absorbed frame $\{-45^\circ, 45^\circ\}$. On that manifold the
+  objective admits the closed form
+  $$\mathcal{L}_0(D) \;=\; \mathbb{E}\lVert x\rVert^2 \;-\; \sum_i \mathbb{E}\big[(\langle d_i, x\rangle - \lambda/2)_+^2\big],$$
+  verified to $2\times10^{-15}$; the $\lambda/2$ soft-threshold tax is paid
+  once per active coordinate, so concentrating a co-occurrence in one latent
+  beats splitting it — absorption lives in the codes, invisible to decoder
+  geometry.
+- *(analytic reduction)* the in-plane frame competition holds for $m \le d$
+  with non-pair latents off the pair plane; the overcomplete case is open.
+- *(numerical)* corrected boundaries: $\varepsilon^{**}(\beta^*) \approx
+  0.0112$, increasing in $\beta$ to a penalty-form-independent
+  $\varepsilon^{**}(\infty) \approx 0.0159$ (vs vanilla
+  $\varepsilon^* \approx 0.0486$ at $\lambda{=}q{=}0.2$): the penalty shrinks
+  the absorption region at most $\sim 4\times$, never removes it, and
+  overdosing worsens it.
+
+**Domain boundary (critical occurrence ratio).** The evasion defeats the
+penalty iff
+$$p_0 \;<\; p_0^*(\lambda, q) \;=\; q\,\frac{(2-\sqrt2) - \lambda/4}{(\sqrt2-1) - \lambda/4}, \qquad \frac{p_0^*}{q} \xrightarrow{\lambda\to 0} \sqrt2 .$$
+Below $p_0^*$ (co-occurrence-dominated hierarchies) the no-go applies in
+full; above it, coherence penalties genuinely work, even at $\varepsilon=0$
+(finite-$\beta$ flip verified at $p_0 = 0.35$).
+
+### 5.2 Inverse-density event weighting: exact removal, oracle-dependent
+
+Weighting each event by $w(\text{event}) = 1/P(\text{event})$ makes
+$w_j/w_c = \varepsilon/q$, and $\varepsilon$ cancels from its own boundary
+condition: absorption is preferred iff $C(\lambda) > 1$, independent of
+$\varepsilon$, with
+$\lambda_{\text{crit}} = \tfrac12\big[(12-6\sqrt2) - \sqrt{(12-6\sqrt2)^2 - 8}\big] \approx 0.714$.
+For every $\lambda < \lambda_{\text{crit}}$ the faithful dictionary wins for
+all $\varepsilon > 0$ — the transition is eliminated (GPU-validated 48/48 at
+$\varepsilon = 5\times10^{-4}$, no multistability). A robustness bound
+$k^* = 1/C(\lambda) \approx 4.12$ at $\lambda = 0.2$ under-predicts the
+observed tolerance ($6.6\times$).
+
+**Status: a diagnostic existence result, not a practical method.** The
+weights require event-class labels. Two label-free substitutes were refuted
+with understood mechanisms (self-residual: signal drowned by background
+error; background-relative novelty: detects events, not classes), and the
+capacity-limited semi-synthetic test (§6.3) shows the oracle version works
+exactly where absorption bites.
+
+### 5.3 Matryoshka
+
+Exact mechanism analysis (prefix scarcity + parent reusability): single-child
+hierarchies are unrescuable (GPU-confirmed); the two-child rescue observed
+under rich metrics is partial (child-dominant hedged latents).
+
+## 6. Experiments (synthetic and semi-synthetic)
+
+All GPU experiments: batched einsum programs training up to 208 SAEs
+simultaneously on one NVIDIA L4; environment pinned in `ENVIRONMENT.md`.
+
+### 6.1 Transition measurement
+
+135-run grid + 1,040-run fine measurement: the empirical transition (per-seed
+functional-child crossing) sits at $0.58$–$0.70\,\varepsilon^*$ uniformly
+across $\lambda$ spanning $6\times$ and $q$ spanning $2\times$ — the
+$\lambda q$ scaling collapse holds; the prefactor is
+$\approx 0.7\times$ the continuous-optimum midpoint ($0.88\,\varepsilon^*$),
+consistent with a uniform effective-$\lambda$ rescale from encoder shrinkage.
+
+### 6.2 Capacity, controlled
+
+At $m = 32$ with 30 background features + parent + child, the redundant
+triple needs 33 columns — architecturally impossible. (An earlier "dynamics
+gap" claim built on that grid was withdrawn after external review.) The
+controlled rerun ($m \in \{32, 34, 40\}$, 288 runs, K1–K3 pre-registered):
+$m{=}32$ → 0/96 triples; $m{=}34$ → triples in 69% of $\varepsilon>0$ runs;
+$m{=}40$ → functional transition below $0.25\,\varepsilon^*$. **In this
+generative model, nominal headroom moves the learned solution from absorption
+toward redundant composition** — capacity scarcity is the operative cause of
+the two-latent transition here, and real SAEs (which cannot afford a latent
+per feature combination) live on the scarce side.
+
+### 6.3 Semi-synthetic regime structure (synthetic pairs injected into real GPT-2 activations)
+
+With $m = 1536$ (spare), every condition forms the triple — composition, no
+harm, and weighting has nothing to fix. With $m \in \{128, 256\}$ (scarce),
+true harmful absorption appears (composite cosine $0.99$, child reduced to
+the composite's shadow $0.74$), and **oracle** inverse-density weighting
+rescues the child ($\cos \ge 0.99$ in 7/8 seeds). The natural-feature audits
+found no qualifying natural pairs; all real-activation evidence is
+semi-synthetic.
+
+## 7. Gated absorption: dictionary vs. code identifiability
+
+A pre-registered test (Arm A) of a two-sided identifiability note — (i) a
+no-go: binarized co-firing signatures are invariant to the child rate $\rho$
+under absorption; (ii) an estimator: the within-composite activation
+magnitude is bimodal ($1/\sqrt2$ vs $\sqrt2$) and a 2-component mixture
+recovers $\rho$ — **inverted both hypotheses**. Trained absorbed SAEs are not
+the stipulated single shared composite. They are the theory's own absorbed
+branch: a parent-aligned latent plus an **encoder-gated** composite that
+fires on $100\%$ of joint events (mean activation $\approx 1.28$) and
+essentially never on host-only events ($3$–$20\%$ of them at
+$\approx 0.01$). Consequently the binarized code separates the
+sub-populations nearly perfectly (conditional TV $0.9999$), signature
+*counting* recovers $\rho$ to $\le 0.02$ given the pair, and the magnitude
+mixture has nothing to fit at $\sigma = 0$.
+
+**The general lesson: dictionary identifiability (a child atom in the
+decoder) and code identifiability (child events distinguishable in the
+sparse code) are distinct.** Absorption here destroys the former while
+encoder gating preserves the latter. The no-go remains valid for its
+stipulated single-shared-latent model; trained SAEs do not realize that
+model, even when capacity-forced.
+
+Exploratory: activation noise $\sigma \ge 0.2$ destroys absorption in favor
+of faithful child latents; the noise mechanism is unmeasured (histograms not
+retained) and queued for its own pre-registration.
+
+## 8. Label-free pair detection
+
+**Detector.** For each latent pair $(i, j)$ with firing rates in
+$[5\times10^{-4}, 0.6]$ (binarize at activation $> \theta = 0.05$):
+
+$$c_{ij} = \lvert\cos(D_i, D_j)\rvert, \qquad \ell_{ij} = \frac{P(i \wedge j)}{P(i)\,P(j)}, \qquad \omega_{ij} = \frac{P(i \wedge j)}{\min(P(i), P(j))}.$$
+
+Flag iff $c_{ij} \in [0.45, 0.90]$ **and** ($\ell_{ij} \le 0.5$ or
+$\ell_{ij} \ge L_{\text{HI}}$) **and** $\omega_{ij} < 0.9$ (v1.1;
+$L_{\text{HI}} = 2.0$).
+
+The two-sided lift rule is a calibration-pilot discovery: an absorbed pair's
+latents are driven by one host event stream — exclusively (clean gating,
+$\ell \approx 0$ at $\sigma{=}0$) or jointly (leak coupling,
+$\ell \approx 3$ at $\sigma{=}0.1$) — never independently, whereas genuinely
+correlated-but-independent features sit at $\ell \approx 1$. The overlap veto
+removes feature-splitting doublets ($\omega \approx 1$; true pairs
+$\le 0.81$).
+
+**Arm 1 (matched synthetic, 176 SAEs, v1.0 confirmatory).** Recall $0.9315$
+(10k-seed-bootstrap CI $[0.851, 1.000]$); correlated-independent control flag
+rate $0.0625$ $[0.000, 0.156]$; FP/SAE $0.1062$ $[0.062, 0.150]$ (missed its
+$0.10$ threshold by $0.006$; every null FP is a splitting doublet); child
+recovery median $\cos = 0.979$ $[0.976, 0.983]$ (the only CI-established
+endpoint); counting $\hat\rho$ error $0.0134$ $[0.002, 0.032]$ at
+$\sigma = 0$. v1.1 (the overlap veto) is development-set performance on this
+data. Scaling context: FP $\approx 214$/million candidate pairs at $m = 32$;
+precision $0.81 / 0.30 / 0.04$ at assumed absorbed-pair prevalence
+$10^{-3} / 10^{-4} / 10^{-5}$.
+
+**Arm 2 (held-out, semi-synthetic GPT-2, frozen v1.1).** A detector frozen on
+synthetic development data identified the planted absorbed oracle pair with
+strong width dependence: $1/8$ detections at $m = 128$ and $8/8$ at
+$m = 256$ under the pre-registered threshold — every true pair sat at
+$\ell = 2.00 \pm 0.05$ against $L_{\text{HI}} = 2.0$, a width-dependent
+*calibration* failure rather than a structural one. The planted faithful
+oracle pair was never flagged ($c \in [0.27, 0.31]$, outside the band). This
+supports partial transfer of the pair-detection signal; it does **not**
+establish all-pairs specificity on real backgrounds (full-scan flag counts
+are similar in absorbed and faithful conditions), automatic orientation
+(rarity-based orientation was right in $\sim 5/9$ detections; child recovery
+$0.99$ when right, $0.66$ when wrong), or natural-feature absorption (the
+full scan yields a *real-background candidate list* of unknown status).
+$\hat\rho \approx 0.75$ vs true $0.5$ — the counting estimator assumes
+gating, which real (leaky) activations violate.
+
+**Round 8 (&#9203; in flight).** Pre-registered before results
+(`notes/prereg-round8-scaling-robustness.md`, incl. a pre-collection
+amendment adopting width-specific endpoints, stage-separated reporting, a
+corrected candidate-stability matcher, and all-pairs specificity readouts):
+v1.2 ($L_{\text{HI}} = 1.9$, calibrated on Arm 2) as a same-domain
+resampling-stability test with 24 fresh seeds per width; a
+proportional-scale null calibration $(d, m)$ from $(64, 32)$ to
+$(512, 256)$; nonorthogonal-child, prevalence-stress, and TopK robustness
+cells. A no-injection real-background null, fixed-dimension width sweep, and
+an overcomplete $m > d$ setting are queued as round 8b.
+
+## 9. Related work
+
+Chanin et al. (arXiv:2409.14507) coined and mechanistically explained
+absorption; their toy analysis proves any nonzero co-occurrence favors
+absorption in a model without a child-solo rate — the closed-form boundary
+$\varepsilon^*(\lambda, q)$ appears unclaimed. C$^2$R (arXiv:2606.30609)
+proves a per-sample sparsity preference ordering; Cui et al.
+(arXiv:2506.15963) give closed forms in an asymptotic limit without an $L_1$
+term. Penalty-as-remedy is prior art (OrtSAE, arXiv:2509.22033; C$^2$R) —
+the derived $\beta^*$, the anti-rotation obstruction, $\varepsilon^{**}(\beta)$,
+and $p_0^*$ appear unclaimed. Matryoshka SAEs (arXiv:2503.17547) reduce
+absorption architecturally; feature hedging (arXiv:2505.11756) documents the
+continuous tilt empirically. Classical sparse coding gives the positive
+regime (Donoho–Elad uniqueness; Hillar–Sommer identifiability). The
+label-free frequency identifiability analysis draws on mixture/topic-model
+identifiability (Arora–Ge–Moitra 2012; Anandkumar et al. 2014;
+Allman–Matias–Rhodes 2009; Fu–Huang–Sidiropoulos 2016), whose common
+linear-independence condition is exactly what full absorption degenerates.
+
+## 10. Limitations and open problems
+
+1. **Model scope.** All theory is nonnegative-$L_1$, orthonormal features,
+   population loss; the no-go's overcomplete case ($m > d$) is open, and
+   TopK/JumpReLU objectives are untested beyond one exploratory cell.
+2. **Semi-synthetic evidence only.** No positive natural-absorption
+   observation exists in this project; real-activation results are injected
+   pairs against real backgrounds.
+3. **Detector maturity.** Synthetic proof of concept. Open: cutoff transfer
+   across widths/layers/models (round 8/8b), all-pairs specificity on
+   un-injected real backgrounds, orientation (fails under prevalence
+   inversion by construction; $\sim 5/9$ in Arm 2), gating-corrected
+   frequency estimation for leaky regimes, production-scale false-positive
+   control (multiple comparisons over $\sim m^2/2$ pairs).
+4. **Statistical power.** 16-seed cells CI-establish only the strongest
+   endpoint; confirmatory cells are sized $\ge 24$ seeds from round 8 onward.
+5. **Oracle remedy.** Inverse-density weighting is an existence result;
+   no validated label-free substitute yet (two refuted, one detector-based
+   route in progress).
+
+## References
+
+- D. Chanin et al., *A is for Absorption: Studying Feature Splitting and
+  Absorption in Sparse Autoencoders*, arXiv:2409.14507.
+- B. Bussmann et al., *Matryoshka Sparse Autoencoders*, arXiv:2503.17547.
+- OrtSAE: *Orthogonal Sparse Autoencoders*, arXiv:2509.22033.
+- Jin et al., *C$^2$R: Consistency-Contrast Regularization*, arXiv:2606.30609.
+- Cui et al., arXiv:2506.15963 (asymptotic closed forms).
+- Minder et al., *Feature Hedging*, arXiv:2505.11756.
+- D. Donoho, M. Elad, PNAS 2003 (uniqueness); C. Hillar, F. Sommer, 2015
+  (dictionary identifiability).
+- S. Arora, R. Ge, A. Moitra, FOCS 2012; A. Anandkumar et al., JMLR 2014;
+  E. Allman, C. Matias, J. Rhodes, Ann. Stat. 2009; X. Fu, K. Huang,
+  N. Sidiropoulos, NeurIPS 2016.
+
+---
+
+*Repository map: theory (`theory/`), pre-registrations (`notes/prereg-*`),
+experiment code (`experiments/`), raw results + summaries (`results/`),
+review trail (`reviews/`), plan (`RESEARCH_PLAN.md`), environment
+(`ENVIRONMENT.md`).*
