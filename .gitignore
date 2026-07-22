@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 experiments/pilot.log
 experiments/*.log
+experiments/activations_l6.pt
