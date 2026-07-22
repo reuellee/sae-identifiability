@@ -133,8 +133,9 @@ on committed CSVs, Arm A CPU smoke).
   whichever way they fall.
 - **Pair-ID Arm 1 confirmatory run:** locked prereg, same GPU session;
   `results/prereg_pairid/`.
-- **Full GPU lockfile:** pip freeze capture from the session box, to be
-  committed with the session results.
+- ~~Full GPU lockfile~~ **DONE** (same day): exact GPU stack captured live
+  from the session box and pinned in `ENVIRONMENT.md` (python 3.10.12,
+  torch 2.5.1+cu121, CUDA 12.1, cuDNN 9.1.0.70, numpy 1.26.4).
 - **Natural-feature absorption benchmark** (review R6 second half): open;
   the audit-v3 scan inside pair-ID Arm 2 is the next step toward it.
 
