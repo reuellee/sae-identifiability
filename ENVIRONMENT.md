@@ -19,14 +19,19 @@ project venv):
 - `SMOKE=1 python3 experiments/prereg_bimodality_armA.py` — end-to-end smoke
   of the Arm A suite on CPU torch.
 
-## GPU environment
+## GPU environment (pinned; captured live from the session box 2026-07-22)
 
 Single NVIDIA L4 (GCP g2-standard-8), image `dev-gpu-img-tmp`
-(created 2026-07-21 from the round-1–4 research box). Exact python/torch/CUDA
-versions are captured per session in the run logs collected into `results/`
-(`env.txt` where present; earlier rounds: see the log headers). A full pip
-lockfile for the GPU image is pending (tracked in
-`reviews/RESPONSE_GPT-5.6.md` §Pending).
+(created 2026-07-21 from the round-1–4 research box), Ubuntu 22.04:
+- python 3.10.12
+- torch 2.5.1+cu121 (CUDA 12.1, cuDNN 9.1.0.70, triton 3.1.0, NCCL 2.21.5)
+- numpy 1.26.4, sympy 1.13.1, networkx 3.4.2
+- nvidia-* cu12 wheels: cublas 12.1.3.1, cufft 11.0.2.54, curand 10.3.2.106,
+  cusolver 11.4.5.107, cusparse 12.1.0.106, nvjitlink 12.9.86, nvtx 12.1.105
+  (pip user-site of `reuellee_gmail_com`)
+
+All GPU rounds in `results/` after the image date ran on this stack; rounds
+1–4 ran on the box this image was taken from (same install).
 
 ## Run commands
 
