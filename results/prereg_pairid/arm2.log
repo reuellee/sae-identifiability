@@ -1,0 +1,61 @@
+extracting activations (needs transformers)...
+fetched https://www.gutenberg.org/files/2600/2600-0.txt: total chars 3293552
+fetched https://www.gutenberg.org/files/1661/1661-0.txt: total chars 3887283
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 1533.41it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (1093356 > 1024). Running this sequence through the model will result in indexing errors
+corpus tokens: 1093356
+  8192/500000 tokens
+  90112/500000 tokens
+  172032/500000 tokens
+  253952/500000 tokens
+  335872/500000 tokens
+  417792/500000 tokens
+  499712/500000 tokens
+saved torch.Size([500000, 768]) fp16 -> activations_l6.pt
+/home/reuellee_gmail_com/sae_identifiability/experiments/prereg_pairid_arm2.py:67: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  bg = torch.load(ACT).float()
+bg torch.Size([500000, 768]) device=cuda
+  [m=128 0/20000] (0s)
+  [m=128 4000/20000] (57s)
+  [m=128 8000/20000] (113s)
+  [m=128 12000/20000] (170s)
+  [m=128 16000/20000] (227s)
+[m=128 eps=0.002 s0] abs=1 tp_flagged=0 tp_cos=0.5852 tp_lift=1.9859 n_flags=3
+[m=128 eps=0.002 s1] abs=1 tp_flagged=1 tp_cos=0.5948 tp_lift=2.015 n_flags=4
+[m=128 eps=0.002 s2] abs=1 tp_flagged=0 tp_cos=0.591 tp_lift=1.9613 n_flags=3
+[m=128 eps=0.002 s3] abs=1 tp_flagged=0 tp_cos=0.5867 tp_lift=1.968 n_flags=4
+[m=128 eps=0.002 s4] abs=1 tp_flagged=0 tp_cos=0.5866 tp_lift=1.9722 n_flags=3
+[m=128 eps=0.002 s5] abs=1 tp_flagged=0 tp_cos=0.5816 tp_lift=1.9694 n_flags=3
+[m=128 eps=0.002 s6] abs=1 tp_flagged=0 tp_cos=0.586 tp_lift=1.9599 n_flags=3
+[m=128 eps=0.002 s7] abs=1 tp_flagged=0 tp_cos=0.5845 tp_lift=1.9454 n_flags=3
+[m=128 eps=0.05 s0] abs=0 tp_flagged=0 tp_cos=0.2936 tp_lift=1.6606 n_flags=3
+[m=128 eps=0.05 s1] abs=0 tp_flagged=0 tp_cos=0.2854 tp_lift=1.6688 n_flags=3
+[m=128 eps=0.05 s2] abs=0 tp_flagged=0 tp_cos=0.2995 tp_lift=1.6513 n_flags=4
+[m=128 eps=0.05 s3] abs=0 tp_flagged=0 tp_cos=0.2771 tp_lift=1.6394 n_flags=3
+[m=128 eps=0.05 s4] abs=0 tp_flagged=0 tp_cos=0.2734 tp_lift=1.6265 n_flags=3
+[m=128 eps=0.05 s5] abs=0 tp_flagged=0 tp_cos=0.2791 tp_lift=1.6511 n_flags=3
+[m=128 eps=0.05 s6] abs=0 tp_flagged=0 tp_cos=0.2931 tp_lift=1.6416 n_flags=3
+[m=128 eps=0.05 s7] abs=0 tp_flagged=0 tp_cos=0.2948 tp_lift=1.6418 n_flags=3
+  [m=256 0/20000] (0s)
+  [m=256 4000/20000] (65s)
+  [m=256 8000/20000] (131s)
+  [m=256 12000/20000] (197s)
+  [m=256 16000/20000] (262s)
+[m=256 eps=0.002 s0] abs=1 tp_flagged=1 tp_cos=0.6009 tp_lift=2.0514 n_flags=11
+[m=256 eps=0.002 s1] abs=1 tp_flagged=1 tp_cos=0.6141 tp_lift=2.0752 n_flags=12
+[m=256 eps=0.002 s2] abs=1 tp_flagged=1 tp_cos=0.6088 tp_lift=2.045 n_flags=12
+[m=256 eps=0.002 s3] abs=1 tp_flagged=1 tp_cos=0.6047 tp_lift=2.0614 n_flags=13
+[m=256 eps=0.002 s4] abs=1 tp_flagged=1 tp_cos=0.6011 tp_lift=2.0532 n_flags=14
+[m=256 eps=0.002 s5] abs=1 tp_flagged=1 tp_cos=0.5989 tp_lift=2.0685 n_flags=11
+[m=256 eps=0.002 s6] abs=1 tp_flagged=1 tp_cos=0.603 tp_lift=2.0382 n_flags=10
+[m=256 eps=0.002 s7] abs=1 tp_flagged=1 tp_cos=0.6033 tp_lift=2.0482 n_flags=10
+[m=256 eps=0.05 s0] abs=0 tp_flagged=0 tp_cos=0.3006 tp_lift=1.7633 n_flags=9
+[m=256 eps=0.05 s1] abs=0 tp_flagged=0 tp_cos=0.2954 tp_lift=1.7679 n_flags=10
+[m=256 eps=0.05 s2] abs=0 tp_flagged=0 tp_cos=0.306 tp_lift=1.76 n_flags=8
+[m=256 eps=0.05 s3] abs=0 tp_flagged=0 tp_cos=0.2755 tp_lift=1.7464 n_flags=10
+[m=256 eps=0.05 s4] abs=0 tp_flagged=0 tp_cos=0.2729 tp_lift=1.7205 n_flags=13
+[m=256 eps=0.05 s5] abs=0 tp_flagged=0 tp_cos=0.2836 tp_lift=1.7548 n_flags=10
+[m=256 eps=0.05 s6] abs=0 tp_flagged=0 tp_cos=0.3 tp_lift=1.7597 n_flags=9
+[m=256 eps=0.05 s7] abs=0 tp_flagged=0 tp_cos=0.297 tp_lift=1.7579 n_flags=8
+wrote /home/reuellee_gmail_com/sae_identifiability/experiments/../results/prereg_pairid/arm2_runs.csv (32 rows)

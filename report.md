@@ -341,3 +341,48 @@ is not estimation given the pair — counting suffices — but **pair identifica
 problem now has a concrete geometric target (two unit-norm decoders ≈ 45° apart with
 near-disjoint firing), which is the natural next pre-registerable scan, and the missing
 piece between §15's validated oracle remedy and a deployable label-free method.
+
+## 17. The pair-identification arc: a label-free absorption detector, from toy validation to a knife-edge real-data transfer
+
+§16 reduced the §15b open problem to one question: can the (parent, composite) pair be
+found *without labels*? This section reports the pre-registered answer
+(`notes/prereg-pair-identification.md`; pilot → locked thresholds → confirmatory runs,
+every stage committed before its results existed).
+
+**The detector.** For each latent pair: decoder cosine `c`, binarized co-firing lift
+`L = P(i∧j)/(P(i)P(j))`, and containment `overlap = P(i∧j)/min(P(i),P(j))`. Flag iff
+`c ∈ [0.45, 0.90]` and `L ≤ 0.5 or L ≥ 2.0` and `overlap < 0.9`. The two-sided lift rule
+is the pilot's discovery: an absorbed pair's two latents are driven by one host event
+stream — exclusively (clean gating, L ≈ 0, σ = 0) or jointly (leak coupling, L ≈ 3,
+σ = 0.1) — but never independently, whereas genuinely correlated-but-independent features
+sit at L ≈ 1. The overlap veto kills feature-splitting doublets (a split latent fires only
+*inside* its sibling's events, overlap ≈ 1; true pairs ≤ 0.81), diagnosed from Arm 1's
+null condition via saved weights.
+
+**Arm 1 (toy, 176 SAEs, confirmatory under the locked v1.0 rule):** recall 0.93 on
+absorbed runs; planted correlated-independent pairs rejected at 94%; child direction
+recovered from pair geometry alone at median cos 0.979 (orientation 100%); and — closing
+the §15b loop in the toy model — signature counting on the *detected* pair recovers ρ to
+±0.013 (σ = 0). One registered metric (false positives/SAE) missed by 0.006 before the
+overlap veto; the v1.1 rescore on training data passes everything (0.031), and v1.1 was
+locked for Arm 2 unchanged.
+
+**Arm 2 (real GPT-2 activations, §15's capacity-limited setup, held-out transfer):** the
+*statistic* transfers; the *cutoff* lands on a knife edge. All 16 absorbed runs put the
+true pair at **lift 2.00 ± 0.05** — the leak-coupled regime, exactly as real (noisy)
+activations should — so the toy-locked L_HI = 2.0 splits them: 8/8 flagged at m = 256,
+1/8 at m = 128. Specificity is perfect (faithful controls: pair cosine 0.27–0.31, zero
+flags), and the counting ρ̂ inflates (0.75 vs 0.5) precisely as the leak-regime analysis
+predicts. Verdict recorded as registered — pass at m = 256, fail at m = 128 — with no
+post-hoc threshold change; the labeled-exploratory observation that L_HI = 1.9 flags
+16/16 at zero faithful cost awaits a v1.2 pre-registration on fresh data. The descriptive
+audit-v3 scan (0.03% of latent pairs flagged on real background features) doubles as this
+program's first **natural-absorption candidate list**, unlocking the natural-feature
+benchmark the external review asked for.
+
+**Where the program now stands.** Absorption is a capacity-scarcity phenomenon (§8,
+corrected + rerun), detectable label-free by a three-statistic test validated in the toy
+model end-to-end (detect → orient → count → ρ̂) and one threshold-recalibration away from
+the same on real activations. The remaining steps to a deployable label-free remedy are
+mechanical and pre-registerable: v1.2 cutoff transfer, a gating-corrected counting
+estimator for leaky regimes, and adjudication of the audit-v3 candidates.

@@ -43,3 +43,27 @@ Combined with Arm A: the label-free pipeline for the §15b open problem is now
 (ρ̂ error 0.013) with the σ-regime boundary mapped. Companion result, same
 session: `results/capacity_m33/SUMMARY.md` (absorption is capacity-scarcity
 throughout; K1–K3 confirmed).
+
+---
+
+# Arm 2 (held-out transfer, real GPT-2 activations): statistic transfers, cutoff lands on a knife edge
+
+32 vanilla capacity-limited SAEs (m ∈ {128, 256} × ε ∈ {0.002 absorbed, 0.05
+faithful} × 8 seeds, §15's exact setup), detector v1.1 transferred UNCHANGED
+(`arm2_runs.csv`, weights saved). Registered readouts:
+
+| # | Readout | Result |
+|---|---|---|
+| R1 | recall on absorbed ε=0.002 runs (16/16 formed, 8/8 each m) | **0.56 overall — but m=256: 8/8, m=128: 1/8.** Every m=128 true pair sits at lift 1.95–1.99, every m=256 at 2.04–2.08: the real-data absorbed-pair statistic concentrates at **lift ≈ 2.00 ± 0.05**, and the toy-locked cutoff L_HI = 2.0 lands in the middle of it. A threshold-margin failure, not a structural one — the pairs are exactly where the leak-coupled regime predicts, ~3% from the cutoff. |
+| R2 | faithful-control (ε=0.05) oracle-pair flag rate | **0.000** — pair cos 0.27–0.31, far outside the band; specificity transfers perfectly. |
+| R3 | audit-v3 descriptive scan | 3.2 flags/SAE (m=128), 10.6 (m=256) — 0.03% of pairs; on real background features these are *candidates*, not false positives, and constitute the first natural-absorption candidate list from this program (follow-up: inspect). |
+| R4 | ρ̂ on flagged pairs (true child-given-parent = 0.5; descriptive) | 0.750 ± 0.005 — inflated exactly as the leak-regime analysis predicts (counting assumes gating; real activations are leaky). Child residual recovery bimodal: 0.99 (5/9) / 0.66 (4/9). |
+
+**Honest verdict:** confirmatory transfer PASSES at m=256, FAILS at m=128 by
+the registered letter. No post-hoc threshold change is applied to these
+claims. Exploratory note, clearly labeled: L_HI = 1.9 would flag 16/16 with
+R2 still 0.000; confirming that requires new data (a v1.2 pre-registration —
+different layer/seeds/widths — is the obvious next step). The transfer
+evidence is that the *statistic* (cos band + two-sided lift + overlap veto)
+separates absorbed from faithful cleanly on real activations; the *cutoff*
+needs one recalibration step ported from toy to real scale.

@@ -169,3 +169,17 @@ remains the v1.0 scoring above; v1.1 claims stand or fall on Arm 2.
 
 Gate decision: D1 ∧ D2(a) ∧ D3 ∧ D4 passed; D2(b) missed by 0.006 with a
 diagnosed, vetoed mechanism. Arm 2 proceeds under v1.1 per this amendment.
+
+---
+
+## Arm 2 outcome (2026-07-22): partial transfer, knife-edge cutoff
+
+R1 8/8 at m=256, 1/8 at m=128 — all real absorbed pairs sit at lift
+2.00 ± 0.05 vs the toy-locked L_HI = 2.0. R2 = 0.000 (faithful never flagged).
+R4 ρ̂ = 0.75 vs 0.5 (leak-inflated, as the locked scoping predicted for
+non-gated regimes). Full readout: `results/prereg_pairid/SUMMARY.md`. Verdict
+recorded as-is; the registered thresholds were not adjusted post hoc. Next
+step if pursued: v1.2 pre-registration with real-data-calibrated L_HI (and a
+gating-corrected ρ̂) on fresh configurations, plus inspection of the R3
+audit-v3 candidate list (first natural-absorption candidates from this
+program).
