@@ -6,7 +6,7 @@
 # session; this script is its instrument. Does NOT stop the orchestrator.
 ZONE=us-west1-a
 GPU=dev-gpu
-RUSER=reuellee_gmail_com
+RUSER="${USER}"
 DIR=/home/$RUSER/sae_identifiability
 DEADLINE=$(date -d '2026-07-21 09:45:00 UTC' +%s)
 log(){ echo "$(date -u +%F' '%H:%M:%S) $*" >> ~/supervise.log; }

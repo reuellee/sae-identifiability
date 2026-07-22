@@ -42,7 +42,8 @@ understood mechanisms (§15b — the remaining open problem).
    GPU falsification; see `theory/theory_merged.py`.
 5. **Matryoshka SAEs:** exact mechanism analysis — prefix scarcity + parent
    reusability, not the naive account. Single-child hierarchies are unrescuable
-   (GPU-confirmed); two-child rescue under rich metrics is being tested in round 3.
+   (GPU-confirmed); two-child rescue under rich metrics was a *partial* rescue in
+   round 3 (child-dominant latents, not a clean fix).
 
 Full write-up: [`report.md`](report.md).
 
