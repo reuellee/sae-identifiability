@@ -91,3 +91,33 @@ tests). Full log: `s1_stability.log`.
 ## Costs
 
 E1 ≈ 11 min, E2+E3 ≈ 13 min on one L4; session ≈ $0.6.
+
+---
+
+## Amendment-2 recomputes (from frozen artifacts; post-hoc status disclosed)
+
+**Specificity, all three registered fields** (`specificity_recompute.log`,
+N_EV=100k, code `analysis/r8_specificity_recompute.py`):
+
+| condition | exact oracle-pair flag | flags TOUCHING an oracle latent /SAE | full-scan flags/SAE | SHUFFLED-null flags/SAE |
+|---|---|---|---|---|
+| m=128 absorbed | 1.000 | 1.00 (= the true pair only) | 4.04 | **0.00** |
+| m=128 faithful | 0.000 | 0.00 | 3.00 | **0.00** |
+| m=256 absorbed | 1.000 | 1.00 (= the true pair only) | 10.83 | **0.00** |
+| m=256 faithful | 0.000 | 0.00 | 9.25 | **0.00** |
+
+Readings: (1) the docstring/implementation mismatch flagged by review is
+resolved empirically — oracle-touch and exact-pair metrics coincide (no
+parent/background or composite/background spillover flags at all);
+(2) the **shuffled-firing dependence null is perfectly clean**: permuting
+each latent's firing column (preserving decoder geometry and marginal rates,
+destroying dependence) yields zero flags in all 64 SAEs — every detector
+flag is driven by real co-firing dependence; (3) full-scan counts remain
+similar across absorbed/faithful conditions — those flags are
+dependence-real background structures, not condition markers.
+
+**S1 v2 (injection-touch exclusion): identical to v1** — candidate counts
+and stable clusters unchanged at every seed and both widths
+(`s1_stability_v2.log`, machine-readable `s1_clusters_m*.json`). No flagged
+pair ever touched a planted latent; the v1 cluster list was uncontaminated.
+v2 is the cited result hereafter.

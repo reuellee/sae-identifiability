@@ -357,13 +357,20 @@ $\lambda{=}0$; 6/6 flagged, child recovery $0.999$). Every faithful-control
 SAE still carries $\ge 1$ full-scan real-background flag (candidate counts
 do not separate conditions), so all-pairs specificity on un-injected real
 backgrounds — with a fixed-dimension width sweep and an overcomplete
-$m > d$ setting — remains the round-8b gap. Cross-seed clustering of the
-real-background candidates (corrected bijective matcher) shows they are
-**properties of the data, not of a particular SAE**: 3 stable clusters at
-$m = 128$ (two in 8/8 seeds) and 12 at $m = 256$, including a mutual
-4-latent clique — the shortlist for natural-feature adjudication, whose
-status (natural absorption vs. genuinely exclusive correlated families)
-is the program's next empirical question.
+$m > d$ setting — remains the round-8b gap. Post-run recomputes from frozen artifacts (post-hoc status disclosed):
+oracle-*touch* specificity coincides with exact-pair specificity (the only
+flag touching an oracle latent is the true pair; zero in faithful controls),
+and a **shuffled-firing dependence null** — permute each latent's firing
+column, preserving decoder geometry and marginal rates while destroying
+dependence — yields **zero flags in all 64 SAEs**: every detector flag is
+dependence-driven. Cross-seed clustering of the real-background candidates
+(corrected bijective matcher, planted-latent-touching pairs excluded — the
+exclusion changed nothing, confirming zero injection contamination) shows
+they are **properties of the data, not of a particular SAE**: 3 stable
+clusters at $m = 128$ (two in 8/8 seeds) and 12 at $m = 256$, including a
+mutual 4-latent clique — the shortlist for natural-feature adjudication,
+whose status (natural absorption vs. genuinely exclusive correlated
+families) is the program's next empirical question.
 
 ## 9. Related work
 

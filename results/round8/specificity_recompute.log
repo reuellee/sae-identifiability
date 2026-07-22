@@ -1,0 +1,8 @@
+[m=128] 16/32
+[m=128] 32/32
+m=128 eps=0.002: exact-pair flag 1.000 | oracle-TOUCH flags/SAE 1.00 | full-scan flags/SAE 4.04 | SHUFFLED-null flags/SAE 0.00
+m=128 eps=0.05: exact-pair flag 0.000 | oracle-TOUCH flags/SAE 0.00 | full-scan flags/SAE 3.00 | SHUFFLED-null flags/SAE 0.00
+[m=256] 16/32
+[m=256] 32/32
+m=256 eps=0.002: exact-pair flag 1.000 | oracle-TOUCH flags/SAE 1.00 | full-scan flags/SAE 10.83 | SHUFFLED-null flags/SAE 0.00
+m=256 eps=0.05: exact-pair flag 0.000 | oracle-TOUCH flags/SAE 0.00 | full-scan flags/SAE 9.25 | SHUFFLED-null flags/SAE 0.00
