@@ -12,7 +12,7 @@ Sparse autoencoders (SAEs) are the workhorse of mechanistic interpretability: th
 
    **ε < ε\*(λ, q) = λq(8 − 4√2 − λ) / (2(1 − (2 − √2)λ)) ≈ 1.17 λq** (small λ).
 
-   In the band 0 < ε < ε\*, the truth is identifiable in principle but the objective is *misaligned with it* — more compute, better optimizers, and more data provably cannot fix absorption there. Only changing the objective (or λ) can.
+   In the band 0 < ε < ε\*, the truth is identifiable in principle but the objective is *misaligned with it*: the population optimum of this nonnegative-L1 objective, under the two-latent capacity constraint, stays absorbed through most of the band (continuous-optimum midpoint ≈ 0.88·ε\*). Within that scope — this objective, population limit, two latents — more compute, better optimizers, and more data cannot fix absorption; changing the objective, λ, or capacity can.
 
 3. **Absorption is continuous, not binary (Result 3).** Global optimization over 2-latent dictionaries shows the optimum interpolates: the child latent's direction tilts smoothly from the composite (45°) toward the true child (90°) as ε grows through the transition region — an exact mechanism for the empirically reported "feature hedging" phenomenon.
 
