@@ -61,6 +61,11 @@ Full write-up: [`report.md`](report.md).
 - `results/` — raw CSVs per round
 - `ops/` — GCP supervision script (crash-restart chain, result collection,
   auto-stop)
+- `notes/` — follow-up theory notes on the §15b open problem (label-free frequency
+  estimation): `label-free-frequency-identifiability.md` (a no-go for binarized
+  co-firing signatures + a within-composite bimodality estimator, with the
+  topic-model/tensor identifiability backbone) and its `prereg-*` experiment spec
+  (**theory + pre-registered predictions; not yet run**)
 
 ## Reproducing
 

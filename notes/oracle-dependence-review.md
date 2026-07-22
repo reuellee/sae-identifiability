@@ -1,5 +1,10 @@
 # Oracle-dependence review: is label-free per-class frequency estimation possible?
 
+> **Update (2026-07-22, later):** the "combinatorial identity" recommendation below was
+> sharpened by a follow-up theory+lit pass. The *binarized* signature form is now a **no-go**
+> under absorption; the live estimator is the **continuous within-composite bimodality**.
+> See `notes/label-free-frequency-identifiability.md` and `notes/prereg-bimodality-estimator.md`.
+
 **Date:** 2026-07-22
 **Method:** Claude deep-research harness (16 sources fetched, 70 claims extracted,
 25 adversarially verified with 3-vote refutation) + Gemini 2.5 Pro adversarial review
