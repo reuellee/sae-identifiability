@@ -124,3 +124,48 @@ first step. D3 ≤ 0.75 → "child recovery" from pair geometry is illusory.
 All runs scored by `analysis/analyze_prereg_pairid.py` (committed with this note).
 Absorption filter and exclusion disclosure as in Arm A. Bootstrap CIs by seed resampling
 (np seed 0, 10k draws). No threshold changes after the GPU run under any outcome.
+
+---
+
+## Arm 1 outcome (2026-07-22) + v1.1 amendment for Arm 2 (locked pre-Arm-2)
+
+Confirmatory verdicts under the locked v1.0 detector
+(`results/prereg_pairid/arm1_runs.csv`, scored by
+`analysis/analyze_prereg_pairid.py`; 73/96 A-runs absorbed, disclosed):
+
+- **D1 PASS**: recall 0.9315 (≥ 0.90). The ~7% misses are σ=0 runs whose
+  partial gating leak lands the lift in the dead zone (0.5, 2.0).
+- **D2(a) PASS**: planted CD pair flag rate 0.0625 (≤ 0.10) — the lift term
+  carries the discrimination as predicted (G2).
+- **D2(b) INCONCLUSIVE by 0.006**: fp/SAE 0.1062 vs ≤ 0.10, driven entirely
+  by the null condition (0.81 fp/SAE). Weights-level diagnosis: every null FP
+  is a **feature-splitting doublet** — a spare latent partially duplicating a
+  background feature (cos 0.7–0.87) and co-firing with its main latent
+  (lift 10–12.6, caught by the lift-HIGH branch).
+- **D3 PASS**: median child-recovery cos 0.979, orientation 100% correct.
+- **D4 PASS** (σ=0 confirmatory, per the locked scoping): mean |ρ̂−ρ| 0.0134.
+  σ=0.1 exploratory ρ̂ is badly inflated (0.58–0.62 across true ρ), exactly as
+  the locked scoping anticipated from Arm A's leak analysis.
+- **G5 exploratory**: CDX flagged only 37.5% (predicted ~1) — trained encoder
+  cross-talk (w_b·v_p ≈ 0.7) makes the b-latent fire on host events despite
+  the b feature's exclusivity, pushing lift to ~2.3 near threshold. The
+  idealized equivalence class is blurred by training, like §2's idealization
+  in Arm A.
+
+### Amendment: detector v1.1 (for Arm 2; calibrated on Arm 1 as training data)
+
+Splits have a signature absorbed pairs lack: **containment** — the rare split
+latent fires only within the common latent's events. Add
+`overlap_ij = P(i∧j)/min(P(i),P(j))`; **veto pairs with overlap ≥ 0.9**
+(splits ≈ 0.95–1.0; true absorbed pairs ≤ 0.81 in pilot + Arm 1).
+
+Re-scored on Arm 1 (training data, disclosed —
+`results/prereg_pairid/arm1_v11_rescore.csv`): D1 0.918 (−1 flag), D2(a)
+0.0625, D2(b) **0.031** (null 0.81 → 0.25, A-condition FPs → 0). All
+registered thresholds met. **v1.1 is hereby locked for Arm 2**, which is the
+held-out confirmatory test (real GPT-2 activations, capacity-limited m =
+128/256, thresholds transferred UNCHANGED). Arm 1's confirmatory record
+remains the v1.0 scoring above; v1.1 claims stand or fall on Arm 2.
+
+Gate decision: D1 ∧ D2(a) ∧ D3 ∧ D4 passed; D2(b) missed by 0.006 with a
+diagnosed, vetoed mechanism. Arm 2 proceeds under v1.1 per this amendment.

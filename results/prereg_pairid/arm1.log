@@ -1,0 +1,21 @@
+device=cuda threads=8 smoke=False
+  [pairid R=176 step 0/15000] mean_rec=3.2051 (0s)
+  [pairid R=176 step 2000/15000] mean_rec=0.2103 (39s)
+  [pairid R=176 step 4000/15000] mean_rec=0.2198 (78s)
+  [pairid R=176 step 6000/15000] mean_rec=0.2281 (117s)
+  [pairid R=176 step 8000/15000] mean_rec=0.2324 (156s)
+  [pairid R=176 step 10000/15000] mean_rec=0.2354 (195s)
+  [pairid R=176 step 12000/15000] mean_rec=0.2366 (234s)
+  [pairid R=176 step 14000/15000] mean_rec=0.2373 (273s)
+  [eval 16/176]
+  [eval 32/176]
+  [eval 48/176]
+  [eval 64/176]
+  [eval 80/176]
+  [eval 96/176]
+  [eval 112/176]
+  [eval 128/176]
+  [eval 144/176]
+  [eval 160/176]
+  [eval 176/176]
+wrote /home/reuellee_gmail_com/sae_identifiability/experiments/../results/prereg_pairid/arm1_runs.csv (176 rows) total 302s

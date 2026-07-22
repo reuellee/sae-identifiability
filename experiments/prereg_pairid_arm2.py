@@ -31,9 +31,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import numpy as np
 
-# ---- detector constants: MUST match Arm 1 / the prereg note ----------------
+# ---- detector v1.1 constants: locked in the prereg amendment ---------------
+# v1.0 (pilot-calibrated) + overlap veto OVL_MAX, added after Arm 1 diagnosed
+# its null-condition FPs as feature-splitting doublets (rare split latent
+# fires only WITHIN its parent feature's events -> overlap ~1.0; true absorbed
+# pairs max 0.81). Calibrated on Arm 1 as TRAINING data; this run is the
+# held-out confirmatory test. Do not change after this run.
 C_LO, C_HI = 0.45, 0.90
-L_LO, L_HI = 0.5, 2.0        # two-sided lift rule, locked from the pilot
+L_LO, L_HI = 0.5, 2.0
+OVL_MAX = 0.9
 THETA = 0.05
 RATE_LO, RATE_HI = 5e-4, 0.6
 N_EV = 200_000
@@ -43,6 +49,7 @@ D_MODEL, BATCH, STEPS = 768, 2048, 20000
 LAM, Q, P0, AMP = 1.0, 0.2, 0.2, 5.0
 SEEDS = 8
 OUTDIR = os.path.join(HERE, "..", "results", "prereg_pairid")
+os.makedirs(OUTDIR, exist_ok=True)
 
 ACT = os.path.join(HERE, "activations_l6.pt")
 if not os.path.exists(ACT):
@@ -70,19 +77,23 @@ for s in range(SEEDS):
     pairs[s] = Qm.T.to(dev)
 
 def detect(Dn, fires):
+    """Detector v1.1: cosine band + two-sided lift + overlap veto."""
     rates = fires.mean(0)
     keep = (rates > RATE_LO) & (rates < RATE_HI)
     C = np.abs(Dn.T @ Dn)
     F32 = fires.astype(np.float32)
     Pj = (F32.T @ F32) / len(fires)
     L = Pj / np.maximum(np.outer(rates, rates), 1e-12)
+    O = Pj / np.maximum(np.minimum.outer(rates, rates), 1e-12)
     m = Dn.shape[1]
     flags = []
     for i in range(m):
         if not keep[i]: continue
         for j in range(i + 1, m):
             if not keep[j]: continue
-            if C_LO < C[i, j] < C_HI and (L[i, j] <= L_LO or L[i, j] >= L_HI):
+            if (C_LO < C[i, j] < C_HI
+                    and (L[i, j] <= L_LO or L[i, j] >= L_HI)
+                    and O[i, j] < OVL_MAX):
                 flags.append((i, j))
     return flags, C, L, rates
 
