@@ -78,3 +78,47 @@ for the queued natural-feature evaluation.
 `analysis/analyze_round8.py`, committed with this note; 10k seed bootstrap
 (np seed 0) for E1; all exclusions disclosed; no threshold changes after the
 run under any outcome.
+
+---
+
+## AMENDMENT (2026-07-22, committed BEFORE round-8 collection; run in flight)
+
+Adopted from the round-8 external review, before any round-8 result has been
+seen (the GPU session is mid-run; collection has not occurred):
+
+1. **E1 endpoints are width-specific (P0).** T1 splits into
+   **T1a: recall(m=128) ≥ 0.90** and **T1b: recall(m=256) ≥ 0.90**, each
+   confirmatory with its own seed-bootstrap CI; the pooled number is
+   secondary and cannot override a failed width. Falsifier per width: < 0.70.
+2. **E1 scope language.** E1 is a **fresh-run resampling-stability test of
+   v1.2 within the same GPT-2 domain** (same model, layer, corpus, injection
+   protocol) — not cross-domain transfer. Arm 2's L_HI=2.0 outcome stands as
+   the completed pre-registered result; v1.2 is a new detector version, not a
+   retrospective correction.
+3. **Orientation and downstream stages become separate endpoints (P1).**
+   Reported per width, conditional on detection: (a) orientation accuracy
+   (derivable from recorded rates: detected composite = rarer member; correct
+   iff it equals the oracle composite index); (b) child-residual cosine under
+   automatic orientation AND under oracle orientation (recomputed from saved
+   weights); (c) ρ̂ error conditional on orientation correctness. No
+   confirmatory thresholds on (a)–(c) this round — measured endpoints,
+   thresholds to be set in a future prereg once baseline rates exist.
+4. **All-pairs specificity reporting (P0, partial).** From the in-flight run:
+   flags/M pairs and the proportion of faithful-control SAEs with ≥ 1
+   full-scan flag, per width, reported alongside the (necessary but
+   insufficient) oracle-pair specificity. The missing condition — a
+   **no-injection real-background null** — cannot be added mid-run and is
+   queued as **round 8b**, together with a fixed-(d, n_bg) width sweep and an
+   overcomplete (m > d) setting (the review is right that E2 conflates width
+   with scale; E2 is interpreted as a proportional-scale family only).
+5. **S1 matcher corrected before first use (P0).** The seed-0-anchored,
+   non-bijective matcher in `analysis/s1_candidate_stability.py` is replaced
+   (same commit) by clustering over all candidates from all seeds with the
+   bijective pair score
+   `max(min(|d_i·e_k|,|d_j·e_l|), min(|d_i·e_l|,|d_j·e_k|)) > 0.9`,
+   at most one candidate per seed per cluster. S1 has not yet run (it awaits
+   the activations file from the collection), so no stability result predates
+   this fix.
+6. **Terminology.** "Natural-absorption candidate list" → **"real-background
+   candidate list"** (candidates in SAEs trained on real activations; their
+   status as natural absorbed pairs is unknown pending adjudication).

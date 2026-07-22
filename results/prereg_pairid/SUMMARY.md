@@ -68,8 +68,8 @@ faithful} × 8 seeds, §15's exact setup), detector v1.1 transferred UNCHANGED
 | # | Readout | Result |
 |---|---|---|
 | R1 | recall on absorbed ε=0.002 runs (16/16 formed, 8/8 each m) | **0.56 overall — but m=256: 8/8, m=128: 1/8.** Every m=128 true pair sits at lift 1.95–1.99, every m=256 at 2.04–2.08: the real-data absorbed-pair statistic concentrates at **lift ≈ 2.00 ± 0.05**, and the toy-locked cutoff L_HI = 2.0 lands in the middle of it. A threshold-margin failure, not a structural one — the pairs are exactly where the leak-coupled regime predicts, ~3% from the cutoff. |
-| R2 | faithful-control (ε=0.05) oracle-pair flag rate | **0.000** — pair cos 0.27–0.31, far outside the band; specificity transfers perfectly. |
-| R3 | audit-v3 descriptive scan | 3.2 flags/SAE (m=128), 10.6 (m=256) — 0.03% of pairs; on real background features these are *candidates*, not false positives, and constitute the first natural-absorption candidate list from this program (follow-up: inspect). |
+| R2 | faithful-control (ε=0.05) oracle-pair flag rate | **0.000** — pair cos 0.27–0.31, far outside the band. Scope: this is ORACLE-PAIR specificity (the known planted pair); all-pairs scan specificity is unmeasured here — full-scan flag counts are similar in absorbed and faithful conditions, so candidate count alone does not separate them. |
+| R3 | audit-v3 descriptive scan | 3.2 flags/SAE (m=128), 10.6 (m=256) — 0.03% of pairs; on real background features these are *candidates*, not false positives, and constitute a real-background candidate list (candidates in SAEs trained on real activations; their status as natural absorbed pairs is unknown pending semantic/causal/cross-seed adjudication). |
 | R4 | ρ̂ on flagged pairs (true child-given-parent = 0.5; descriptive) | 0.750 ± 0.005 — inflated exactly as the leak-regime analysis predicts (counting assumes gating; real activations are leaky). Child residual recovery bimodal: 0.99 (5/9) / 0.66 (4/9). |
 
 **Honest verdict:** confirmatory transfer PASSES at m=256, FAILS at m=128 by

@@ -25,3 +25,23 @@ running Arm 2" as future guidance; in the repository's actual chronology this
 had already happened (v1.1 amendment committed pre-Arm-2; Arm 2 ran the frozen
 detector without inspection-driven changes, and its m=128 failure is published
 unadjusted). The review was drafted against the pre-Arm-2 state.
+
+---
+
+## Round-8 review (docx, received mid-run): pre-collection amendments
+
+Applied and committed BEFORE round-8 collection (run was in flight; no
+round-8 result had been seen):
+
+| Item | Action |
+|---|---|
+| P0 width-specific endpoints | T1 → T1a/T1b per width, pooled secondary (prereg amendment §1 + scorer) |
+| P0 matcher defects | S1 matcher replaced pre-first-use: bijective pair score + all-seed clustering, ≤1 candidate/seed/cluster (amendment §5) |
+| P0 all-pairs specificity | Faithful full-scan flag proportion + flags/M added to scorer; no-injection real-background null queued as round 8b (cannot be added mid-run) |
+| P1 stage separation | Orientation accuracy (rate-derived), child-residual under auto vs oracle orientation, ρ̂ conditional on orientation — separate endpoints in scorer + report §17 |
+| P1 claim narrowing | "specificity transfers perfectly" → oracle-pair statement; "natural-absorption candidate list" → "real-background candidate list"; width effect described as calibration dependence; E1 scoped as same-domain resampling-stability |
+| P1 E2 conflation | Acknowledged: E2 = proportional-scale family only; fixed-(d,n_bg) width sweep + overcomplete m>d queued as 8b |
+| P2 docstring sync | round8_realdata.py docstring corrected to the actual 64-run design |
+
+Arm 2's L_HI=2.0 outcome remains the completed pre-registered result; v1.2 is
+a new detector version on fresh runs, per the review's framing.

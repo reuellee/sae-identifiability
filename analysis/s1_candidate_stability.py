@@ -89,23 +89,44 @@ for M in (128, 256):
                    for (i_, j_) in flags if (i_, j_) != tp]
         print(f"[m={M} seed {s}] candidates (non-planted): {len(cand[s])}",
               flush=True)
-    # cross-seed matching
-    seeds = sorted(cand)
+    # cross-seed matching (corrected per round-8 review amendment §5):
+    # bijective pair score over BOTH one-to-one assignments; clustering over
+    # all candidates from all seeds (no reference-seed anchoring); at most one
+    # candidate per seed per cluster.
+    def pair_score(a, b):
+        (di, dj), (ek, el) = a, b
+        s1 = min(abs(np.dot(di, ek)), abs(np.dot(dj, el)))
+        s2 = min(abs(np.dot(di, el)), abs(np.dot(dj, ek)))
+        return max(s1, s2)
+
+    nodes = [(s, i_, j_, di, dj) for s in sorted(cand)
+             for (i_, j_, di, dj) in cand[s]]
+    n = len(nodes)
+    # union-find over match edges
+    parent = list(range(n))
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+    for a in range(n):
+        for b_ in range(a + 1, n):
+            if nodes[a][0] == nodes[b_][0]:
+                continue                      # same seed never merges directly
+            if pair_score((nodes[a][3], nodes[a][4]),
+                          (nodes[b_][3], nodes[b_][4])) > 0.9:
+                ra, rb = find(a), find(b_)
+                if ra != rb: parent[ra] = rb
+    clusters = {}
+    for a in range(n):
+        clusters.setdefault(find(a), []).append(nodes[a])
     stable = []
-    used = {s: set() for s in seeds}
-    base_s = seeds[0]
-    for (i0, j0, di0, dj0) in cand[base_s]:
-        hits = 1
-        for s2 in seeds[1:]:
-            found = False
-            for (i2, j2, di2, dj2) in cand[s2]:
-                m1 = max(abs(np.dot(di0, di2)), abs(np.dot(di0, dj2)))
-                m2 = max(abs(np.dot(dj0, di2)), abs(np.dot(dj0, dj2)))
-                if m1 > 0.9 and m2 > 0.9:
-                    found = True; break
-            hits += int(found)
-        if hits >= 4:
-            stable.append((i0, j0, hits))
-    print(f"m={M}: seed-stable (>=4/8) candidate pairs: {len(stable)}")
-    for (i0, j0, h) in stable[:10]:
-        print(f"   base pair ({i0},{j0}) stable in {h}/8 seeds")
+    for members in clusters.values():
+        seeds_in = {}
+        for (s, i_, j_, di, dj) in members:   # <=1 candidate per seed: keep first
+            seeds_in.setdefault(s, (i_, j_))
+        if len(seeds_in) >= 4:
+            stable.append((sorted(seeds_in), members[0][1], members[0][2]))
+    print(f"m={M}: seed-stable (>=4/8, clustered) candidate clusters: {len(stable)}"
+          f"  (total candidates {n})")
+    for (sds, i0, j0) in stable[:10]:
+        print(f"   cluster incl. pair ({i0},{j0}), seeds {sds}")

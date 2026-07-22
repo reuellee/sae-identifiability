@@ -382,8 +382,16 @@ predicts. Verdict recorded as registered — pass at m = 256, fail at m = 128 �
 post-hoc threshold change; the labeled-exploratory observation that L_HI = 1.9 flags
 16/16 at zero faithful cost awaits a v1.2 pre-registration on fresh data. The descriptive
 audit-v3 scan (0.03% of latent pairs flagged on real background features) doubles as this
-program's first **natural-absorption candidate list**, unlocking the natural-feature
-benchmark the external review asked for.
+program's first **real-background candidate list** (candidates found in SAEs trained on
+real activations — their status as natural absorbed pairs is unknown pending semantic,
+causal, and cross-seed adjudication), a step toward the natural-feature benchmark the
+external review asked for. Note also the width dependence is a *calibration* dependence:
+the lift statistic shifts systematically with m, and whether one cutoff transfers across
+widths, layers, models, sparsity regimes, and SAE architectures remains open. Of the
+pipeline's five stages (detect → orient → recover child → estimate frequency →
+intervene), only detection has encouraging transfer evidence; orientation by rarity was
+right in ~5/9 detections (child recovery 0.99 when right, 0.66 when wrong), and ρ̂ is
+leak-inflated — each stage is reported separately from round 8 onward.
 
 **Uncertainty (pre-registered 10k seed-bootstrap, added post-hoc after external research
 review flagged the omission — the analysis plan registered it, the scorer initially did

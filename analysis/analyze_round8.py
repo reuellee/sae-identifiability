@@ -38,23 +38,42 @@ if e1:
         print(f"  m={m}: flagged {fl}/{len(c)} "
               f"(tp_lift {np.mean([r['tp_lift'] for r in c]):.3f} "
               f"+- {np.std([r['tp_lift'] for r in c]):.3f})")
-    rec = np.mean([r["tp_flagged"] for r in ab]) if ab else float("nan")
-    d = {}
-    for r in ab: d.setdefault(int(r["seed"]), []).append(r["tp_flagged"])
-    lo, hi = seed_boot(d, np.mean)
-    print(f"T1 recall: point {rec:.4f}  CI [{lo:.3f}, {hi:.3f}] "
-          f"(pass point >= 0.90; falsified < 0.70; CI lower-bound aspiration 0.75)")
-    print(f"T1 verdict: {'PASS' if rec >= 0.90 else ('FALSIFIED' if rec < 0.70 else 'INCONCLUSIVE')}"
-          f"{' (CI-supported >=0.75)' if lo >= 0.75 else ''}")
-    fa = [r for r in e1 if r["eps"] == 0.05]
-    t2 = np.mean([r["tp_flagged"] for r in fa]) if fa else float("nan")
-    print(f"T2 faithful flag rate: {t2:.4f} (pass <= 0.10) -> "
-          f"{'PASS' if t2 <= 0.10 else 'FAIL'}")
+    # WIDTH-SPECIFIC confirmatory endpoints (amendment, pre-collection):
+    # T1a/T1b per width; pooled recall secondary only.
+    for m, tag in ((128, "T1a"), (256, "T1b")):
+        c = [r for r in ab if r["m"] == m]
+        rec = np.mean([r["tp_flagged"] for r in c]) if c else float("nan")
+        d = {}
+        for r in c: d.setdefault(int(r["seed"]), []).append(r["tp_flagged"])
+        lo, hi = seed_boot(d, np.mean) if d else (float("nan"),) * 2
+        print(f"{tag} recall(m={m}): point {rec:.4f}  CI [{lo:.3f}, {hi:.3f}] -> "
+              f"{'PASS' if rec >= 0.90 else ('FALSIFIED' if rec < 0.70 else 'INCONCLUSIVE')}")
+    pooled = np.mean([r["tp_flagged"] for r in ab]) if ab else float("nan")
+    print(f"pooled recall (secondary, cannot override widths): {pooled:.4f}")
+    # T2 per width + all-pairs specificity readouts (amendment §4)
+    for m in (128, 256):
+        fa = [r for r in e1 if r["eps"] == 0.05 and r["m"] == m]
+        t2 = np.mean([r["tp_flagged"] for r in fa]) if fa else float("nan")
+        any_flag = np.mean([r["n_flagged"] > 0 for r in fa]) if fa else float("nan")
+        print(f"T2 m={m}: oracle-pair flag rate {t2:.4f} (pass <= 0.10) -> "
+              f"{'PASS' if t2 <= 0.10 else 'FAIL'}; "
+              f"faithful SAEs with >=1 full-scan flag: {any_flag:.2f}")
+    # Orientation + downstream endpoints, conditional on detection (amendment §3)
+    for m in (128, 256):
+        fl = [r for r in ab if r["m"] == m and r["tp_flagged"] == 1]
+        if not fl: continue
+        oo = [int(r["rate_comp"] < r["rate_par"]) if not math.isnan(r["rate_comp"])
+              else 0 for r in fl]   # detected comp = rarer; correct iff oracle comp rarer
+        crc = [r.get("child_res_cos", float("nan")) for r in fl]
+        print(f"orientation m={m} (conditional on detection): accuracy {np.mean(oo):.2f} "
+              f"(n={len(fl)}); child_res_cos auto-orient {np.nanmean(crc):.3f} "
+              f"(oracle-orient recompute from saved weights: separate pass)")
     for m in (128, 256):
         c = [r for r in e1 if r["m"] == m]
         npairs = m * (m - 1) / 2
         print(f"T3 m={m}: flags/SAE {np.mean([r['n_flagged'] for r in c]):.1f} "
-              f"({np.mean([r['n_flagged'] for r in c])/npairs*1e6:.0f}/M pairs); "
+              f"({np.mean([r['n_flagged'] for r in c])/npairs*1e6:.0f}/M pairs; "
+              f"real-background candidates, natural status unknown); "
               f"rho_hat {np.nanmean([r.get('rho_hat', float('nan')) for r in c]):.3f} (true 0.5, descriptive)")
 
 # ------------------------------------------------------------------- E2

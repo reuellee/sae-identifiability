@@ -6,7 +6,8 @@ pair directions) at eps=0.002; faithful controls seeds 8-15.
 Setup mirrors experiments/capacity_limited_test.py exactly (same normalization,
 AMP=5, Q=0.2, P0=0.2, LAM=1.0, STEPS=20000) but VANILLA ONLY:
   m in {128, 256} x eps in {0.002 (absorbed regime), 0.05 (faithful control)}
-  x 8 seeds = 32 runs (two batched programs).
+  x seeds: 24 fresh (8-31) at eps=0.002 + 8 (8-15) at eps=0.05 = 64 runs
+  (two batched programs of 32).
 Detector, thresholds, theta, rate window: IDENTICAL to Arm 1 (locked in
 notes/prereg-pair-identification.md) — no re-tuning for real data; transfer is
 the test. Oracle directions are used ONLY to score (parent latent, composite

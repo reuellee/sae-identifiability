@@ -185,5 +185,5 @@ non-gated regimes). Full readout: `results/prereg_pairid/SUMMARY.md`. Verdict
 recorded as-is; the registered thresholds were not adjusted post hoc. Next
 step if pursued: v1.2 pre-registration with real-data-calibrated L_HI (and a
 gating-corrected ρ̂) on fresh configurations, plus inspection of the R3
-audit-v3 candidate list (first natural-absorption candidates from this
-program).
+audit-v3 real-background candidate list (natural status unknown pending
+adjudication).
