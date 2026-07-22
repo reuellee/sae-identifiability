@@ -319,7 +319,7 @@ synthetic development data identified the planted absorbed oracle pair with
 strong width dependence: $1/8$ detections at $m = 128$ and $8/8$ at
 $m = 256$ under the pre-registered threshold — every true pair sat at
 $\ell = 2.00 \pm 0.05$ against $L_{\text{HI}} = 2.0$, a width-dependent
-*calibration* failure rather than a structural one. The planted faithful
+*calibration* failure of the cutoff (the statistic itself concentrated tightly). The planted faithful
 oracle pair was never flagged ($c \in [0.27, 0.31]$, outside the band). This
 supports partial transfer of the pair-detection signal; it does **not**
 establish all-pairs specificity on real backgrounds (full-scan flag counts

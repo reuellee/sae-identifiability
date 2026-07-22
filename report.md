@@ -376,8 +376,11 @@ locked for Arm 2 unchanged.
 *statistic* transfers; the *cutoff* lands on a knife edge. All 16 absorbed runs put the
 true pair at **lift 2.00 ± 0.05** — the leak-coupled regime, exactly as real (noisy)
 activations should — so the toy-locked L_HI = 2.0 splits them: 8/8 flagged at m = 256,
-1/8 at m = 128. Specificity is perfect (faithful controls: pair cosine 0.27–0.31, zero
-flags), and the counting ρ̂ inflates (0.75 vs 0.5) precisely as the leak-regime analysis
+1/8 at m = 128. On the planted oracle pair the detector distinguished the absorbed and faithful
+configurations — but the faithful control is geometrically easy (its pair cosine
+0.27–0.31 lies outside the accepted band [0.45, 0.90], so the geometry gate alone rejects
+it); specificity among geometrically matched non-absorbed pairs remains untested (round
+8b). The counting ρ̂ inflates (0.75 vs 0.5) precisely as the leak-regime analysis
 predicts. Verdict recorded as registered — pass at m = 256, fail at m = 128 — with no
 post-hoc threshold change; the labeled-exploratory observation that L_HI = 1.9 flags
 16/16 at zero faithful cost awaits a v1.2 pre-registration on fresh data. The descriptive

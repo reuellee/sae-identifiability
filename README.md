@@ -151,6 +151,8 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
   | §15 capacity-limited (`results/round6/`) | `196df8c` |
   | §15b bg-relative (`results/round6/`) | `05861b0` |
   | Arm A (`results/prereg_armA/`) | `53b7e01` (pre-results lock: `cfd3e09`) |
-  | capacity m≥33 rerun (`results/capacity_m33/`) | `319fa1f`-adjacent (pre-results lock: `0cba6b2`) |
-  | pair-ID Arm 1 (`results/prereg_pairid/`) | `06d3005` (structure lock `e586f02`, threshold lock pre-run) |
-  | pair-ID Arm 2 held-out (`results/prereg_pairid/arm2_runs.csv`) | `319fa1f` (v1.1 frozen pre-run: `06d3005`-adjacent) |
+  | capacity m≥33 rerun (`results/capacity_m33/`) | results `465a139` (pre-results lock `0cba6b2`) |
+  | pair-ID Arm 1 (`results/prereg_pairid/`) | results `465a139` (structure lock `e586f02`, threshold lock `1bbca24`) |
+  | pair-ID Arm 2 held-out (`results/prereg_pairid/arm2_runs.csv`) | results `319fa1f` (v1.1 frozen pre-run in `465a139`) |
+  | round 8 E1–E3 (`results/round8/`) | results `68f444c` (lock `a539c76`, pre-collection amendment `69ca642`) |
+  | S1 stability, corrected+exclusion rerun (`results/round8/s1_*`) | v1 `841e8cd` (superseded); v2 with oracle-touch exclusion: this commit |

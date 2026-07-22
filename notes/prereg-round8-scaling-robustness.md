@@ -141,3 +141,48 @@ seen (the GPU session is mid-run; collection has not occurred):
 - **S1:** corrected matcher only; see results/round8/s1_stability.log.
 Full readout: `results/round8/SUMMARY.md`. Round 8b (no-injection real
 background null, fixed-d width sweep, overcomplete) remains queued.
+
+---
+
+## AMENDMENT 2 (2026-07-22, POST-run — status honestly labeled per item)
+
+Adopted from the fourth external review, which was drafted against the
+pre-round-8 state and arrived after round 8 executed. Items fall into three
+classes:
+
+**(a) Already satisfied pre-collection** (evidence: commit `69ca642`, before
+collection at 21:54 UTC): width-specific T1a/T1b; corrected bijective
+all-seed matcher; orientation/child-recovery/ρ̂ as separate stage endpoints;
+E1 scoped as same-domain held-out seed replication; E2 as proportional
+scale-family study.
+
+**(b) Post-run analyses derivable from FROZEN artifacts** (weights + seeded
+eval streams committed with the results; computed without retraining, code
+in `analysis/r8_specificity_recompute.py` + corrected
+`analysis/s1_candidate_stability.py`; POST-HOC status disclosed — these are
+measured readouts, not confirmatory endpoints):
+1. Specificity fields the registered concept required: exact oracle-pair
+   flag, **any flag touching an oracle latent** (the inherited docstring's
+   registered wording — the run-time code checked exact-pair only; mismatch
+   found by review), full-scan flags/SAE and per million pairs.
+2. **Shuffled-firing dependence null**: permute each latent's firing column
+   independently (preserves decoder geometry and marginal rates, destroys
+   pair dependence); detector flag count on shuffled codes = dependence
+   null.
+3. **S1 rerun with injection-touch exclusion**: the first S1 run (log
+   `s1_stability.log`, commit `841e8cd`) excluded only the exact planted
+   pair; pairs touching a planted latent are injection-affected and are now
+   excluded. The v2 rerun (`s1_stability_v2.log`, machine-readable clusters
+   `s1_clusters_m*.json`) **supersedes** the v1 result; v1 is retained as a
+   record.
+
+**(c) Requires new data — registered for ROUND 8b** (confirmatory only
+there): geometrically matched non-absorbed control on real activations
+(planted correlated-independent pair with decoder cosine inside
+[0.45, 0.90], rate-matched); no-injection real-background condition
+(reported alongside the shuffled null, which is the cleaner dependence
+null); fixed-(d, n_bg) width sweep; overcomplete m > d; operational
+endpoints registered now: flags/M eligible pairs, proportion of control
+SAEs with ≥1 flag, precision in planted conditions, excess flags vs the
+shuffled null; unconditional end-to-end yield P(formed ∧ detected) reported
+alongside conditional recall.

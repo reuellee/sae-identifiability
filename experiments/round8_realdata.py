@@ -15,7 +15,10 @@ latent, absorbed criterion cos_comp > 0.98), per the registered scope.
 
 Registered readouts (from the prereg decision rule):
   R1: fraction of absorbed-formed eps=0.002 runs whose oracle pair is flagged.
-  R2: flags in eps=0.05 (faithful) runs touching the oracle pair (should be ~0).
+  R2: exact oracle-pair flag in eps=0.05 (faithful) runs. NOTE (amendment 2):
+  the originally inherited wording said 'touching the oracle pair' while the
+  code checks the exact pair; the touch and full-scan variants are computed
+  from the frozen weights in analysis/r8_specificity_recompute.py.
   R3: audit-v3 descriptive scan — total flags/SAE on the real-feature
       background (correlated real features may legitimately flag; reported,
       not thresholded).
@@ -33,7 +36,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import numpy as np
 
-# ---- detector v1.1 constants: locked in the prereg amendment ---------------
+# ---- detector v1.2 constants (v1.1 + L_HI 2.0->1.9; locked in round-8 prereg) ----
 # v1.0 (pilot-calibrated) + overlap veto OVL_MAX, added after Arm 1 diagnosed
 # its null-condition FPs as feature-splitting doublets (rare split latent
 # fires only WITHIN its parent feature's events -> overlap ~1.0; true absorbed
@@ -80,7 +83,7 @@ for s in SEEDS_ABS:
     pairs[s] = Qm.T.to(dev)
 
 def detect(Dn, fires):
-    """Detector v1.1: cosine band + two-sided lift + overlap veto."""
+    """Detector v1.2: cosine band + two-sided lift (L_HI=1.9) + overlap veto."""
     rates = fires.mean(0)
     keep = (rates > RATE_LO) & (rates < RATE_HI)
     C = np.abs(Dn.T @ Dn)

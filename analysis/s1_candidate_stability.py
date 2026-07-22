@@ -85,8 +85,12 @@ for M in (128, 256):
         fires = np.concatenate(fires_chunks)
         flags = detect(Di.numpy(), fires)
         tp = tuple(sorted((par, comp)))
+        # amendment-2 exclusion: drop every pair TOUCHING a planted latent
+        # (parent/background and composite/background pairs are injection-
+        # affected; the previous exact-pair-only filter was insufficient)
         cand[s] = [(i_, j_, Di[:, i_].numpy(), Di[:, j_].numpy())
-                   for (i_, j_) in flags if (i_, j_) != tp]
+                   for (i_, j_) in flags
+                   if i_ not in (par, comp) and j_ not in (par, comp)]
         print(f"[m={M} seed {s}] candidates (non-planted): {len(cand[s])}",
               flush=True)
     # cross-seed matching (corrected per round-8 review amendment §5):
@@ -130,3 +134,12 @@ for M in (128, 256):
           f"  (total candidates {n})")
     for (sds, i0, j0) in stable[:10]:
         print(f"   cluster incl. pair ({i0},{j0}), seeds {sds}")
+    # machine-readable cluster file (amendment-2 requirement)
+    import json
+    out = []
+    for members in clusters.values():
+        if len({m_[0] for m_ in members}) < 2: continue
+        out.append([{"seed": int(m_[0]), "i": int(m_[1]), "j": int(m_[2])}
+                    for m_ in members])
+    json.dump(out, open(os.path.join(HERE, "..", "results", "round8",
+              f"s1_clusters_m{M}.json"), "w"), indent=1)
