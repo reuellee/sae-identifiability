@@ -41,14 +41,40 @@ For every unordered kept pair (i, j):
 - `c_ij = |cos(D_i, D_j)|` (unit-norm decoders)
 - `lift_ij = P(i ∧ j) / (P(i) · P(j))`
 
-**Flag iff `c_ij ∈ [C_LO, C_HI]` and `lift_ij < L_MAX`.**
+**Flag iff `c_ij ∈ [C_LO, C_HI]` and (`lift_ij ≤ L_LO` or `lift_ij ≥ L_HI`)** —
+i.e. co-firing far from independence in EITHER direction.
 Orientation: composite = the rarer latent; parent = the commoner.
 Child direction estimate: `u = normalize(D_comp − (D_comp·D_par) D_par)`.
 Frequency estimate: `ρ̂ = P(comp fires) / P(comp ∨ par fires)`.
 
-**Calibrated values: [TO BE FILLED FROM PILOT BEFORE THE CONFIRMATORY RUN — this note
-is not final until C_LO / C_HI / L_MAX are concrete numbers and this bracket is replaced
-by the pilot readout that justifies them.]**
+**Calibrated values (locked from the pilot, pre-confirmatory-run):
+C_LO = 0.45, C_HI = 0.90, L_LO = 0.5, L_HI = 2.0.**
+
+Pilot readout (`results/prereg_pairid/pilot.csv`, 6 absorbed runs of 8) and the
+one design revision it forced:
+
+- True-pair decoder cosine: 0.596–0.710 across σ ∈ {0, 0.1} → band [0.45, 0.90]
+  gives margin on both sides while excluding duplicate/split latents (cos ≳ 0.95).
+- True-pair lift is **bimodal in σ**: ≈ 0.000–0.005 at σ = 0 (clean mutual
+  gating: parent fires 0% of joint events, composite 0.03% of host-only) but
+  ≈ **2.96–3.07 at σ = 0.1** (noise leaks both gates: composite fires on ~55%
+  of host-only, parent on ~60% of joint). The originally drafted one-sided rule
+  (`lift < L_MAX`) would therefore miss every noisy absorbed pair. Revised,
+  pre-lock, to the two-sided rule above, with the principled reading: **an
+  absorbed pair's two latents are driven by the same host event stream —
+  exclusively (lift ≪ 1) or jointly (lift ≫ 1), never independently — whereas
+  genuinely correlated-but-independent features sit at lift ≈ 1.** G2's
+  discrimination claim is unchanged: the lift term still carries it.
+- Margins: ≥ 1.48× to L_HI (2.96 vs 2.0), ≥ 100× to L_LO (0.005 vs 0.5).
+- Scoping consequence for D4 (locked now): the counting estimator
+  `ρ̂ = P(comp)/P(comp ∨ par)` assumes gating, which σ = 0.1 leak inflates
+  (pilot: P(comp) ≈ 0.18 at ρ = 0.2 · P_HOST = 0.05 true). **D4's confirmatory
+  threshold applies to σ = 0 cells; σ = 0.1 ρ̂ is reported as exploratory**
+  (consistent with Arm A's finding that magnitude/count estimators are
+  σ-regime-dependent). D1–D3 remain confirmatory over ALL absorbed A cells,
+  both σ values.
+- Pilot absorption formation: 6/8 (the 2 failures are ρ = 0.10, σ = 0
+  child-erasure seeds, matching Arm A's formation rates; disclosed).
 
 ## Design (Arm 1, synthetic; 16 seeds/cell; trainer = round-2/Arm A verbatim)
 

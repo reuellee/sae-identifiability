@@ -25,7 +25,11 @@ SMOKE = A.SMOKE
 RT2 = math.sqrt(2)
 
 # ---- detector constants (LOCKED from pilot; keep in sync with the note) ----
-C_LO, C_HI, L_MAX = 0.55, 0.95, 0.25     # PLACEHOLDER until pilot readout
+# Two-sided lift rule (pilot discovery): absorbed pairs sit at lift ~0 (sigma=0,
+# clean gating) or ~3 (sigma=0.1, both gates leak); independent correlated
+# features sit at lift ~1. Flag = cos band AND lift far from 1 either way.
+C_LO, C_HI = 0.45, 0.90
+L_LO, L_HI = 0.5, 2.0
 THETA = 0.05
 RATE_LO, RATE_HI = 5e-4, 0.6
 N_EV = 6000 if SMOKE else 200_000
@@ -109,7 +113,7 @@ def detect(Dn, fires):
         if not keep[i]: continue
         for j in range(i + 1, m):
             if not keep[j]: continue
-            if C_LO < C[i, j] < C_HI and L[i, j] < L_MAX:
+            if C_LO < C[i, j] < C_HI and (L[i, j] <= L_LO or L[i, j] >= L_HI):
                 flags.append((i, j))
     return flags, C, L, rates
 

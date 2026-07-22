@@ -32,7 +32,8 @@ sys.path.insert(0, HERE)
 import numpy as np
 
 # ---- detector constants: MUST match Arm 1 / the prereg note ----------------
-C_LO, C_HI, L_MAX = 0.55, 0.95, 0.25     # PLACEHOLDER until pilot readout
+C_LO, C_HI = 0.45, 0.90
+L_LO, L_HI = 0.5, 2.0        # two-sided lift rule, locked from the pilot
 THETA = 0.05
 RATE_LO, RATE_HI = 5e-4, 0.6
 N_EV = 200_000
@@ -81,7 +82,7 @@ def detect(Dn, fires):
         if not keep[i]: continue
         for j in range(i + 1, m):
             if not keep[j]: continue
-            if C_LO < C[i, j] < C_HI and L[i, j] < L_MAX:
+            if C_LO < C[i, j] < C_HI and (L[i, j] <= L_LO or L[i, j] >= L_HI):
                 flags.append((i, j))
     return flags, C, L, rates
 

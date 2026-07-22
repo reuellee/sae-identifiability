@@ -61,15 +61,19 @@ print(f"median cos(residual, v_c) = {med:.4f} (n={len(cr)}; "
       f"orientation correct {np.mean(g(flA,'orient_ok')):.3f})")
 print(f"D3 verdict: {'PASS' if med > 0.9 else ('FALSIFIED' if med <= 0.75 else 'INCONCLUSIVE')}")
 
-print("\n=== D4 (G4 end-to-end rho from detected pair) ===")
-errs = [abs(r["rho_hat"] - r["rho"]) for r in flA
+print("\n=== D4 (G4 end-to-end rho; confirmatory at sigma=0 per locked note) ===")
+flA0 = [r for r in flA if r["sigma"] == 0.0]
+errs = [abs(r["rho_hat"] - r["rho"]) for r in flA0
         if not math.isnan(r.get("rho_hat", float("nan")))]
-for rho in sorted(set(r["rho"] for r in flA)):
-    c = [r for r in flA if r["rho"] == rho]
-    e = [abs(x["rho_hat"] - rho) for x in c if not math.isnan(x["rho_hat"])]
-    print(f"  rho={rho:.2f}: rho_hat={np.mean(g(c,'rho_hat')):.4f} |err|={np.mean(e):.4f} (n={len(e)})")
+for sig in sorted(set(r["sigma"] for r in flA)):
+    for rho in sorted(set(r["rho"] for r in flA if r["sigma"] == sig)):
+        c = [r for r in flA if r["rho"] == rho and r["sigma"] == sig]
+        e = [abs(x["rho_hat"] - rho) for x in c if not math.isnan(x["rho_hat"])]
+        tag = "CONF" if sig == 0.0 else "expl"
+        print(f"  [{tag}] sig={sig:.1f} rho={rho:.2f}: rho_hat={np.mean(g(c,'rho_hat')):.4f} "
+              f"|err|={np.mean(e):.4f} (n={len(e)})")
 m4 = np.mean(errs) if errs else float("nan")
-print(f"mean |rho_hat - rho| = {m4:.4f}  (pass <= 0.03)")
+print(f"mean |rho_hat - rho| (sigma=0) = {m4:.4f}  (pass <= 0.03)")
 print(f"D4 verdict: {'PASS' if m4 <= 0.03 else 'FAIL'}")
 
 print("\n=== G5 (CDX exclusive-correlated, exploratory) ===")
