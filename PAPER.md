@@ -279,9 +279,20 @@ mixture has nothing to fit at $\sigma = 0$.
 **The general lesson: dictionary identifiability (a child atom in the
 decoder) and code identifiability (child events distinguishable in the
 sparse code) are distinct.** Absorption here destroys the former while
-encoder gating preserves the latter. The no-go remains valid for its
-stipulated single-shared-latent model; trained SAEs do not realize that
-model, even when capacity-forced.
+encoder gating preserves the latter. The gating mechanism itself has prior
+art: Chanin et al.'s toy-model work documented absorption's encoder/decoder
+asymmetry — an encoder "hole" with an unchanged decoder — and suggested it
+as a detection signal, and Chanin & Till's "Broken Latents" observed
+multi-peak activation histograms in broken latents and proposed label-free
+detection from them. Our delta is the quantification in trained untied SAEs
+(mutual gating, conditional TV 0.9999), the identifiability consequences
+(counting recovers ρ given the pair; the dictionary-vs-code distinction as
+stated properties), and — notably — a pre-registered test showing the
+histogram/bimodality route *fails at σ = 0 precisely because gating
+suppresses the second mode*, qualifying the Broken Latents suggestion. The
+binarized-signature no-go remains valid for its stipulated
+single-shared-latent model; trained SAEs do not realize that model, even
+when capacity-forced.
 
 Exploratory: activation noise $\sigma \ge 0.2$ destroys absorption in favor
 of faithful child latents; the noise mechanism is unmeasured (histograms not
@@ -396,6 +407,23 @@ label-free frequency identifiability analysis draws on mixture/topic-model
 identifiability (Arora–Ge–Moitra 2012; Anandkumar et al. 2014;
 Allman–Matias–Rhodes 2009; Fu–Huang–Sidiropoulos 2016), whose common
 linear-independence condition is exactly what full absorption degenerates.
+For the detector arc: co-activation statistics have been used to build
+feature-family hierarchies (O'Neill et al., arXiv:2408.02622), to cluster
+functional structure (Michaud et al., arXiv:2410.19750), and as training
+constraints in hierarchical architectures (Tree SAE, arXiv:2605.07922;
+HSAE, arXiv:2602.11881); Chanin et al. measure absorption with NPMI given
+probe-based labels; encoder holes and activation-histogram multimodality
+were observed and proposed as detection signals in Chanin et al.'s
+toy-model posts and Chanin & Till's "Broken Latents" (2024). A label-free
+post-hoc detector of absorbed *pairs* — geometry band + two-sided
+co-firing lift + containment veto, with locked thresholds, held-out
+validation, and a shuffled-firing null — appears unclaimed
+(full sweep: `notes/novelty-round8-detector.md`). Seed-level feature
+instability (Paulo & Belrose; arXiv:2606.12138) contextualizes S1: the
+seed-stable pair *clusters* we find persist even though individual
+features generally do not. SynthSAEBench (arXiv:2602.14687) offers
+ground-truth synthetic SAE evaluation without absorption metrics — a
+natural future host for detector benchmarking.
 
 ## 10. Limitations and open problems
 

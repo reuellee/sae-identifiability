@@ -338,7 +338,11 @@ mono-composites), so H4 was untestable as configured.
 
 **Reading.** Two distinct notions must be separated: **dictionary identifiability** (does
 the decoder basis contain a child atom?) and **code identifiability** (does the sparse
-code distinguish child events?). These runs show dictionary-level absorption *without*
+code distinguish child events?). *(Prior-art note, post-novelty-sweep: encoder "holes"
+and histogram multimodality were observed in Chanin et al.'s toy-model posts and
+Chanin & Till's "Broken Latents" (2024), with detection suggested from both; this
+section's delta is the quantification in trained SAEs and the identifiability
+consequences — see `notes/novelty-round8-detector.md`.)* These runs show dictionary-level absorption *without*
 code-level information loss — the decoder absorbs the child direction while encoder
 gating preserves the child-event distinction in the activation pattern. The practical
 landscape flips accordingly: the hard part of label-free frequency recovery is not
