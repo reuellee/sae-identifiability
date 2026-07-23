@@ -199,4 +199,6 @@ Pre-lock external reviews, both archived with responses in `reviews/`:
   [AT-LOCK] bars; power addressed via 24 seeds; evaluation details frozen +
   σ = 0.05 and RC ρ = 0.1 stress cells).
 
-Lock commit hash recorded here by amendment at lock time.
+**LOCKED 2026-07-23, commit `b0276cc`** (this hash line added by the
+immediately-following amendment commit, per practice — nothing else in this
+document changes after `b0276cc` except by dated amendment).
