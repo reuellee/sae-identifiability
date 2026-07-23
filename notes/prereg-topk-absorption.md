@@ -129,4 +129,8 @@ arm added; m=16 reclassified as SGD-behaviour; activation-aware metric;
 missingness loophole removed by a binary metric; ε=0.05 stays FALSIFIED;
 vacuous cells block; ε grid extended to 0.60; composite/uniqueness/ε=0
 overclaims corrected; counterexample added to the verifier; scorer committed
-before lock). Lock hash recorded by amendment.
+before lock).
+
+**LOCKED 2026-07-24, commit `f2e92fc`** (this line added by the
+immediately-following amendment; nothing else changes after `f2e92fc` except
+by dated amendment).
