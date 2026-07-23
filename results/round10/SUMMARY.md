@@ -79,6 +79,19 @@ fewer zero tokens, or an explicit 2-atom-allocation constraint) to test the
 2q crossover at SGD level; (b) the L1-vs-TopK head-to-head **with background**,
 the regime where absorption actually occurs.
 
+**The decisive next experiment (b), sharpened** (results-stage review,
+`reviews/ROUND10_RESULTS_REVIEW_GEMINI-2.5-PRO_2026-07-24.md`): the original
+"TopK resists L1 absorption" hypothesis was meaningful only *with* background,
+where L1 absorption is real — and this round tested it where it isn't. The
+head-to-head with background disambiguates two live hypotheses: (i) TopK's hard
+budget keeps *hurting* rare-code recovery (fewer training signals → worse than
+L1); or (ii) the hard budget *forces a clean choice* — an atom must represent
+the child or the background, it cannot form a "good-enough" composite that
+smears a bit of each (the hypothesized L1 absorption mechanism) → TopK more
+identifiable. Disambiguating these directly advances the north-star's
+*identifiable codes* stage. Verdict of the results-stage review: **ACCEPT** —
+honest, correctly-scoped negative round.
+
 ## Data
 
 `r10_runs.csv` (960 rows: child_recovered + absorbed + full activation

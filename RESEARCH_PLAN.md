@@ -1,8 +1,20 @@
 # Research plan (living document)
 
-*Updated 2026-07-22 (post round-7 / both external reviews). Priorities follow
-the research review's §12 queue. Every confirmatory experiment gets a
+*Updated 2026-07-24 (post round-10). Every confirmatory experiment gets a
 pre-registration note + pre-results commit; exploratory work is labeled.*
+
+## North star (owner, 2026-07-24)
+
+The program's intended arc: **SAE geometry → identifiable codes → causally
+valid features → reusable abstractions → improved novel-task adaptation.**
+Rounds so far live at the first two stages: *geometry* (the ε\* crossover, the
+coherence no-go, decoder-vs-code identifiability) and *identifiable codes* (the
+detector, the gating-corrected ρ̂, and round 10's TopK/width study of when a
+child code is recoverable at all). The natural pivot the results now point to
+is **causal validity**: whether a "recovered" child code actually mediates the
+child feature's effect (ablation/intervention), which is the bridge to reusable
+abstractions and novel-task transfer. Queue items are tagged with the stage
+they advance.
 
 ## Completed (provenance in README table)
 
@@ -16,6 +28,7 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
 | Reviews | GPT-5.6 ×3 rounds + research review: all revisions applied, responses archived | `reviews/` |
 | Natural-feature adjudication (S1) | **Null on wild absorption:** 0/15 seed-stable candidate clusters meet asymmetric-nesting; all are correlated (typographic byte-fragment family, incl. the 4-clique) or anti-correlated linguistic-feature pairs = the CDX equivalence class. Max child→parent containment 0.46 ≪ 0.80. | `results/round8/natfeat_SUMMARY.md` |
 | Round 9 | **Gating-corrected ρ̂ (dominance partition): mechanism endpoints P1M/P2M PASS 16/16 cells (MAE ≤ 0.0026 vs naive 0.25 bias); P4 inversion check PASS 16/16; P1O/P2O INCONCLUSIVE overall (14 cell-level passes + one ρ=0.1 cell per harness in the zone — measured h_B background pull, RC one disclosed a-priori); P3 margin FALSIFIED in 2 σ=0 synthetic cells (post-hoc diagnosis: eligibility model overpredicted baseline bias; ρ̂_D still more accurate there).** Lock `b0276cc`; dual pre-lock review (Gemini minor / GPT-5.6 major) + dual results-stage review (Gemini ACCEPT; GPT-5.6 minor→accept after corrections — it independently reproduced all six verdicts from the public repo). | §18, `results/round9/SUMMARY.md` + `REPORTING_APPENDIX.md` |
+| Round 10 (TopK, largely NEGATIVE) | **Theory (2-atom oracle): ε\*_TopK = 2q, capacity collapse — verified (M0), incl. GPT-5.6's 3-atom zero-loss counterexample that scopes it to two atoms. SGD experiment: P1 INCONCLUSIVE, P2 FALSIFIED (the m=2 SGD arm is degenerate — high rec, non-selective atoms — not the clean 2-atom optimum), P3 PARTIAL (overcomplete TopK recovers 0.62–0.83), P4 REFUTED (L1 recovers 1.00 > TopK — the hard budget HURTS rare-feature recovery). Findings: dictionary width (not per-token k) drives recovery; isolated L1 does NOT absorb → prior L1 absorption is background-driven, not rarity alone; "TopK resists absorption" refuted.** Lock `f2e92fc`; dual pre-lock review (Gemini minor / GPT-5.6 major — reframed the round). | `theory/topk_absorption.md`, `results/round10/SUMMARY.md` |
 
 ## Round 8 (in flight): `notes/prereg-round8-scaling-robustness.md`
 

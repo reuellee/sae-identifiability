@@ -6,10 +6,11 @@ pair merging into one latent) in an analytically solvable model.
 
 **Status: actively developed technical report** (started 2026-07-21; revised
 2026-07-22 after an external review — `reviews/EXTERNAL_REVIEW_GPT-5.6_2026-07-22.md`
-and the point-by-point response beside it). Nine experiment rounds so far
-(2,900+ trained SAEs, all confirmatory predictions pre-registered — round 9
-additionally dual-reviewed *before* its lock by Gemini 2.5 Pro and GPT-5.6,
-`reviews/ROUND9_PREREG_*`), theory
+and the point-by-point response beside it). Ten experiment rounds so far
+(3,800+ trained SAEs, all confirmatory predictions pre-registered — rounds 9
+and 10 additionally dual-reviewed *before* their lock by Gemini 2.5 Pro and
+GPT-5.6, `reviews/ROUND9_PREREG_*`, `reviews/ROUND10_PREREG_*`; round 10 is a
+deliberately-reported **negative** round on TopK SAEs), theory
 computationally verified (sympy — not a proof assistant), semi-synthetic
 validation of the capacity-dependent regime structure on real GPT-2 activations
 (report.md §14–15b), plus a fresh-context LLM referee pass (adversarial, not

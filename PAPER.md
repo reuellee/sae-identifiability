@@ -503,9 +503,21 @@ natural future host for detector benchmarking.
 
 ## 10. Limitations and open problems
 
-1. **Model scope.** All theory is nonnegative-$L_1$, orthonormal features,
-   population loss; the no-go's overcomplete case ($m > d$) is open, and
-   TopK/JumpReLU objectives are untested beyond one exploratory cell.
+1. **Model scope.** The exact theory is nonnegative-$L_1$, orthonormal
+   features, population loss; the no-go's overcomplete case ($m > d$) is open.
+   **TopK** is now treated (round 10, `theory/topk_absorption.md`,
+   `results/round10/SUMMARY.md`): for a *capacity-limited two-atom* dictionary
+   there is an exact crossover $\varepsilon^*_{\rm TopK} = 2q$ with no $\lambda$
+   (machine-checked, incl. the reviewer-supplied 3-atom zero-loss
+   counterexample that scopes it to two atoms — an overcomplete dictionary
+   escapes). The SGD test was a productive **negative** round: the $m{=}2$ arm
+   is SGD-degenerate (so the two-atom crossover/collapse are inconclusive/
+   falsified *at SGD level*, not as theorems); overcomplete TopK recovers the
+   child but *less* cleanly than L1; and — the sharpest finding — in isolation
+   *neither* architecture absorbs an $\varepsilon>0$ child, so this project's
+   own L1 absorption is **background-competition-driven, not rarity alone**.
+   The decisive open experiment is L1-vs-TopK *with* background. JumpReLU
+   remains untested.
 2. **Semi-synthetic evidence only.** No positive natural-absorption
    observation exists in this project; real-activation results are injected
    pairs against real backgrounds. A pre-registered adjudication of the 15
