@@ -80,7 +80,7 @@ def run_sc(rows):
                    m=32, absorbed=int(cos_comp > 0.98 and par != comp),
                    cos_comp=round(cos_comp, 4), rec=round(float(rec[i]), 4),
                    wall_s=round(wall, 1))
-        if row["absorbed"]:
+        if row["absorbed"] or os.environ.get("EVAL_ALWAYS"):  # shakeout only
             # labeled eval stream (fresh generator, masks retained)
             g = torch.Generator(device=dev).manual_seed(9500 + int(r["seed"]))
             n_ev = 6000 if SMOKE else 150_000
@@ -200,7 +200,7 @@ def run_rc_cell(rows, qq, pp0, SEEDS, pairs, bg, N,
                    absorbed=int(cos_comp > 0.98 and par != comp),
                    cos_comp=round(cos_comp, 4), cos_child=round(cos_child, 4),
                    rec=0.0, wall_s=round(time.time() - t0, 1))
-        if row["absorbed"]:
+        if row["absorbed"] or os.environ.get("EVAL_ALWAYS"):  # shakeout only
             g2 = torch.Generator(device=dev).manual_seed(9500 + s)
             apar_chunks, acomp_chunks, labels = [], [], []
             for c0 in range(0, N_EV, 50_000):
