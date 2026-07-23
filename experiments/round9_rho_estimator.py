@@ -245,7 +245,12 @@ if __name__ == "__main__":
     t0 = time.time()
     rows = []
     run_sc(rows)
-    run_rc(rows)
+    ACT_PRESENT = os.path.exists(os.path.join(HERE, "activations_l6.pt"))
+    if SMOKE and dev != "cuda" and not ACT_PRESENT:
+        print("SMOKE on CPU without activations_l6.pt: skipping RC part "
+              "(extractor needs CUDA)", flush=True)
+    else:
+        run_rc(rows)
     fields = []
     for r in rows:
         for k in r:
