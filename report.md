@@ -420,14 +420,52 @@ Likewise the child-residual recovery (D3) validates implementation + pair-ID joi
 the matched orthogonal synthetic model*; generalization to nonorthogonal and natural
 features is untested.
 
+## 18. Round 9: gating-corrected ρ estimation — the counting stage fixed at the mechanism level
+
+The pipeline's frequency stage assumed clean gating and inherited a large leak bias
+(ρ̂ ≈ 0.75 vs true 0.5, §17). Round 9 (prereg `notes/prereg-gating-corrected-rho.md`,
+lock `b0276cc`; theory `theory/gating_corrected_rho.md`; dual pre-lock external review —
+Gemini 2.5 Pro *minor*, GPT-5.6 *major*, all required changes applied, archived with a
+point-by-point response in `reviews/`) replaced it with the **dominance-partition
+estimator** ρ̂_D: classify each pair-active token by its exclusive firing pattern
+(01 → joint, 10 → parent-solo) and split co-firing tokens by which latent carries the
+larger activation — a per-token rank rule with zero tuned constants, valid because both
+harnesses renormalize decoder columns to unit norm every step. The theory gives it an
+exact error decomposition: bias = (1−ρ)a₀δ_S − ρg₁δ_J on parent events (δ = class-wise
+dominance-inversion rates) plus a background mixture toward a measured share h_B.
+
+Development discipline before lock: a 32-check analytic Monte Carlo of every formula and
+edge case; a frozen-weight recompute on all 48 round-8 E1 SAEs that *verified* tokenwise
+dominance (δ_J = 0.0000 at both widths, δ_S ≤ 0.003, zero ties) and matched the
+operational bias to the h_B mixture to three decimals; an end-to-end shakeout. Bars were
+locked from that measured budget.
+
+Confirmatory outcome (384 fresh-seed runs; 16 cells spanning ρ ∈ {0.1…0.7},
+σ ∈ {0, 0.05, 0.1}, synthetic + four real-GPT-2 prevalence cells, 24 seeds each, real
+formation 96/96 including Q = 0.04): **the mechanism endpoints passed every cell** (MAE
+≤ 0.0026 vs locked bar 0.03, while the leak being corrected ranged a₀ = 0.014–0.67 and
+g₁ = 0.005–0.88); the all-token version passed 14/16 with the two ρ = 0.1 cells in the
+registered inconclusive zone (0.066–0.070 — exactly the a-priori disclosed background
+pull, matching w_B(h_B − ρ) in sign and size cell-by-cell); the inversion-rate check
+passed 16/16; and **one registered prediction was falsified**: the beats-the-baseline
+margin failed in the two σ = 0 synthetic cells because their *eligibility* was predicted
+from Arm A's σ = 0 leak (a₀ ≈ 0.16) while this harness gates almost cleanly at σ = 0
+(a₀ ≤ 0.038) — the corrected estimator was strictly more accurate there too (0.0013 vs
+0.0350; 0.0021 vs 0.0245) but the margin was arithmetically unclearable against an
+almost-unbiased baseline. Leak magnitudes do not transfer across harnesses — the round-8b
+lesson, reappearing on the eligibility side. Scoring: `results/round9/SUMMARY.md`.
+
 **Where the program now stands.** In this synthetic setup, absorption is driven by
 capacity scarcity (§8, corrected + rerun); dictionary-level absorption coexists with
 code-level separation via encoder gating (§16 — dictionary identifiability and code
-identifiability are distinct properties); and a three-statistic label-free detector is a
-**synthetic proof of concept** — validated end-to-end in the matched toy model
-(detect → orient → count → ρ̂) with a knife-edge partial transfer to semi-synthetic real
-activations. It is not yet a validated practical method: held-out cutoff transfer (v1.2),
-width/overcompleteness scaling, nonorthogonal robustness, encoder-family robustness
-(TopK/JumpReLU), and false-positive control at production scale are open, pre-registerable
-problems, alongside a gating-corrected counting estimator and adjudication of the audit-v3
-candidates.
+identifiability are distinct properties); and the label-free detector pipeline is a
+**synthetic proof of concept** whose stages now have sharply different maturity:
+detection passed held-out width-specific endpoints with zero nulls at every scale tested
+(round 8), residualization is near-perfect given orientation (round 8), frequency
+estimation given the pair is solved at the mechanism level with a measured background
+bias in its all-token form (round 9, worst 0.07 at ρ = 0.1), while **orientation remains
+the weakest stage** (falsified containment rule, round 8b; ρ̂_D's swap-equivariance is an
+untested candidate signal). Still open and pre-registerable: cross-domain cutoff
+transfer, all-pairs specificity on un-injected backgrounds (wild-hunt null, §8-adjacent),
+h_B-corrected operational estimation, overcomplete m > d settings, and production-scale
+false-positive control.
