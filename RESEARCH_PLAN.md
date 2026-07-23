@@ -14,6 +14,7 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
 | Pair-ID Arm 1 | Label-free detector: synthetic proof of concept (v1.0 confirmatory; only D3 CI-established; v1.1 = development-set) | §17, `results/prereg_pairid/` |
 | Pair-ID Arm 2 | Held-out transfer: statistic separates cleanly, toy-locked cutoff knife-edge (8/8 m=256, 1/8 m=128, recorded as registered) | §17 |
 | Reviews | GPT-5.6 ×3 rounds + research review: all revisions applied, responses archived | `reviews/` |
+| Natural-feature adjudication (S1) | **Null on wild absorption:** 0/15 seed-stable candidate clusters meet asymmetric-nesting; all are correlated (typographic byte-fragment family, incl. the 4-clique) or anti-correlated linguistic-feature pairs = the CDX equivalence class. Max child→parent containment 0.46 ≪ 0.80. | `results/round8/natfeat_SUMMARY.md` |
 
 ## Round 8 (in flight): `notes/prereg-round8-scaling-robustness.md`
 
@@ -26,10 +27,15 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
 
 ## Queued (priority order; each needs its own prereg)
 
-1. **Natural-feature evaluation** of seed-stable audit-v3 candidates: semantic
-   coherence (top-activating tokens via GPT-2 embedding projections), causal
-   effect of the residual direction, reproducibility across SAE checkpoints.
-   The program's path to its first wild-caught absorption pair. (~1 GPU session)
+1. ~~**Natural-feature evaluation** of seed-stable audit-v3 candidates.~~
+   **DONE 2026-07-23 (`results/round8/natfeat_SUMMARY.md`, prereg
+   `notes/prereg-natfeat-adjudication.md`, lock `0603d38`).** Null: none of the
+   15 seed-stable candidates is natural absorption — they are correlated /
+   anti-correlated real-feature families (the CDX class). No surviving A ⇒ no
+   causal / cross-corpus confirmation to escalate. Successor idea (if the wild
+   hunt is revisited): re-run the audit with a **positive-cosine + asymmetric-
+   containment ≥ 0.80** gate on an **ASCII-clean / monolingual corpus** to
+   suppress the byte-fragment typography family. Folds into #2/#4 below.
 2. **Gating-corrected counting estimator** for leaky regimes: model
    P(comp fires | class) leak explicitly; fixes ρ̂ inflation (0.75 vs 0.5 in
    Arm 2, 0.58–0.62 in Arm A σ=0.1). (theory + 1 cheap session)

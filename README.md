@@ -155,4 +155,5 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
   | pair-ID Arm 1 (`results/prereg_pairid/`) | results `465a139` (structure lock `e586f02`, threshold lock `1bbca24`) |
   | pair-ID Arm 2 held-out (`results/prereg_pairid/arm2_runs.csv`) | results `319fa1f` (v1.1 frozen pre-run in `465a139`) |
   | round 8 E1–E3 (`results/round8/`) | results `68f444c` (lock `a539c76`, pre-collection amendment `69ca642`) |
+  | natural-feature adjudication of S1 (`results/round8/natfeat_*`) | this commit (pre-results lock `0603d38`) |
   | S1 stability, corrected+exclusion rerun (`results/round8/s1_*`) | v1 `841e8cd` (superseded); v2 with oracle-touch exclusion: this commit |

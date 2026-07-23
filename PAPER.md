@@ -385,9 +385,30 @@ dependence-driven. Cross-seed clustering of the real-background candidates
 exclusion changed nothing, confirming zero injection contamination) shows
 they are **properties of the data, not of a particular SAE**: 3 stable
 clusters at $m = 128$ (two in 8/8 seeds) and 12 at $m = 256$, including a
-mutual 4-latent clique — the shortlist for natural-feature adjudication,
-whose status (natural absorption vs. genuinely exclusive correlated
-families) is the program's next empirical question.
+mutual 4-latent clique.
+
+**Natural-feature adjudication (pre-registered, `notes/prereg-natfeat-adjudication.md`).**
+We adjudicated all 15 seed-stable candidate clusters against a locked
+asymmetric-nesting criterion — natural absorption requires
+$C(\text{parent}\mid\text{child}) \ge 0.80$ with $C(\text{child}\mid\text{parent}) < 0.80$
+(child's firing contained in the parent's, not vice versa) — computed on pure
+background activations with top-activating-token semantics as a confirmatory
+read. **None qualifies: the maximum child$\to$parent containment observed is
+$0.46$, far below $0.80$.** The candidates split perfectly by the sign of the
+decoder cosine into two non-absorption families: (i) **positive-cosine
+typographic families** ($9$ clusters, incl. the 4-clique
+$\{51,54,107,172\}$ = {possessive `'s`, opening `"`, contraction `'`, closing
+`"`}), whose members co-fire because multi-byte curly-quote *byte fragments*
+cluster in dialogue-dense passages — a tokenizer$\times$non-ASCII-typography
+correlation with a flat, hierarchy-free containment matrix; and (ii)
+**negative-cosine anti-correlated linguistic pairs** ($6$ clusters, cosine to
+$-0.83$, co-firing $\le 0.014$), flagged only through the low branch of the
+two-sided lift. Both are the **CDX equivalence class**: real, dependence-driven
+co-firing structure that is *not* absorption. The wild hunt is thus a
+pre-registered null, and it isolates the operative fix — a wild absorption
+scan needs a positive-cosine **asymmetric-containment** gate (the exact metric
+that rejects all 15 here) on an ASCII-clean corpus. Full result:
+`results/round8/natfeat_SUMMARY.md`.
 
 ## 9. Related work
 
@@ -432,7 +453,12 @@ natural future host for detector benchmarking.
    TopK/JumpReLU objectives are untested beyond one exploratory cell.
 2. **Semi-synthetic evidence only.** No positive natural-absorption
    observation exists in this project; real-activation results are injected
-   pairs against real backgrounds.
+   pairs against real backgrounds. A pre-registered adjudication of the 15
+   seed-stable un-injected candidate clusters (§8) returned a **null**: all are
+   correlated/anti-correlated real-feature families (the CDX class), none an
+   absorption hierarchy (max child$\to$parent containment $0.46 < 0.80$). A
+   positive wild-catch would need a positive-cosine asymmetric-containment gate
+   on an ASCII-clean corpus.
 3. **Detector maturity.** Synthetic proof of concept. Open: cutoff transfer
    across widths/layers/models (round 8/8b), all-pairs specificity on
    un-injected real backgrounds, orientation (fails under prevalence

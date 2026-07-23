@@ -390,9 +390,13 @@ post-hoc threshold change; the labeled-exploratory observation that L_HI = 1.9 f
 16/16 at zero faithful cost awaits a v1.2 pre-registration on fresh data. The descriptive
 audit-v3 scan (0.03% of latent pairs flagged on real background features) doubles as this
 program's first **real-background candidate list** (candidates found in SAEs trained on
-real activations — their status as natural absorbed pairs is unknown pending semantic,
-causal, and cross-seed adjudication), a step toward the natural-feature benchmark the
-external review asked for. Note also the width dependence is a *calibration* dependence:
+real activations). Their status was then resolved by a pre-registered adjudication
+(`results/round8/natfeat_SUMMARY.md`): a **null** — none of the 15 seed-stable clusters
+is natural absorption (max child→parent containment 0.46 ≪ 0.80); they are correlated
+typographic byte-fragment families (incl. the 4-clique {51,54,107,172}) or anti-correlated
+distinct linguistic-feature pairs, i.e. the CDX equivalence class. A step toward the
+natural-feature benchmark the external review asked for, and a concrete detector-refinement
+lead (positive-cosine asymmetric-containment gate on an ASCII-clean corpus). Note also the width dependence is a *calibration* dependence:
 the lift statistic shifts systematically with m, and whether one cutoff transfers across
 widths, layers, models, sparsity regimes, and SAE architectures remains open. Of the
 pipeline's five stages (detect → orient → recover child → estimate frequency →
