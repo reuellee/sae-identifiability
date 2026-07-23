@@ -52,11 +52,11 @@ Two entries carry the whole story:
 - **Absorbed, child-solo, κ ≥ 2 → loss ½ (the nonnegativity signature).**
   To extract v_c from the composite you must subtract the parent:
   v_c = √2·d_comp − v_p, coefficient −1 on v_p. ReLU forbids negative codes,
-  so the best nonnegative reconstruction of v_c from {v_p, d_comp} is
-  ½(v_p + v_c), residual ½(v_c − v_p), loss ½ — **even with a second slot
-  available**. The composite cannot be "undone." This is why a second slot
-  does not rescue the absorbed dictionary, and why the capacity collapse
-  below is sharp.
+  so the best nonnegative reconstruction of v_c is the projection of v_c onto
+  the non-orthogonal cone spanned by {v_p, d_comp}, which is ½(v_p + v_c),
+  residual ½(v_c − v_p), loss ½ — **even with a second slot available**. The
+  composite cannot be "undone." This is why a second slot does not rescue the
+  absorbed dictionary, and why the capacity collapse below is sharp.
 
 ## 4. The pure-strategy crossover: ε\*_TopK = 2q (no λ)
 
@@ -161,7 +161,24 @@ round-8 exploratory TopK cell (k=4, m=32, d=64, 30 background features at
 rate 0.08 → ~2.4 active, ε=0.10) sat in the tight regime (κ ≈ 1) with
 ε=0.10 < 2q=0.4, and observed absorption — consistent with this theory.
 
+**Background load is stochastic.** B is a per-token random variable
+(Binomial(n_bg, bg_rate)), so κ = k − B fluctuates across tokens even at fixed
+k, and the trained SAE optimizes the *average* over that distribution. The
+idealized sharp κ=2 transition therefore manifests in the Arm C sweep as a
+**softer, gradual** rise of φ with k rather than a step. The isolated-pair
+Arm M (where the pair reliably wins its slots, §10) is the clean test of the
+exact κ=1 vs κ=2 predictions; Arm C tests that capacity gating survives
+realistic per-token budget noise.
+
 ## 10. Predictions for the SGD experiment
+
+*Caveat (SGD vs. global optimum): the theory characterizes the global optimum
+of the population loss; the experiment trains with SGD. For very small ε the
+absorbed and faithful optima differ by only ½ε, so the gradient pushing SGD
+out of an absorbed basin is weak — SGD may remain absorbed even where the
+global optimum is faithful. A capacity-collapse failure confined to the
+smallest ε is therefore evidence about SGD reachability, not about the
+theorem (which M0 already proves); see the prereg's T2 interpretation clause.*
 
 Measuring the child-recovery angle φ (0°=parent, 45°=composite/absorbed,
 90°=faithful child), as in the L1 experiments:

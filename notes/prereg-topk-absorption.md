@@ -31,13 +31,21 @@ angle in (20°,120°); NaN if no such latent exists. `cos_comp`, `cos_child`
 the scored statistic. 10k-seed bootstrap CIs reported alongside.
 
 Bands: **absorbed** = φ ≤ 55°, **faithful** = φ ≥ 75° (the 45°/90° poles with
-a 10° guard; 55–75° is the transition band).
+a 10° guard; 55–75° is the transition band). φ_child is a proxy: if a
+configuration systematically produces child-side latents outside the
+(20°,120°) window, seeds become undefined and — if a cell drops below the
+16/24 scoreability floor — that cell is reported **unscoreable (untested)**,
+never a pass; an unscoreable primary cell is disclosed as a gap, not a
+confirmation.
 
 ## Arms and grids (fresh seeds)
 
 - **Arm M (isolated pair):** d=32, n_bg=6 low-amplitude background
-  (bg_rate=0.05, coeff U(0.5,1.0)·0.5 so the unit-amplitude pair reliably
-  wins the top slots), m=16, 15k steps, lam=0. Grid: k∈{1,2} × q∈{0.1,0.2}
+  (bg_rate=0.05, coeff U(0.5,1.0)·0.5), m=16, 15k steps, lam=0. The background
+  is deliberately low-amplitude so the unit-amplitude parent/child pair
+  reliably wins the top-k slots, closely instantiating the theoretical κ=1
+  (k=1) and κ=2 (k=2) subsystem-budget conditions rather than leaving the
+  pair's effective budget to fluctuate. Grid: k∈{1,2} × q∈{0.1,0.2}
   (p=q) × ε∈{0,0.05,0.10,0.15,0.20,0.30,0.40} × seeds 0–23. 672 runs.
 - **Arm C (realistic background, capacity sweep):** d=64, n_bg=30
   (bg_rate=0.08, unit amplitude), m=32, 15k steps, lam=0, q=p=0.2, ε=0.10
@@ -71,6 +79,17 @@ crosses 67.5° (linear interpolation on the ε-grid); right-censored to
   k=2−k=1 gap ≤ **5°**. Precondition (reported, not a bar): the matched k=1
   medians should be absorbed (≤ 60°); if k=1 does not absorb in a cell, that
   cell's collapse test is reported as vacuous.
+  **SGD-reachability interpretation (registered before results):** the bar is
+  unchanged, but its meaning is scoped. M0 already proves the capacity collapse
+  for the *global* optimum; T2 tests whether SGD *reaches* it. For very small
+  ε the absorbed and faithful optima differ by only ½ε, so the escaping
+  gradient is weak and SGD may remain absorbed. A T2 failure **confined to the
+  single smallest ε** in a q-row (ε=0.05) will therefore be reported as an
+  *SGD-reachability limit at small ε*, not as a refutation of the collapse
+  theorem; a failure at any larger ε, or across multiple ε, counts as a
+  genuine falsification of the SGD-level capacity-collapse claim. This
+  distinction is fixed here, before the run, so it cannot be applied
+  selectively after seeing results.
 - **T1 (crossover scale + q-scaling, arm M k=1):** (a, robust core)
   ε_mid(q=0.2) > ε_mid(q=0.1) — the transition moves right with q; (b, scale)
   ε_mid(q) ∈ [0.3·2q, 1.0·2q] for both q (i.e. [0.06,0.20] at q=0.1 and
