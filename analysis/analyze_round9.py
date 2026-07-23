@@ -10,12 +10,19 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 CSV = os.path.join(HERE, "..", "results", "round9", "r9_runs.csv")
 
-# ---- [AT-LOCK] bars (finalized from D1's error budget at the lock commit)
+# ---- bars LOCKED 2026-07-23 from D1's error budget (prereg amendment
+# records the lock commit; never edit after results exist)
 BARS = dict(
-    mech_pass=None, mech_fail=None,        # P1M/P2M: rho_d-M MAE per cell
+    mech_pass=0.03, mech_fail=0.07,        # P1M/P2M: rho_d-M MAE per cell
     op_pass=0.05, op_fail=0.15,            # P1O/P2O: rho_d-O MAE per cell
     p3_margin=0.05,                        # P3: MAE(rho_d-O) <= MAE(rho_c-O) - margin
-    p3_cells=None,                         # P3 eligible cells, predefined at lock
+    p3_cells=[("RC", 0.1, -1.0), ("RC", 0.3, -1.0), ("RC", 0.5, -1.0),
+              ("RC", 0.7, -1.0),
+              ("SC", 0.1, 0.0), ("SC", 0.3, 0.0),
+              ("SC", 0.1, 0.05), ("SC", 0.3, 0.05), ("SC", 0.5, 0.05),
+              ("SC", 0.7, 0.05),
+              ("SC", 0.1, 0.1), ("SC", 0.3, 0.1), ("SC", 0.5, 0.1),
+              ("SC", 0.7, 0.1)],           # predicted rho_C bias >= 0.10
     p4_pass=0.05, p4_fail=0.10,            # P4: cell-median delta_J / delta_S
     min_include=16, delta_min_n=100,
 )

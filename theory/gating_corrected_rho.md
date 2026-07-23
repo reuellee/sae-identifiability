@@ -2,9 +2,11 @@
 
 *Theory note, 2026-07-23, revised same day after two external reviews
 (Gemini 2.5 Pro: minor revision; GPT-5.6: major revision — both in
-`reviews/`, response doc beside them). Status: development — F4 (tokenwise
-dominance) is a HYPOTHESIS until D1's token-level measurements are committed;
-the prereg (`notes/prereg-gating-corrected-rho.md`) locks only after D1.*
+`reviews/`, response doc beside them). Status: pre-lock development
+complete — M0 (32/32 formula checks), D1 (F4 verified at token level on the
+frozen E1 weights; see F4 below), D2 (end-to-end shakeout). The prereg
+(`notes/prereg-gating-corrected-rho.md`) locks with bars derived from D1's
+measured error budget.*
 
 ## 1. Problem
 
@@ -60,13 +62,21 @@ run, both harnesses, all σ):**
 - **F3: the leaks are large and harness-dependent.** a₀ ∈ [0.54, 0.65] (E1),
   0.16 / 0.60 / 0.71 (Arm A σ = 0 / 0.05 / 0.1); g₁ ∈ [0.48, 0.62] (E1),
   ≈ 0 at σ = 0 (Arm A tv_cond = 0.9999). No fixed constant can absorb them.
-- **F4 (HYPOTHESIS, pending D1): tokenwise dominance** — δ_J ≈ 0 and
-  δ_S ≈ 0. Current evidence is *aggregate*: class-conditional mean
-  activations separate by ~5–8× (J: comp ≈ 1.2 vs par ≈ 0.15; S: par ≈ 0.8
-  vs comp ≈ 0.15, consistent sign in every diagnostic recompute). A mean gap
-  does not preclude a minority of severe inversions, so F4 is a hypothesis
-  motivated by aggregates; D1 measures δ_J, δ_S token-by-token on the frozen
-  E1 weights before anything locks.
+- **F4: tokenwise dominance — VERIFIED at token level on the real-data
+  development harness (D1, 2026-07-23,
+  `results/round9/d1_e1_recompute.csv`).** Across all 48 frozen E1 absorbed
+  runs (200k-token eval each): δ_J = 0.0000 ± 0.0000 at both widths (not a
+  single J∧11 inversion), δ_S = 0.0032 ± 0.0007 (m = 128) / 0.0017 ± 0.0004
+  (m = 256), tie rate 0. The aggregate mean gaps (J: comp ≈ 1.2 vs par
+  ≈ 0.15; S: par ≈ 0.8 vs comp ≈ 0.15) are thus not hiding an inversion
+  tail *on this harness*; the synthetic harness's δ is measured
+  confirmatorily (P4). D1 also validates the §4 h_B mixture quantitatively:
+  measured w_B ≈ 0.13, h_B ≈ 0.39/0.32 predicts the observed operational
+  bias −0.014 at ρ = 0.5, while the mechanism endpoint is exact to
+  0.0009 ± 0.0016. Background marginals are measurably *asymmetric*
+  (b_p ≈ 0.060/0.040 vs b_c ≈ 0.039/0.019) — the symmetric-contamination
+  special case of §5 does not hold exactly on real data, which is why h_B
+  is measured rather than assumed 1/2.
 
 All estimators inherit the detector's binarization threshold θ = 0.05 — no
 *new* harness-tuned constant is introduced, but θ itself is an inherited
