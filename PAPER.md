@@ -413,8 +413,8 @@ that rejects all 15 here) on an ASCII-clean corpus. Full result:
 **Round 9 (pre-registered, lock `b0276cc`; dual pre-lock external review —
 Gemini 2.5 Pro minor, GPT-5.6 major, all required changes applied before
 lock): gating-corrected $\rho$ estimation.** The counting estimator's leak
-inflation ($\hat\rho \approx 0.75$ vs $0.5$) is fixed by a token-level rank
-rule rather than any constant. Model classes J (joint), S (parent-solo),
+inflation ($\hat\rho \approx 0.75$ vs $0.5$) is corrected by a token-level
+rank rule rather than a constant. Model classes J (joint), S (parent-solo),
 B (background) with fires $g_0 = P(b_{\text{par}}\mid S)$,
 $g_1 = P(b_{\text{par}}\mid J)$, $a_1 = P(b_{\text{comp}}\mid J)$,
 $a_0 = P(b_{\text{comp}}\mid S)$. Structurally $a_1, g_0 \ge 0.998$
@@ -435,20 +435,25 @@ MAE $\le 0.0026$ in all 16 cells against locked bars of $0.03$, while the
 leak being corrected varied from $a_0 = 0.014$ to $0.67$ and $g_1$ from
 $0.005$ to $0.88$ (strongly $\rho$-dependent on real data), and measured
 inversions stayed at $\delta_J \le 10^{-4}$, $\delta_S \le 0.004$ (P4
-passed 16/16). The **all-token estimator** carries exactly the predicted
-background mixture and nothing else: 14/16 cells $\le 0.05$; the two
-$\rho = 0.1$ cells landed at $0.066$–$0.070$ in the registered inconclusive
-zone (the real-data one disclosed a-priori as at-risk), with the deviation
-matching $w_B(h_B - \rho)$ in sign and size cell-by-cell ($h_B$ measured
-$0.0$–$0.54$ — not a constant). One registered prediction **falsified**:
-the beats-the-baseline margin (P3) failed in the two $\sigma = 0$ synthetic
-cells whose *eligibility* was predicted from Arm A's $\sigma = 0$ leak
-($a_0 \approx 0.16$) — this harness gates almost cleanly at $\sigma = 0$
-($a_0 \le 0.038$), so the baseline was only $0.025$–$0.035$ wrong and the
-$-0.05$ margin was arithmetically unclearable, even though the corrected
-estimator was strictly more accurate in both cells ($0.0013$ vs $0.0350$;
-$0.0021$ vs $0.0245$). Leak magnitudes do not transfer across harnesses —
-round 8b's lesson, reappearing on the eligibility side. Scope: oracle pair
+passed 16/16, with sparse class-11 contributor counts in the clean-gating
+$\sigma = 0$ cells, disclosed). **Both operational predictions are
+inconclusive overall**: 14 cell-level passes plus one inconclusive
+$\rho = 0.1$ cell per harness ($0.066$–$0.070$; the real-data one disclosed
+a-priori as at-risk). The post-run measured mixture
+$(1-w_B)\hat\rho_{D,M} + w_B h_B$ accounts for every cell's operational
+value with residual $\le 10^{-4}$ — a same-run diagnostic locating the
+deviation in background-active tokens, not an a-priori prediction ($h_B$
+measured $0.36$–$0.54$ on real data, $\approx 0.5$ in noisy synthetic
+cells, NA where background-active mass is negligible). One registered
+prediction **falsified**: the beats-the-baseline margin (P3) failed in the
+two $\sigma = 0$ synthetic cells. Post-hoc diagnosis: eligibility was
+predicted from Arm A's $\sigma = 0$ leak ($a_0 \approx 0.16$) while this
+harness measured $a_0 \le 0.038$, so the baseline was only $0.025$–$0.035$
+wrong and the $-0.05$ margin was arithmetically unattainable; the corrected
+estimator remained more accurate in both cells ($0.0013$ vs $0.0350$;
+$0.0021$ vs $0.0245$) but did not meet the registered comparative claim.
+Leak magnitudes do not transfer across harnesses — round 8b's lesson,
+reappearing on the eligibility side. Scope: oracle pair
 location and orientation (estimation given the pair, Arm-A style);
 background-corrected operational estimation and orientation remain open
 (the estimator's swap-equivariance $\hat\rho_D \to 1 - \hat\rho_D$ is a
@@ -515,11 +520,13 @@ natural future host for detector benchmarking.
    inversion by construction; $\sim 5/9$ in Arm 2; round 9's
    swap-equivariance is an untested candidate signal), and
    production-scale false-positive control (multiple comparisons over
-   $\sim m^2/2$ pairs). Frequency estimation given the pair is now solved at
-   the mechanism level (round 9); its all-token version retains a measured
-   background bias $w_B(h_B - \rho)$ — worst observed $0.07$ at
-   $\rho = 0.1$ — and an $h_B$-corrected or background-excluded operational
-   estimator is queued, not claimed.
+   $\sim m^2/2$ pairs). Frequency estimation given the pair passed its
+   oracle-scoped mechanism endpoint decisively (round 9, same activation
+   bank); its all-token version retains a measured background bias
+   $w_B(h_B - \rho)$ — worst observed $0.07$ at $\rho = 0.1$, both
+   operational predictions inconclusive as registered — and an
+   $h_B$-corrected or background-excluded operational estimator is queued,
+   not claimed.
 4. **Statistical power.** 16-seed cells CI-establish only the strongest
    endpoint; confirmatory cells are sized $\ge 24$ seeds from round 8 onward.
 5. **Oracle remedy.** Inverse-density weighting is an existence result;
