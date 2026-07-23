@@ -1,0 +1,10 @@
+device=cuda threads=8 smoke=True
+  [R9-SC 0/100] rec=3.8457 (1s)
+[SC] done
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (2 rows)
+  [RC q=0.2 0/100] (0s)
+[RC q=0.2 s32] abs=0 rho_d=None rho_x=None rho_count=None
+[RC q=0.2 s33] abs=0 rho_d=None rho_x=None rho_count=None
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (4 rows)
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (4 rows)
+total 5s

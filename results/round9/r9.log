@@ -1,0 +1,133 @@
+device=cuda threads=8 smoke=False
+  [R9-SC 0/15000] rec=3.3821 (0s)
+  [R9-SC 2000/15000] rec=0.2943 (59s)
+  [R9-SC 4000/15000] rec=0.3041 (119s)
+  [R9-SC 6000/15000] rec=0.3114 (178s)
+  [R9-SC 8000/15000] rec=0.3156 (237s)
+  [R9-SC 10000/15000] rec=0.3177 (296s)
+  [R9-SC 12000/15000] rec=0.3186 (356s)
+  [R9-SC 14000/15000] rec=0.3190 (415s)
+[SC] done
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (288 rows)
+  [RC q=0.04 0/20000] (0s)
+  [RC q=0.04 4000/20000] (85s)
+  [RC q=0.04 8000/20000] (171s)
+  [RC q=0.04 12000/20000] (256s)
+  [RC q=0.04 16000/20000] (342s)
+[RC q=0.04 s32] abs=1 rho_d=0.18011 rho_x=0.19616 rho_count=0.57309
+[RC q=0.04 s33] abs=1 rho_d=0.16721 rho_x=0.17755 rho_count=0.58933
+[RC q=0.04 s34] abs=1 rho_d=0.16955 rho_x=0.17319 rho_count=0.57393
+[RC q=0.04 s35] abs=1 rho_d=0.1709 rho_x=0.18464 rho_count=0.58299
+[RC q=0.04 s36] abs=1 rho_d=0.15564 rho_x=0.15813 rho_count=0.58525
+[RC q=0.04 s37] abs=1 rho_d=0.17422 rho_x=0.18906 rho_count=0.58752
+[RC q=0.04 s38] abs=1 rho_d=0.15984 rho_x=0.16515 rho_count=0.58596
+[RC q=0.04 s39] abs=1 rho_d=0.1744 rho_x=0.19199 rho_count=0.58726
+[RC q=0.04 s40] abs=1 rho_d=0.16579 rho_x=0.17233 rho_count=0.57086
+[RC q=0.04 s41] abs=1 rho_d=0.18082 rho_x=0.19839 rho_count=0.58553
+[RC q=0.04 s42] abs=1 rho_d=0.17728 rho_x=0.20943 rho_count=0.61468
+[RC q=0.04 s43] abs=1 rho_d=0.15545 rho_x=0.15601 rho_count=0.58197
+[RC q=0.04 s44] abs=1 rho_d=0.18677 rho_x=0.20962 rho_count=0.58781
+[RC q=0.04 s45] abs=1 rho_d=0.16611 rho_x=0.17326 rho_count=0.57365
+[RC q=0.04 s46] abs=1 rho_d=0.16382 rho_x=0.17936 rho_count=0.59939
+[RC q=0.04 s47] abs=1 rho_d=0.16882 rho_x=0.16579 rho_count=0.54328
+[RC q=0.04 s48] abs=1 rho_d=0.18946 rho_x=0.20436 rho_count=0.56997
+[RC q=0.04 s49] abs=1 rho_d=0.15538 rho_x=0.14647 rho_count=0.54754
+[RC q=0.04 s50] abs=1 rho_d=0.17355 rho_x=0.18664 rho_count=0.58285
+[RC q=0.04 s51] abs=1 rho_d=0.16545 rho_x=0.16163 rho_count=0.5602
+[RC q=0.04 s52] abs=1 rho_d=0.17136 rho_x=0.18261 rho_count=0.58565
+[RC q=0.04 s53] abs=1 rho_d=0.17503 rho_x=0.18009 rho_count=0.55603
+[RC q=0.04 s54] abs=1 rho_d=0.16239 rho_x=0.16484 rho_count=0.57422
+[RC q=0.04 s55] abs=1 rho_d=0.1592 rho_x=0.16295 rho_count=0.5737
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (312 rows)
+  [RC q=0.12 0/20000] (0s)
+  [RC q=0.12 4000/20000] (85s)
+  [RC q=0.12 8000/20000] (171s)
+  [RC q=0.12 12000/20000] (256s)
+  [RC q=0.12 16000/20000] (342s)
+[RC q=0.12 s32] abs=1 rho_d=0.32818 rho_x=0.32588 rho_count=0.6726
+[RC q=0.12 s33] abs=1 rho_d=0.32514 rho_x=0.32478 rho_count=0.68677
+[RC q=0.12 s34] abs=1 rho_d=0.31996 rho_x=0.30178 rho_count=0.67286
+[RC q=0.12 s35] abs=1 rho_d=0.32675 rho_x=0.32738 rho_count=0.68331
+[RC q=0.12 s36] abs=1 rho_d=0.31153 rho_x=0.29667 rho_count=0.68234
+[RC q=0.12 s37] abs=1 rho_d=0.32487 rho_x=0.32541 rho_count=0.68827
+[RC q=0.12 s38] abs=1 rho_d=0.31675 rho_x=0.29473 rho_count=0.67783
+[RC q=0.12 s39] abs=1 rho_d=0.32468 rho_x=0.33701 rho_count=0.68991
+[RC q=0.12 s40] abs=1 rho_d=0.3227 rho_x=0.32082 rho_count=0.68324
+[RC q=0.12 s41] abs=1 rho_d=0.32745 rho_x=0.32091 rho_count=0.68591
+[RC q=0.12 s42] abs=1 rho_d=0.328 rho_x=0.34679 rho_count=0.69665
+[RC q=0.12 s43] abs=1 rho_d=0.31029 rho_x=0.29688 rho_count=0.67906
+[RC q=0.12 s44] abs=1 rho_d=0.33456 rho_x=0.34423 rho_count=0.694
+[RC q=0.12 s45] abs=1 rho_d=0.32005 rho_x=0.30828 rho_count=0.66889
+[RC q=0.12 s46] abs=1 rho_d=0.31861 rho_x=0.3138 rho_count=0.68731
+[RC q=0.12 s47] abs=1 rho_d=0.32302 rho_x=0.29558 rho_count=0.65124
+[RC q=0.12 s48] abs=1 rho_d=0.33855 rho_x=0.33561 rho_count=0.68147
+[RC q=0.12 s49] abs=1 rho_d=0.31225 rho_x=0.28335 rho_count=0.65928
+[RC q=0.12 s50] abs=1 rho_d=0.31925 rho_x=0.31288 rho_count=0.67698
+[RC q=0.12 s51] abs=1 rho_d=0.32165 rho_x=0.29457 rho_count=0.66719
+[RC q=0.12 s52] abs=1 rho_d=0.32276 rho_x=0.30815 rho_count=0.67466
+[RC q=0.12 s53] abs=1 rho_d=0.32605 rho_x=0.3161 rho_count=0.66242
+[RC q=0.12 s54] abs=1 rho_d=0.31528 rho_x=0.29464 rho_count=0.67124
+[RC q=0.12 s55] abs=1 rho_d=0.31048 rho_x=0.30314 rho_count=0.6715
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (336 rows)
+  [RC q=0.2 0/20000] (0s)
+  [RC q=0.2 4000/20000] (85s)
+  [RC q=0.2 8000/20000] (171s)
+  [RC q=0.2 12000/20000] (256s)
+  [RC q=0.2 16000/20000] (342s)
+[RC q=0.2 s32] abs=1 rho_d=0.49216 rho_x=0.49133 rho_count=0.75174
+[RC q=0.2 s33] abs=1 rho_d=0.48996 rho_x=0.49183 rho_count=0.76225
+[RC q=0.2 s34] abs=1 rho_d=0.48675 rho_x=0.46929 rho_count=0.75029
+[RC q=0.2 s35] abs=1 rho_d=0.49 rho_x=0.49739 rho_count=0.76085
+[RC q=0.2 s36] abs=1 rho_d=0.48639 rho_x=0.48405 rho_count=0.76622
+[RC q=0.2 s37] abs=1 rho_d=0.49388 rho_x=0.48485 rho_count=0.76284
+[RC q=0.2 s38] abs=1 rho_d=0.48469 rho_x=0.46134 rho_count=0.75713
+[RC q=0.2 s39] abs=1 rho_d=0.49048 rho_x=0.50812 rho_count=0.75808
+[RC q=0.2 s40] abs=1 rho_d=0.4877 rho_x=0.49069 rho_count=0.76051
+[RC q=0.2 s41] abs=1 rho_d=0.48784 rho_x=0.46711 rho_count=0.75765
+[RC q=0.2 s42] abs=1 rho_d=0.49066 rho_x=0.50229 rho_count=0.76308
+[RC q=0.2 s43] abs=1 rho_d=0.47538 rho_x=0.46168 rho_count=0.75591
+[RC q=0.2 s44] abs=1 rho_d=0.49949 rho_x=0.52031 rho_count=0.75693
+[RC q=0.2 s45] abs=1 rho_d=0.48644 rho_x=0.47299 rho_count=0.75058
+[RC q=0.2 s46] abs=1 rho_d=0.48329 rho_x=0.47389 rho_count=0.75896
+[RC q=0.2 s47] abs=1 rho_d=0.49059 rho_x=0.47494 rho_count=0.74719
+[RC q=0.2 s48] abs=1 rho_d=0.50187 rho_x=0.50537 rho_count=0.75957
+[RC q=0.2 s49] abs=1 rho_d=0.47993 rho_x=0.44532 rho_count=0.74104
+[RC q=0.2 s50] abs=1 rho_d=0.49144 rho_x=0.48528 rho_count=0.7593
+[RC q=0.2 s51] abs=1 rho_d=0.48733 rho_x=0.47015 rho_count=0.75306
+[RC q=0.2 s52] abs=1 rho_d=0.48729 rho_x=0.46658 rho_count=0.75121
+[RC q=0.2 s53] abs=1 rho_d=0.49563 rho_x=0.49004 rho_count=0.75072
+[RC q=0.2 s54] abs=1 rho_d=0.48525 rho_x=0.47081 rho_count=0.75404
+[RC q=0.2 s55] abs=1 rho_d=0.48059 rho_x=0.48519 rho_count=0.75436
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (360 rows)
+  [RC q=0.28 0/20000] (0s)
+  [RC q=0.28 4000/20000] (85s)
+  [RC q=0.28 8000/20000] (171s)
+  [RC q=0.28 12000/20000] (256s)
+  [RC q=0.28 16000/20000] (342s)
+[RC q=0.28 s32] abs=1 rho_d=0.66046 rho_x=0.66544 rho_count=0.6671
+[RC q=0.28 s33] abs=1 rho_d=0.6606 rho_x=0.65815 rho_count=0.68191
+[RC q=0.28 s34] abs=1 rho_d=0.65228 rho_x=0.62956 rho_count=0.69749
+[RC q=0.28 s35] abs=1 rho_d=0.65629 rho_x=0.65504 rho_count=0.68031
+[RC q=0.28 s36] abs=1 rho_d=0.6572 rho_x=0.65415 rho_count=0.69344
+[RC q=0.28 s37] abs=1 rho_d=0.65947 rho_x=0.64555 rho_count=0.69615
+[RC q=0.28 s38] abs=1 rho_d=0.65392 rho_x=0.63027 rho_count=0.7096
+[RC q=0.28 s39] abs=1 rho_d=0.65761 rho_x=0.6651 rho_count=0.67249
+[RC q=0.28 s40] abs=1 rho_d=0.65862 rho_x=0.66433 rho_count=0.67444
+[RC q=0.28 s41] abs=1 rho_d=0.65291 rho_x=0.62454 rho_count=0.71093
+[RC q=0.28 s42] abs=1 rho_d=0.65759 rho_x=0.66393 rho_count=0.67522
+[RC q=0.28 s43] abs=1 rho_d=0.64813 rho_x=0.63499 rho_count=0.70031
+[RC q=0.28 s44] abs=1 rho_d=0.66566 rho_x=0.6827 rho_count=0.66467
+[RC q=0.28 s45] abs=1 rho_d=0.65002 rho_x=0.64189 rho_count=0.68062
+[RC q=0.28 s46] abs=1 rho_d=0.65213 rho_x=0.64122 rho_count=0.69601
+[RC q=0.28 s47] abs=1 rho_d=0.66012 rho_x=0.64911 rho_count=0.67953
+[RC q=0.28 s48] abs=1 rho_d=0.66385 rho_x=0.6674 rho_count=0.67192
+[RC q=0.28 s49] abs=1 rho_d=0.65062 rho_x=0.62511 rho_count=0.70097
+[RC q=0.28 s50] abs=1 rho_d=0.66167 rho_x=0.64387 rho_count=0.69367
+[RC q=0.28 s51] abs=1 rho_d=0.65871 rho_x=0.65004 rho_count=0.6848
+[RC q=0.28 s52] abs=1 rho_d=0.65899 rho_x=0.64189 rho_count=0.69452
+[RC q=0.28 s53] abs=1 rho_d=0.6645 rho_x=0.66642 rho_count=0.66587
+[RC q=0.28 s54] abs=1 rho_d=0.65521 rho_x=0.64426 rho_count=0.69204
+[RC q=0.28 s55] abs=1 rho_d=0.64963 rho_x=0.65311 rho_count=0.67504
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (384 rows)
+wrote /home/reuellee_gmail_com/round9/experiments/../results/round9/r9_runs.csv (384 rows)
+total 2169s
