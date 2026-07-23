@@ -22,9 +22,10 @@ including the a-priori-risky Q = 0.04 cell); SC 335/384 total included
 
 ## Headline numbers
 
-- **The mechanism claim is confirmed decisively.** Given the pair and
-  orientation, on parent-event tokens, ρ̂_D recovers ρ with MAE ≤ 0.0026 in
-  **every** cell — both harnesses, ρ ∈ {0.1 … 0.7}, σ ∈ {0, 0.05, 0.1} —
+- **The mechanism claim is confirmed decisively** — the estimator beat its
+  pre-registered pass criterion by more than 10× in every one of the 16
+  cells. Given the pair and orientation, on parent-event tokens, ρ̂_D
+  recovers ρ with MAE ≤ 0.0026 in **every** cell — both harnesses, ρ ∈ {0.1 … 0.7}, σ ∈ {0, 0.05, 0.1} —
   with zero tuned constants, while the leak structure it corrects varies
   wildly across cells (a₀: 0.014 → 0.67; g₁: 0.005 → 0.88, strongly
   ρ-dependent on real data). The incumbent-style baseline ρ̂_C errs by
@@ -48,7 +49,10 @@ including the a-priori-risky Q = 0.04 cell); SC 335/384 total included
   accurate than the baseline (0.0013 vs 0.0350; 0.0021 vs 0.0245). The
   failure is recorded as registered; the lesson is that leak magnitudes do
   not transfer across synthetic harnesses even at σ = 0 — consistent with
-  round 8b's constant-transfer failure, now on the eligibility side.
+  round 8b's constant-transfer failure, now on the eligibility side. This is
+  pre-registration doing its job: the margin prediction was locked, it was
+  wrong, and the falsification localizes *why* cleanly — a sharper outcome
+  than a post-hoc-justified pass would have been.
 
 ## Scope (unchanged from the prereg)
 
