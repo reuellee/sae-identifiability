@@ -36,9 +36,17 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
    hunt is revisited): re-run the audit with a **positive-cosine + asymmetric-
    containment ≥ 0.80** gate on an **ASCII-clean / monolingual corpus** to
    suppress the byte-fragment typography family. Folds into #2/#4 below.
-2. **Gating-corrected counting estimator** for leaky regimes: model
-   P(comp fires | class) leak explicitly; fixes ρ̂ inflation (0.75 vs 0.5 in
-   Arm 2, 0.58–0.62 in Arm A σ=0.1). (theory + 1 cheap session)
+2. **Gating-corrected counting estimator** for leaky regimes — **IN FLIGHT
+   as round 9 (2026-07-23)**: theory `theory/gating_corrected_rho.md`,
+   prereg `notes/prereg-gating-corrected-rho.md` (dominance-partition ρ̂_D +
+   exclusive-ratio ρ̂_X vs the oracle-comp baseline ρ̂_C; M/O endpoints).
+   Dual pre-lock external review (Gemini minor / GPT-5.6 major — all
+   required changes applied, `reviews/ROUND9_PREREG_*`). M0 formula check
+   passed; D1 frozen-weight recompute running; confirmatory awaits the lock
+   commit + GPU (`ops/retry_round9.sh`, spot-first per owner authorization).
+   Novelty: deep-research sweep 2026-07-23 found no prior estimator
+   correction on binarized co-activation (hedged, claim 6 of
+   `notes/deep-research-2026-07-23-ortsae-and-round9-novelty.md`).
 2b. ~~**Containment-based orientation.**~~ **TRIED AND FALSIFIED
    2026-07-23** (`results/round8/orientation_SUMMARY.md`, prereg
    `notes/prereg-containment-orientation.md`, lock `0a6db51`, S2 results

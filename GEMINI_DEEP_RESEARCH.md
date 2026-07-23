@@ -1,3 +1,10 @@
+> **SUPERSEDED 2026-07-23.** The tool restriction below was specific to the
+> Gemini-CLI environment. A 100-agent verified deep-research sweep run from
+> the local Claude session completed all four objectives where possible —
+> see `notes/deep-research-2026-07-23-ortsae-and-round9-novelty.md`
+> (headline: OrtSAE has NO gamma ablation, so objective 1's test is
+> unrunnable on the public record; report §11 updated in place).
+
 # Gemini Deep Research - Findings and Roadblocks
 
 **Date:** 2026-07-21
