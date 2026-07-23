@@ -30,11 +30,14 @@ from rho_estimators_lib import (rho_estimators, theta_sensitivity,
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 
 def safe_load(path):
-    """weights_only=True where supported (older CPU torch lacks the kwarg;
-    files are project-generated tensors either way)."""
+    """weights_only=True where supported; the orchestrator's torch 1.13
+    either lacks the kwarg or its restricted unpickler cannot read
+    torch-2.5-saved files (UnpicklingError) - fall back to a full load,
+    which is acceptable only because these files are project-generated."""
+    import pickle
     try:
         return torch.load(path, weights_only=True)
-    except TypeError:
+    except (TypeError, pickle.UnpicklingError):
         return torch.load(path)
 
 D_MODEL, AMP, Q, P0 = 768, 5.0, 0.2, 0.2
