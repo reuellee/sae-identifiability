@@ -148,6 +148,7 @@ def run_rc(rows):
     for qq, pp0 in CELLS:
         run_rc_cell(rows, qq, pp0, SEEDS, pairs, bg, N,
                     D_MODEL, BATCH, STEPS, N_EV, LAM, AMP, EPS, M_LAT)
+        write_csv(rows)                    # preemption-safe per-cell flush
 
 def run_rc_cell(rows, qq, pp0, SEEDS, pairs, bg, N,
                 D_MODEL, BATCH, STEPS, N_EV, LAM, AMP, EPS, M_LAT):
@@ -241,16 +242,11 @@ def run_rc_cell(rows, qq, pp0, SEEDS, pairs, bg, N,
     del W, b, Dd
     if dev == "cuda": torch.cuda.empty_cache()
 
-if __name__ == "__main__":
-    t0 = time.time()
-    rows = []
-    run_sc(rows)
-    ACT_PRESENT = os.path.exists(os.path.join(HERE, "activations_l6.pt"))
-    if SMOKE and dev != "cuda" and not ACT_PRESENT:
-        print("SMOKE on CPU without activations_l6.pt: skipping RC part "
-              "(extractor needs CUDA)", flush=True)
-    else:
-        run_rc(rows)
+def write_csv(rows):
+    """Incremental full rewrite after each phase - preemption-safe on spot
+    instances (partial results survive)."""
+    if not rows:
+        return
     fields = []
     for r in rows:
         for k in r:
@@ -259,4 +255,18 @@ if __name__ == "__main__":
     with open(out, "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=fields)
         w.writeheader(); w.writerows(rows)
-    print(f"wrote {out} ({len(rows)} rows) total {time.time()-t0:.0f}s", flush=True)
+    print(f"wrote {out} ({len(rows)} rows)", flush=True)
+
+if __name__ == "__main__":
+    t0 = time.time()
+    rows = []
+    run_sc(rows)
+    write_csv(rows)
+    ACT_PRESENT = os.path.exists(os.path.join(HERE, "activations_l6.pt"))
+    if SMOKE and dev != "cuda" and not ACT_PRESENT:
+        print("SMOKE on CPU without activations_l6.pt: skipping RC part "
+              "(extractor needs CUDA)", flush=True)
+    else:
+        run_rc(rows)
+    write_csv(rows)
+    print(f"total {time.time()-t0:.0f}s", flush=True)
