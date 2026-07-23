@@ -15,6 +15,7 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
 | Pair-ID Arm 2 | Held-out transfer: statistic separates cleanly, toy-locked cutoff knife-edge (8/8 m=256, 1/8 m=128, recorded as registered) | §17 |
 | Reviews | GPT-5.6 ×3 rounds + research review: all revisions applied, responses archived | `reviews/` |
 | Natural-feature adjudication (S1) | **Null on wild absorption:** 0/15 seed-stable candidate clusters meet asymmetric-nesting; all are correlated (typographic byte-fragment family, incl. the 4-clique) or anti-correlated linguistic-feature pairs = the CDX equivalence class. Max child→parent containment 0.46 ≪ 0.80. | `results/round8/natfeat_SUMMARY.md` |
+| Round 9 | **Gating-corrected ρ̂ (dominance partition): mechanism endpoints PASS 16/16 cells (MAE ≤ 0.0026 vs naive 0.25 bias); P4 inversion check 16/16; operational 14/16 pass + two ρ=0.1 cells inconclusive (measured h_B background pull, disclosed a-priori); P3 margin FALSIFIED in 2 σ=0 synthetic cells via eligibility misprediction (harness leak ≈ clean, baseline nearly unbiased — ρ̂_D still strictly better there).** Lock `b0276cc`; dual pre-lock review (Gemini minor / GPT-5.6 major). | §18, `results/round9/SUMMARY.md` |
 
 ## Round 8 (in flight): `notes/prereg-round8-scaling-robustness.md`
 
@@ -36,17 +37,16 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
    hunt is revisited): re-run the audit with a **positive-cosine + asymmetric-
    containment ≥ 0.80** gate on an **ASCII-clean / monolingual corpus** to
    suppress the byte-fragment typography family. Folds into #2/#4 below.
-2. **Gating-corrected counting estimator** for leaky regimes — **IN FLIGHT
-   as round 9 (2026-07-23)**: theory `theory/gating_corrected_rho.md`,
-   prereg `notes/prereg-gating-corrected-rho.md` (dominance-partition ρ̂_D +
-   exclusive-ratio ρ̂_X vs the oracle-comp baseline ρ̂_C; M/O endpoints).
-   Dual pre-lock external review (Gemini minor / GPT-5.6 major — all
-   required changes applied, `reviews/ROUND9_PREREG_*`). M0 formula check
-   passed; D1 frozen-weight recompute running; confirmatory awaits the lock
-   commit + GPU (`ops/retry_round9.sh`, spot-first per owner authorization).
-   Novelty: deep-research sweep 2026-07-23 found no prior estimator
-   correction on binarized co-activation (hedged, claim 6 of
-   `notes/deep-research-2026-07-23-ortsae-and-round9-novelty.md`).
+2. ~~**Gating-corrected counting estimator.**~~ **DONE 2026-07-23 as
+   round 9** (Completed table; `results/round9/SUMMARY.md`). Successors
+   spawned: (a) **h_B-corrected / background-excluded operational
+   estimator** — h_B is measured per pair (0.0–0.54, not a constant) and
+   the all-token bias matches w_B(h_B − ρ) exactly; exploit it. (b) The
+   estimator's swap-equivariance (ρ̂_D → 1 − ρ̂_D) as an **orientation**
+   signal under a prevalence prior → folds into #2b. (c) Eligibility/leak
+   prediction does not transfer across harnesses even at σ = 0 (P3's
+   registered falsification) — any future cross-harness prereg must
+   measure, not proxy, per-harness leak in its D-phase.
 2b. ~~**Containment-based orientation.**~~ **TRIED AND FALSIFIED
    2026-07-23** (`results/round8/orientation_SUMMARY.md`, prereg
    `notes/prereg-containment-orientation.md`, lock `0a6db51`, S2 results

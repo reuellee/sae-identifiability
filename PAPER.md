@@ -410,6 +410,56 @@ scan needs a positive-cosine **asymmetric-containment** gate (the exact metric
 that rejects all 15 here) on an ASCII-clean corpus. Full result:
 `results/round8/natfeat_SUMMARY.md`.
 
+**Round 9 (pre-registered, lock `b0276cc`; dual pre-lock external review —
+Gemini 2.5 Pro minor, GPT-5.6 major, all required changes applied before
+lock): gating-corrected $\rho$ estimation.** The counting estimator's leak
+inflation ($\hat\rho \approx 0.75$ vs $0.5$) is fixed by a token-level rank
+rule rather than any constant. Model classes J (joint), S (parent-solo),
+B (background) with fires $g_0 = P(b_{\text{par}}\mid S)$,
+$g_1 = P(b_{\text{par}}\mid J)$, $a_1 = P(b_{\text{comp}}\mid J)$,
+$a_0 = P(b_{\text{comp}}\mid S)$. Structurally $a_1, g_0 \ge 0.998$
+everywhere measured, so exclusive firing patterns are class-pure, and the
+binary pattern system is exactly one constraint short of identifying $\rho$
+(background-free); the closing constraint is **tokenwise dominance** — on a
+co-firing token the host class's latent carries the larger activation
+(scale-valid because decoder columns are unit-renormalized every step).
+The **dominance-partition estimator** ($01 \to J$, $10 \to S$, $11 \to J$
+iff $a_{\text{comp}} > a_{\text{par}}$) is exact when the class-conditional
+inversion rates $\delta_J, \delta_S$ vanish, with bias
+$(1-\rho)a_0\delta_S - \rho g_1\delta_J$ plus a background mixture toward
+$h_B = (q_{01} + q_{11}\pi_B)/(1 - q_{00})$. Confirmatory outcome (384
+fresh-seed runs: $\rho \in \{0.1,0.3,0.5,0.7\}$, $\sigma \in \{0,0.05,0.1\}$
+synthetic + four real-GPT-2 prevalence cells, 24 seeds/cell, RC formation
+96/96): **mechanism endpoints passed every cell** — on parent-event tokens,
+MAE $\le 0.0026$ in all 16 cells against locked bars of $0.03$, while the
+leak being corrected varied from $a_0 = 0.014$ to $0.67$ and $g_1$ from
+$0.005$ to $0.88$ (strongly $\rho$-dependent on real data), and measured
+inversions stayed at $\delta_J \le 10^{-4}$, $\delta_S \le 0.004$ (P4
+passed 16/16). The **all-token estimator** carries exactly the predicted
+background mixture and nothing else: 14/16 cells $\le 0.05$; the two
+$\rho = 0.1$ cells landed at $0.066$–$0.070$ in the registered inconclusive
+zone (the real-data one disclosed a-priori as at-risk), with the deviation
+matching $w_B(h_B - \rho)$ in sign and size cell-by-cell ($h_B$ measured
+$0.0$–$0.54$ — not a constant). One registered prediction **falsified**:
+the beats-the-baseline margin (P3) failed in the two $\sigma = 0$ synthetic
+cells whose *eligibility* was predicted from Arm A's $\sigma = 0$ leak
+($a_0 \approx 0.16$) — this harness gates almost cleanly at $\sigma = 0$
+($a_0 \le 0.038$), so the baseline was only $0.025$–$0.035$ wrong and the
+$-0.05$ margin was arithmetically unclearable, even though the corrected
+estimator was strictly more accurate in both cells ($0.0013$ vs $0.0350$;
+$0.0021$ vs $0.0245$). Leak magnitudes do not transfer across harnesses —
+round 8b's lesson, reappearing on the eligibility side. Scope: oracle pair
+location and orientation (estimation given the pair, Arm-A style);
+background-corrected operational estimation and orientation remain open
+(the estimator's swap-equivariance $\hat\rho_D \to 1 - \hat\rho_D$ is a
+candidate orientation signal, untested). Prior art: the leak phenomenon is
+documented (arXiv:2409.14507 App. A.3; arXiv:2505.11756); a verified
+literature sweep found no existing statistical estimator correction on
+binarized co-activation counts (novelty hedged; sweep archived). Full
+scoring: `results/round9/SUMMARY.md`; prereg
+`notes/prereg-gating-corrected-rho.md`; theory
+`theory/gating_corrected_rho.md`.
+
 ## 9. Related work
 
 Chanin et al. (arXiv:2409.14507) coined and mechanistically explained
@@ -462,9 +512,14 @@ natural future host for detector benchmarking.
 3. **Detector maturity.** Synthetic proof of concept. Open: cutoff transfer
    across widths/layers/models (round 8/8b), all-pairs specificity on
    un-injected real backgrounds, orientation (fails under prevalence
-   inversion by construction; $\sim 5/9$ in Arm 2), gating-corrected
-   frequency estimation for leaky regimes, production-scale false-positive
-   control (multiple comparisons over $\sim m^2/2$ pairs).
+   inversion by construction; $\sim 5/9$ in Arm 2; round 9's
+   swap-equivariance is an untested candidate signal), and
+   production-scale false-positive control (multiple comparisons over
+   $\sim m^2/2$ pairs). Frequency estimation given the pair is now solved at
+   the mechanism level (round 9); its all-token version retains a measured
+   background bias $w_B(h_B - \rho)$ — worst observed $0.07$ at
+   $\rho = 0.1$ — and an $h_B$-corrected or background-excluded operational
+   estimator is queued, not claimed.
 4. **Statistical power.** 16-seed cells CI-establish only the strongest
    endpoint; confirmatory cells are sized $\ge 24$ seeds from round 8 onward.
 5. **Oracle remedy.** Inverse-density weighting is an existence result;
