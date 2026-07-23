@@ -480,3 +480,49 @@ untested candidate signal). Still open and pre-registerable: cross-domain cutoff
 transfer, all-pairs specificity on un-injected backgrounds (wild-hunt null, §8-adjacent),
 h_B-corrected operational estimation, overcomplete m > d settings, and production-scale
 false-positive control.
+
+## 19. Round 10: absorption under TopK SAEs — a verified theory, a negative SGD round, and a sharper question
+
+Every result above is for L1 SAEs; practitioners use TopK/BatchTopK/JumpReLU. Round 10
+(theory `theory/topk_absorption.md`, prereg `notes/prereg-topk-absorption.md` lock
+`f2e92fc`, dual pre-lock review — Gemini minor, **GPT-5.6 major**; results-stage review
+Gemini ACCEPT) asked whether absorption survives, and produced a productive negative result.
+
+**Theory (verified, and correctly scoped by the review).** For a *capacity-limited*
+two-atom oracle-coded dictionary, TopK has an exact pure-strategy crossover
+**ε\*_TopK = 2q with no λ** — capacity-driven, not shrinkage-driven (the L1 boundary
+ε\*_L1 ≈ 1.17λq vanishes as λ → 0; the TopK one does not). GPT-5.6's adversarial review
+supplied the decisive scope correction: with a *third* atom the dictionary {v_p, v_c,
+d_comp} reconstructs every event at zero loss under a one-slot budget, so **the crossover
+is a property of exactly-two pair atoms and an overcomplete dictionary escapes it**
+(`theory/verify_topk_absorption.py` checks the counterexample). The review also corrected
+three overclaims: absorption must be defined as *absence of a functional child code* (a
+composite atom may coexist with a faithful child atom); faithful is not the unique
+zero-loss two-slot solution; and ε = 0 is non-identifiability of the reconstruction
+objective, not impossibility "under any architecture."
+
+**SGD experiment (largely negative, reported as registered).** 960 runs, isolated pair,
+an activation-aware binary child-recovery metric (signed alignment + fires-on-child-solo +
+child-selective — closing the geometry-only and missingness loopholes the review flagged).
+P1 (two-atom 2q crossover, m = 2) **inconclusive** and P2 (two-atom capacity collapse)
+**falsified**: the m = 2 SGD arm is *degenerate* — reconstruction stays high (≈ 0.5) and
+the two atoms are non-selective, so SGD reaches neither the clean faithful nor the clean
+absorbed dictionary the theorem compares. The two-atom *global-optimum* propositions
+(machine-checked) are correct; their SGD realization in this tiny regime is not. P3
+(overcomplete escape) **partial** — overcomplete TopK does recover the child (0.62–0.83).
+P4 (the practical hypothesis "TopK resists the absorption L1 suffers") **refuted, inverted**:
+in isolation L1 recovers the child *perfectly* (1.00) and TopK *less* cleanly (0.62–0.83),
+because the hard budget gives the rare child atom fewer training signals.
+
+**What the negative round taught.** (i) **Dictionary width, not the per-token budget,** is
+what lets a rare child code be recovered here — overcomplete SAEs form a dedicated
+selective child atom; the capacity-limited m = 2 regime cannot. (ii) **In isolation neither
+L1 nor TopK absorbs an ε > 0 child** — so the L1 absorption documented in §8–§17 is
+**driven by background competition, not child rarity alone**, a genuine refinement of this
+project's own account. (iii) The "TopK is more absorption-resistant" intuition is not
+supported in isolation; whether it holds *with* background — where absorption is real — is
+the sharp open question, with two competing mechanisms (the hard budget starves the rare
+code, vs. it forces a clean child-or-background choice that L1's soft code smears). That
+head-to-head, in the background regime, is the queued next experiment and the most direct
+handle on **code identifiability** in the program's arc toward causally valid, reusable
+feature abstractions.
