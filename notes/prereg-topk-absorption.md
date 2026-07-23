@@ -106,10 +106,13 @@ failures included; report follows the outcome.
   co-fires with host in that sampler), so its observed composite formation is
   the ε=0 non-uniqueness wall — consistent with §7, not evidence about the
   ε>0 crossover. **DONE (recorded here).**
-- **D2** — SMOKE end-to-end (CPU): confirm the pipeline + activation-aware
-  metric run and produce sane recovery flags.
+- **D2** — SMOKE end-to-end (CPU): pipeline + activation-aware binary metric
+  run cleanly (signed cos, child-solo fire rates, recovery flag).
+  **DONE 2026-07-24.**
 - At lock: experiment, metric thresholds, arms, seeds, bars, and the scorer
-  are frozen; the lock hash is recorded here by amendment.
+  are frozen. **LOCKED 2026-07-24; lock commit hash recorded by the
+  immediately-following amendment commit, after which nothing changes except
+  by dated amendment.**
 
 ## Cost & ops
 
