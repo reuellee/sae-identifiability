@@ -39,6 +39,19 @@ pre-registration note + pre-results commit; exploratory work is labeled.*
 2. **Gating-corrected counting estimator** for leaky regimes: model
    P(comp fires | class) leak explicitly; fixes ρ̂ inflation (0.75 vs 0.5 in
    Arm 2, 0.58–0.62 in Arm A σ=0.1). (theory + 1 cheap session)
+2b. ~~**Containment-based orientation.**~~ **TRIED AND FALSIFIED
+   2026-07-23** (`results/round8/orientation_SUMMARY.md`, prereg
+   `notes/prereg-containment-orientation.md`, lock `0a6db51`, S2 results
+   `72a3dc7`). Plain firing-containment: perfect when determinate but
+   indeterminate 54–79% of E1's own regime. Amendment 1 (magnitude
+   cross-delta) fixed E1 coverage (1.000, development-set) but **P1
+   falsified on the confirmatory ρ=0.6 GPU stress cell: 0.095 accuracy**
+   (below chance) — the fix does not transfer across harnesses/widths;
+   MARGIN_MAG was scaled to E1's swing size, ~5–10× larger than the m=32
+   synthetic harness produces. Orientation at ρ≥0.5 is still open. Next
+   idea (untested): a harness-adaptive or scale-invariant (rank/
+   likelihood-ratio) version of the cross-delta statistic, not a retuned
+   constant.
 3. **Noise-mechanism pre-registration**: retain activation histograms; test the
    σ≥0.2 absorption-destruction and the σ≈0.1 GMM-calibration mystery from
    Arm A. (1 session)

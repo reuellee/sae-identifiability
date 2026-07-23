@@ -84,8 +84,9 @@ def eval_run(sae_D, sae_W, sae_b, run, Abg1, vp1, vc1):
         row["cont_indet"] = int(cont_ch is None)
         row["cont_ok"] = float("nan") if cont_ch is None else int(cont_ch == comp)
         row["amended_ok"] = int(amended_ch == comp)
-        row["c_par_giv_comp"] = round(cij if comp == tp[0] else cji, 4)
-        row["c_comp_giv_par"] = round(cji if comp == tp[0] else cij, 4)
+        # P(par fires | comp fires) and P(comp fires | par fires); cij=P(tp[0]|tp[1]), cji=P(tp[1]|tp[0])
+        row["c_par_giv_comp"] = round(cji if comp == tp[0] else cij, 4)
+        row["c_comp_giv_par"] = round(cij if comp == tp[0] else cji, 4)
     return row
 
 
