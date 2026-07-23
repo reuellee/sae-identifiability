@@ -28,6 +28,15 @@ from rho_estimators_lib import (rho_estimators, theta_sensitivity,
                                 oracle_diags)
 
 dev = "cuda" if torch.cuda.is_available() else "cpu"
+
+def safe_load(path):
+    """weights_only=True where supported (older CPU torch lacks the kwarg;
+    files are project-generated tensors either way)."""
+    try:
+        return torch.load(path, weights_only=True)
+    except TypeError:
+        return torch.load(path)
+
 D_MODEL, AMP, Q, P0 = 768, 5.0, 0.2, 0.2
 N_EV = 200_000
 R8DIR = os.path.join(HERE, "..", "results", "round8")
@@ -45,7 +54,7 @@ if not os.path.exists(ACT):
     os.chdir(os.path.join(HERE, "..", "experiments"))  # extractor writes to CWD
     import extract_activations
     extract_activations.main()
-bg = torch.load(ACT, weights_only=True).float()
+bg = safe_load(ACT).float()
 mu = bg.mean(0, keepdim=True)
 bg = ((bg - mu) * math.sqrt(D_MODEL) / (bg - mu).norm(dim=1).mean()).half().to(dev)
 N = bg.shape[0]
@@ -53,7 +62,7 @@ N = bg.shape[0]
 rows_csv = []
 for M_LAT in (128, 256):
     wpath = os.path.join(R8DIR, f"weights_r8e1_m{M_LAT}.pt")
-    blob = torch.load(wpath, weights_only=True)
+    blob = safe_load(wpath)
     W_all, b_all, D_all, runs = blob["W"], blob["b"], blob["D"], blob["runs"]
     for i, (e, s) in enumerate(runs):
         if abs(float(e) - 0.002) > 1e-9:
