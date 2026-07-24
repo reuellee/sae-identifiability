@@ -34,10 +34,16 @@ def ensure(pkg):
         subprocess.run([sys.executable, "-m", "pip", "install", "--user", "-q", pkg], check=True)
 
 def get_corpus(min_chars):
-    urls = ["https://www.gutenberg.org/files/2600/2600-0.txt",   # War and Peace
-            "https://www.gutenberg.org/files/1661/1661-0.txt",   # Sherlock Holmes
-            "https://www.gutenberg.org/files/98/98-0.txt",       # Tale of Two Cities
-            "https://www.gutenberg.org/files/1342/1342-0.txt"]   # Pride and Prejudice
+    # Doc-separated splits: SPLIT=train uses books A; SPLIT=eval uses disjoint
+    # books B (for a held-out FVU eval). Override with GUTENBERG_URLS (comma-sep).
+    SPLIT = os.environ.get("SPLIT", "train")
+    default = {"train": ["https://www.gutenberg.org/files/2600/2600-0.txt",   # War and Peace
+                         "https://www.gutenberg.org/files/1661/1661-0.txt"],  # Sherlock Holmes
+               "eval":  ["https://www.gutenberg.org/files/98/98-0.txt",       # Tale of Two Cities
+                         "https://www.gutenberg.org/files/1342/1342-0.txt"]}  # Pride and Prejudice
+    env = os.environ.get("GUTENBERG_URLS", "")
+    urls = env.split(",") if env else default.get(SPLIT, default["train"])
+    print(f"corpus split={SPLIT} books={[u.split('/')[-2] for u in urls]}", flush=True)
     text = ""
     for u in urls:
         try:

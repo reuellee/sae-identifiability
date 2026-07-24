@@ -7,3 +7,5 @@ experiments/token_data.json
 experiments/gpt2_encoder.json
 results/real/*.pt
 results/real/acts_*
+.venv/
+results/real/sae_pythia-70m_*.json
