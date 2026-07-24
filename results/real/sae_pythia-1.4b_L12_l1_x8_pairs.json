@@ -1,0 +1,386 @@
+{
+  "sae": "sae_pythia-1.4b_L12_l1_x8.pt",
+  "arch": "l1",
+  "m": 16384,
+  "n_window": 12573,
+  "n_cosine_band": 25158,
+  "n_flagged": 25041,
+  "fvu": 0.05595763400197029,
+  "examples": [
+    {
+      "lat_a": 3357,
+      "lat_b": 3656,
+      "cos": 0.894,
+      "lift": 11.372,
+      "overlap": 0.856,
+      "rate_a": 0.00278,
+      "rate_b": 0.07528,
+      "toks_a": [
+        "jection",
+        "\u0120for",
+        "\u0120and",
+        "\u0120pointing",
+        "\u0120she",
+        "\u0120once"
+      ],
+      "toks_b": [
+        "\u0120the",
+        "\u0120the",
+        "\u0120the",
+        "\u0120the",
+        "\u0120a",
+        "\u0120the"
+      ]
+    },
+    {
+      "lat_a": 10132,
+      "lat_b": 13047,
+      "cos": 0.881,
+      "lift": 272.537,
+      "overlap": 0.867,
+      "rate_a": 0.0006,
+      "rate_b": 0.00318,
+      "toks_a": [
+        "\u0120bow",
+        "\u0120a",
+        "\u0120in",
+        "\u0120in",
+        "\u0120in",
+        "\u0120in"
+      ],
+      "toks_b": [
+        "\u0120bow",
+        "\u0120in",
+        "\u0120in",
+        "\u0120in",
+        "\u0120a",
+        "\u0120in"
+      ]
+    },
+    {
+      "lat_a": 4403,
+      "lat_b": 5703,
+      "cos": 0.88,
+      "lift": 150.017,
+      "overlap": 0.753,
+      "rate_a": 0.00486,
+      "rate_b": 0.00502,
+      "toks_a": [
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d"
+      ],
+      "toks_b": [
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d"
+      ]
+    },
+    {
+      "lat_a": 2109,
+      "lat_b": 14754,
+      "cos": 0.879,
+      "lift": 3.908,
+      "overlap": 0.122,
+      "rate_a": 0.01596,
+      "rate_b": 0.0311,
+      "toks_a": [
+        "\u0120the",
+        "\u0120the",
+        "\u0120the",
+        "\u0120the",
+        "\u0120the",
+        "\u0120the"
+      ],
+      "toks_b": [
+        ",",
+        ".",
+        ",",
+        ",",
+        ";",
+        ","
+      ]
+    },
+    {
+      "lat_a": 2098,
+      "lat_b": 5200,
+      "cos": 0.872,
+      "lift": 858.517,
+      "overlap": 0.893,
+      "rate_a": 0.00056,
+      "rate_b": 0.00104,
+      "toks_a": [
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b"
+      ],
+      "toks_b": [
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b",
+        "\u00e2\u0122\u013b"
+      ]
+    },
+    {
+      "lat_a": 6040,
+      "lat_b": 15799,
+      "cos": 0.865,
+      "lift": 781.25,
+      "overlap": 0.812,
+      "rate_a": 0.00064,
+      "rate_b": 0.00104,
+      "toks_a": [
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a"
+      ],
+      "toks_b": [
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a",
+        "\u010d\u010a\u010d\u010a"
+      ]
+    },
+    {
+      "lat_a": 763,
+      "lat_b": 11516,
+      "cos": 0.86,
+      "lift": 23.873,
+      "overlap": 0.725,
+      "rate_a": 0.00808,
+      "rate_b": 0.03038,
+      "toks_a": [
+        "\u0120a",
+        "\u0120our",
+        ",",
+        ";",
+        "\u0120are",
+        "\u0120the"
+      ],
+      "toks_b": [
+        "\u0120would",
+        "\u0120in",
+        "\u0120gave",
+        "\u0120are",
+        "\u0120but",
+        "\u0120of"
+      ]
+    },
+    {
+      "lat_a": 8777,
+      "lat_b": 9724,
+      "cos": 0.857,
+      "lift": 528.541,
+      "overlap": 0.465,
+      "rate_a": 0.00086,
+      "rate_b": 0.00088,
+      "toks_a": [
+        "\u0120is",
+        "\u0120are",
+        "\u0120are",
+        "!",
+        "\u0120was",
+        "\u0120last"
+      ],
+      "toks_b": [
+        "\u0120is",
+        "\u0120are",
+        "\u0120are",
+        "\u0120was",
+        "\u0120are",
+        "\u0120is"
+      ]
+    },
+    {
+      "lat_a": 8394,
+      "lat_b": 10657,
+      "cos": 0.857,
+      "lift": 524.834,
+      "overlap": 0.661,
+      "rate_a": 0.00124,
+      "rate_b": 0.00126,
+      "toks_a": [
+        "\u0120took",
+        "\u0120taking",
+        "\u0120took",
+        "\u0120took",
+        "\u0120taking",
+        "\u0120took"
+      ],
+      "toks_b": [
+        "\u0120take",
+        "\u0120take",
+        "\u0120take",
+        "\u0120take",
+        "\u0120take",
+        "\u0120take"
+      ]
+    },
+    {
+      "lat_a": 3342,
+      "lat_b": 10772,
+      "cos": 0.857,
+      "lift": 148.934,
+      "overlap": 0.76,
+      "rate_a": 0.0051,
+      "rate_b": 0.00366,
+      "toks_a": [
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d"
+      ],
+      "toks_b": [
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d",
+        "\u010d\u010a\u010d"
+      ]
+    },
+    {
+      "lat_a": 3357,
+      "lat_b": 11351,
+      "cos": 0.855,
+      "lift": 13.507,
+      "overlap": 0.273,
+      "rate_a": 0.00278,
+      "rate_b": 0.02024,
+      "toks_a": [
+        "jection",
+        "\u0120for",
+        "\u0120and",
+        "\u0120pointing",
+        "\u0120she",
+        "\u0120once"
+      ],
+      "toks_b": [
+        "\u0120prince",
+        "\u0120tomorrow",
+        "ito",
+        "\u0120engaged",
+        "\u0120Bing",
+        "\u0120Prince"
+      ]
+    },
+    {
+      "lat_a": 1808,
+      "lat_b": 11351,
+      "cos": 0.855,
+      "lift": 8.921,
+      "overlap": 0.807,
+      "rate_a": 0.0905,
+      "rate_b": 0.02024,
+      "toks_a": [
+        "\u0120his",
+        ",",
+        "\u0120with",
+        ",",
+        "\u0120he",
+        "\u0120such"
+      ],
+      "toks_b": [
+        "\u0120prince",
+        "\u0120tomorrow",
+        "ito",
+        "\u0120engaged",
+        "\u0120Bing",
+        "\u0120Prince"
+      ]
+    },
+    {
+      "lat_a": 2597,
+      "lat_b": 11949,
+      "cos": 0.851,
+      "lift": 501.543,
+      "overlap": 0.722,
+      "rate_a": 0.00108,
+      "rate_b": 0.00144,
+      "toks_a": [
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face"
+      ],
+      "toks_b": [
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face",
+        "\u0120face"
+      ]
+    },
+    {
+      "lat_a": 4905,
+      "lat_b": 13561,
+      "cos": 0.851,
+      "lift": 70.199,
+      "overlap": 0.706,
+      "rate_a": 0.01006,
+      "rate_b": 0.00742,
+      "toks_a": [
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a"
+      ],
+      "toks_b": [
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a",
+        "\u010a"
+      ]
+    },
+    {
+      "lat_a": 9522,
+      "lat_b": 12716,
+      "cos": 0.851,
+      "lift": 544.218,
+      "overlap": 0.762,
+      "rate_a": 0.0014,
+      "rate_b": 0.00084,
+      "toks_a": [
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince",
+        "Prince",
+        "\u0120Prince"
+      ],
+      "toks_b": [
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince",
+        "\u0120Prince"
+      ]
+    }
+  ]
+}
