@@ -57,13 +57,20 @@ class SAE(torch.nn.Module):
 def main():
     assert ACTS, "set ACTS=path to acts_*.pt"
     blob = safe_load(ACTS)
-    X = blob["acts"].float()                     # [N, d] on CPU
-    N, d = X.shape
+    Xh = blob["acts"]                             # [N, d] fp16 on CPU (keep fp16!)
+    N, d = Xh.shape
     m = EXPANSION * d
-    mu = X.mean(0)
-    scale = math.sqrt(d) / (X - mu).norm(dim=1).mean().item()
-    Xn = ((X - mu) * scale)                       # normalized; keep on CPU, stream to GPU
-    print(f"acts {tuple(X.shape)} model={blob.get('model')} layer={blob.get('layer')} "
+    # normalization stats from a subsample (avoid a full float32 copy -> OOM)
+    gsub = torch.Generator().manual_seed(2)
+    sub = Xh[torch.randperm(N, generator=gsub)[:min(200000, N)]].float()
+    mu = sub.mean(0)
+    scale = math.sqrt(d) / (sub - mu).norm(dim=1).mean().item()
+    var = (((sub - mu) * scale) ** 2).sum(1).mean().item()
+    del sub
+    mu_dev = mu.to(dev)
+    def batch_norm(rows):                          # fp16 rows -> normalized on GPU
+        return (rows.float().to(dev) - mu_dev) * scale
+    print(f"acts {tuple(Xh.shape)} fp16 model={blob.get('model')} layer={blob.get('layer')} "
           f"-> m={m} arch={ARCH} (lam={LAM} k={K})", flush=True)
     torch.manual_seed(0)
     sae = SAE(d, m).to(dev)
@@ -71,10 +78,9 @@ def main():
     g = torch.Generator().manual_seed(1)
     fired = torch.zeros(m, device=dev)            # steps-since-fired tracker
     t0 = time.time()
-    var = ((X - mu) ** 2).sum(1).mean().item() * (scale ** 2)   # var of normalized acts
     for t in range(STEPS):
         idx = torch.randint(0, N, (BATCH,), generator=g)
-        x = Xn[idx].to(dev)
+        x = batch_norm(Xh[idx])
         xh, f = sae(x, ARCH, K)
         rec = ((x - xh) ** 2).sum(-1).mean()
         if ARCH == "l1":
@@ -92,7 +98,7 @@ def main():
             dead = torch.where(fired > RESAMPLE_EVERY // 2)[0]
             if len(dead) > 0:
                 with torch.no_grad():
-                    xb = Xn[torch.randint(0, N, (8192,), generator=g)].to(dev)
+                    xb = batch_norm(Xh[torch.randint(0, N, (8192,), generator=g)])
                     resid = (xb - (sae(xb, ARCH, K)[0])).norm(dim=1)
                     pick = torch.multinomial(resid ** 2 + 1e-6, min(len(dead), 8192))
                     dirs = (xb[pick] - sae.b_dec)
@@ -111,7 +117,7 @@ def main():
                   f"({time.time()-t0:.0f}s)", flush=True)
     # final eval on a held-out random slab
     with torch.no_grad():
-        ev = Xn[torch.randint(0, N, (min(50000, N),), generator=g)].to(dev)
+        ev = batch_norm(Xh[torch.randint(0, N, (min(50000, N),), generator=g)])
         xh, f = sae(ev, ARCH, K)
         fvu = float(((ev - xh) ** 2).sum(-1).mean() / var)
         l0 = float((f > 0).float().sum(-1).mean())
