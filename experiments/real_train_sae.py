@@ -29,6 +29,9 @@ SEED = int(os.environ.get("SEED", "0"))
 GPU_ACTS = bool(int(os.environ.get("GPU_ACTS", "0")))   # hold acts on GPU -> fast
 RESAMPLE_EVERY = 5000
 dev = "cuda" if torch.cuda.is_available() else "cpu"
+if dev == "cuda":                                  # infra speedup (both arches identical, ~negligible precision)
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
 
 def safe_load(p):
     try: return torch.load(p, weights_only=True)
