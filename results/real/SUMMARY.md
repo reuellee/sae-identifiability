@@ -54,12 +54,62 @@ finds sane absorbed-pair structure on real SAEs and to calibrate a
 confirmatory comparison. A pre-registered L1-vs-TopK comparison (matched
 seeds, bars) follows once these numbers are in hand.*
 
-**RESULTS PENDING** — TopK and L1 SAEs training; the detector runs on both.
-The round-10 question this addresses at real scale: with automatic background
-(a real model has thousands of features always present), does TopK have more
-or fewer absorbed pairs than L1? Round 10 found isolated L1 doesn't absorb at
-all (absorption is background-driven); a real model is the background-rich
-regime where the L1-vs-TopK contrast is actually meaningful.
+Two matched Pythia-1.4B layer-12 SAEs (m = 16384, x8), same activations, same
+detector:
 
-*(This section is filled from the frozen detector output —
-`gs://.../round11/*_pairs.json` — when the run completes.)*
+| SAE | FVU | L0 | dead% | rate-window latents | cosine-band pairs | flagged pairs |
+|---|---|---|---|---|---|---|
+| **TopK** (k=32) | 0.043 | 32.0 | 5.8% | 9,518 | 1,072 | **936** |
+| **L1** (λ=5) | 0.056 | 32.0 | 2.1% | 12,573 | 25,158 | **25,041** |
+
+**The detector flags ~27× more candidate pairs in the L1 SAE than in the TopK
+SAE** (and ~23× more decoder-cosine-band pairs). Inspecting the top-activating
+tokens of the flagged pairs (`*_pairs.json`) shows *what* the difference is:
+
+- **L1 pairs are dominated by feature-splitting** — pairs of latents firing on
+  **near-identical** token sets with aligned decoders and high overlap
+  (0.75–0.89): e.g. two latents both firing on `_bow/_in` (lift 273), two both
+  on the `čĊč` newline, two both on the `âĢĻ` apostrophe byte-fragment. These
+  are the same feature represented by multiple latents.
+- **TopK pairs are far fewer and are mostly low-overlap (0.03–0.06)
+  coincidental decoder alignments** — a function-word latent and a newline
+  latent that share decoder geometry but fire on *different* tokens (not
+  splitting).
+
+**Interpretation (exploratory).** L1 SAEs exhibit far more redundant / split
+feature structure than TopK SAEs on real Pythia-1.4B activations. This
+**supports the original round-11 hypothesis — that TopK resists the
+absorption/splitting L1 suffers — in exactly the regime round 10 said was the
+meaningful one.** Round 10 (isolated, no background) *refuted* the hypothesis
+and identified background competition as the missing ingredient; round 11
+(real model = background-rich) finds the predicted direction: TopK's hard
+budget yields cleaner, less-redundant, more orthogonal features than L1's
+shrinkage. This is consistent with the field's move to TopK/BatchTopK and with
+the north-star's *identifiable codes* stage — the sparsity mechanism strongly
+affects code redundancy at scale.
+
+**Honest caveats (why this is exploratory, not a confirmed count of
+"absorption").**
+1. **The toy-calibrated detector conflates splitting and absorption at real
+   scale.** Its overlap veto (< 0.9) was tuned on the toy model to remove
+   feature-splitting doublets, which there sat at overlap ≈ 1.0. Real L1 splits
+   sit at overlap 0.75–0.89 and slip *under* the veto, so "25,041 flagged" is a
+   **redundant-pair** count (splitting + absorption), not a clean absorption
+   count. The detector needs recalibration for real-SAE scale.
+2. **Absolute counts are noisy** (the TopK flags are largely coincidental
+   low-overlap alignments); the robust signal is the **~27× ratio**, driven by
+   L1's heavy splitting.
+3. **One SAE per arch, one seed, one λ/k, one layer.** No multiplicity, no
+   validation that flagged pairs are causal absorption.
+
+**Confirmatory next steps (to pre-register).** (a) Recalibrate the detector to
+separate splitting from absorption on real SAEs (tighter overlap, or an
+explicit split-vs-absorb classifier); (b) validate flagged pairs with the
+first-letter absorption task (Chanin/SAEBench); (c) multiple seeds and a
+λ/k sweep so the L1-vs-TopK contrast has error bars; (d) the causal test —
+does ablating a "recovered" child code actually remove the child feature's
+effect (the bridge to the north-star's *causally valid features*).
+
+Artifacts: SAE weights + activations in `gs://sae-identifiability-artifacts-ebd5a273/round11/`;
+detector outputs `results/real/sae_pythia-1.4b_L12_{topk,l1}_x8_pairs.json`
+(committed — small). Pipeline: `experiments/real_{extract,train_sae,analyze}.py`.
