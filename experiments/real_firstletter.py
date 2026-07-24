@@ -158,16 +158,30 @@ def score_sae():
     absorption_rate, per_letter, main_latent, absorbed = absorption_at(THETA)
     grid = {f"{t:g}": round(absorption_at(t)[0], 4) for t in THETA_GRID}
 
-    # ---- causal (NON-CIRCULAR): carriers chosen by ACTIVATION MAGNITUDE (not by
-    # probe alignment); test whether ablating them drops the TRUE letter's probe
-    # logit MORE than OTHER letters' logits. Same carriers for both -> the
-    # magnitude confound cancels; selection is independent of letter identity, so
-    # this CAN fail (letter-agnostic carriers -> no gap). ----
+    # ---- P2 attribution (DESCRIPTIVE, reconstruction-space; NOT a causal-validity
+    # bar -- the real causal test is the deferred Chanin forward-pass). Two contrasts
+    # per absorbed word, carriers = top-N_CARRIERS firing latents by MAGNITUDE:
+    #   * CONCENTRATION (the falsifiable one): letter-selectivity per unit
+    #     reconstruction mass, cos(dvec, wdir_L), of the top-magnitude carriers vs
+    #     a random equal-count set of the word's OTHER firing latents. Magnitude is
+    #     normalized out (cosine), so this is NOT the near-tautology of "does the
+    #     reconstruction contain the present letter" -- it asks whether the letter
+    #     is CONCENTRATED in the dominant latents. Can fail (diffuse letter -> ~0).
+    #   * specificity (weaker, descriptive): d_true - d_other, the true-letter vs
+    #     other-letter drop. Near-guaranteed positive for a low-FVU SAE (the word
+    #     contains L, not L'), so reported but NOT a bar (per external review).
+    # Space note: dvec is in NORMALIZED residual space, wdir in RAW; normalization
+    # is a SCALAR, so cosine (concentration) is exactly invariant and the sign of
+    # d_true-d_other is valid. Breaks under per-dimension normalization.
     Wd = W_dec                                             # [d, m] unit-norm columns
-    causal_diffs, causal_true, causal_other = [], [], []
+    conc, spec, causal_true, causal_other = [], [], [], []
     n_absorbed_inst = 0
+    rng = np.random.default_rng(0)
     other_dirs = {L: torch.stack([probes[L2][0] for L2 in probes if L2 != L])
                   for L in probes} if len(probes) > 1 else {}
+    def _cos(dvec, wdir):
+        nv = float(dvec.norm())
+        return float(wdir @ dvec) / nv if nv > 1e-8 else 0.0
     for L, wis in absorbed.items():
         wdir_L = probes[L][0]
         for wi in wis:
@@ -175,19 +189,18 @@ def score_sae():
             fw = F[wi]
             fired = np.where(fw > THETA)[0]
             if len(fired) == 0 or L not in other_dirs: continue
-            carriers = fired[np.argsort(fw[fired])[::-1][:N_CARRIERS]]  # top-mag firing latents
-            fc = torch.tensor(fw[carriers], dtype=torch.float32)
-            # dvec is in the SAE's NORMALIZED residual space; the probe wdir is in
-            # RAW residual space. Because normalization is a SCALAR (isotropic
-            # `scale`), it factors out as a common positive multiplier -> the SIGN
-            # of (d_true - d_other) is valid, but the magnitudes are `scale x` the
-            # true probe-logit drop (proportional, not equal). This breaks if the
-            # recipe ever switches to per-dimension normalization.
-            dvec = Wd[:, carriers] @ fc
-            d_true = float(wdir_L @ dvec)
-            d_other = float((other_dirs[L] @ dvec).mean())
+            order = fired[np.argsort(fw[fired])[::-1]]
+            carriers = order[:N_CARRIERS]                  # top-magnitude firing latents
+            rest = order[N_CARRIERS:]
+            dtop = Wd[:, carriers] @ torch.tensor(fw[carriers], dtype=torch.float32)
+            d_true = float(wdir_L @ dtop)
+            d_other = float((other_dirs[L] @ dtop).mean())
             causal_true.append(d_true); causal_other.append(d_other)
-            causal_diffs.append(d_true - d_other)
+            spec.append(d_true - d_other)
+            if len(rest) >= 1:                             # concentration needs a control set
+                ctrl = rng.choice(rest, size=min(len(carriers), len(rest)), replace=False)
+                drand = Wd[:, ctrl] @ torch.tensor(fw[ctrl], dtype=torch.float32)
+                conc.append(_cos(dtop, wdir_L) - _cos(drand, wdir_L))
     def _m(x): return round(float(np.mean(x)), 4) if x else None
     res = dict(sae=os.path.basename(os.environ["SAE"]), arch=arch, seed=int(s.get("seed", -1)),
                k=k, lam=s.get("lam"), fvu=s.get("stats", {}).get("fvu"),
@@ -195,17 +208,18 @@ def score_sae():
                theta=THETA, sel_min=SEL_MIN, n_carriers=N_CARRIERS,
                n_letters_scored=sum(1 for v in per_letter.values() if v.get("clean_latent")),
                absorption_rate=round(absorption_rate, 4), absorption_by_theta=grid,
+               causal_conc_mean=_m(conc),                  # PRIMARY P2 contrast (magnitude-normalized, falsifiable)
+               causal_conc_sd=round(float(np.std(conc)), 4) if conc else None,
+               causal_spec_mean=_m(spec),                  # descriptive (near-guaranteed +; not a bar)
                causal_true_mean=_m(causal_true), causal_other_mean=_m(causal_other),
-               causal_diff_mean=_m(causal_diffs),
-               causal_diff_sd=round(float(np.std(causal_diffs)), 4) if causal_diffs else None,
-               n_causal=len(causal_diffs), n_absorbed_inst=n_absorbed_inst,
+               n_causal=len(conc), n_absorbed_inst=n_absorbed_inst,
                main_latents=main_latent,                   # P3 ground truth: {letter: main-L-latent id}
                per_letter=per_letter)
     out = os.environ.get("OUT", os.environ["SAE"].replace(".pt", "_fl.json"))
     json.dump(res, open(out, "w"), indent=2)
     print(f"wrote {out}: absorption={absorption_rate:.4f} grid={grid} "
-          f"causal_diff={res['causal_diff_mean']} (true={res['causal_true_mean']} "
-          f"other={res['causal_other_mean']}) n_causal={len(causal_diffs)}", flush=True)
+          f"conc={res['causal_conc_mean']} spec={res['causal_spec_mean']} "
+          f"n_letters={res['n_letters_scored']} n_causal={len(conc)}", flush=True)
 
 if __name__ == "__main__":
     if MODE == "words":
