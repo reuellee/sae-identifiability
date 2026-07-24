@@ -1,35 +1,39 @@
 """Round-12 registered scoring: real-model first-letter absorption, L1 vs TopK.
 
 Reads results/real/sae_*_fl.json (from real_firstletter.py MODE=score) for both
-architectures and >=5 seeds each. Scores:
-  P1 (PRIMARY): mean absorption_rate(L1) - mean(TopK) at the primary theta=0;
-                sign + seed-bootstrap 95% CI. GATED on matched L0 (both arches'
-                mean held-out L0 in [28,36], widen [24,40], disclosed). theta=0
-                is the ONLY matched point and is CONSERVATIVE for L1, so L1>TopK
-                here is the strong result. Robustness: absorption on the
-                INTERSECTION of letters both arms score cleanly (removes the
-                different-letter-subset confound, review Finding 3). The theta>0
-                grid is DESCRIPTIVE only -- unmatched and biased toward L1 (an
-                upper bracket), never a confirmation gate (review Finding 2).
-  P2 (DESCRIPTIVE attribution, NOT a causal-validity bar): concentration =
-                cos(top-magnitude-carrier recon, wL) - cos(random-firing recon,
-                wL), pooled; bootstrap 95% CI > 0 => the absorbed letter is
-                CONCENTRATED in the word's dominant latents. Magnitude-normalized
-                (cosine), so it is not the "recon contains the present letter"
-                near-tautology (review Finding 1). The real causal test is the
-                deferred Chanin forward-pass. specificity (d_true - d_other) is
-                reported but is near-guaranteed positive -> descriptive only.
-  P3 (secondary): RECALL of ground-truth main-L-latents in the detector's
-                flagged set (involved_latents), by arch. Precision reported
-                descriptively (the detector also flags splitting, so low
-                precision is not a failure).
-Pure stdlib. Frozen at lock.
+architectures and the registered seeds each. Scores:
+  P1 (PRIMARY): mean absorption_rate(L1) - mean(TopK) at the primary theta=0,
+                as a PAIRED per-seed bootstrap (init is shared per seed -> valid
+                pairs). GATED on: (a) config conformance (each fl.json produced
+                with the registered theta/sel_min/n_carriers/model/layer/k/lam),
+                (b) the registered seed set present in both arms, (c) matched L0
+                (|mean L0_L1 - mean L0_TopK| small AND both near target), and
+                (d) the L1>TopK sign surviving on the INTERSECTION of letters both
+                arms score cleanly. Any gate failing => P1 not confirmed (reported).
+                absorption now REQUIRES the letter to survive in the reconstruction
+                (retention check in the metric), so it is not feature loss;
+                loss_rate is reported alongside. With few seeds P1 is SUGGESTIVE.
+  P2 (DESCRIPTIVE attribution, by ARCH): concentration = cos(top-carrier recon,
+                wL) - cos(random-firing recon, wL), magnitude-normalized. > 0 =>
+                letter concentrated in the dominant latents. Not a causal bar (real
+                test = deferred Chanin forward-pass); may be inflated by in-fold
+                probe leakage / tail-control asymmetry -- descriptive only.
+  P3 (secondary): detector recall of ground-truth main-L-latents vs the
+                opportunity baseline (involved fraction), enrichment, + precision.
+Pure stdlib. Frozen at lock. Registered config below is the lock.
 """
 import json, glob, os, random, statistics as st
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RD = os.path.join(HERE, "..", "results", "real")
 BOOT = 10_000
+# ---- REGISTERED CONFIG (the lock) ----
+REG = dict(theta=0.0, sel_min=0.30, n_carriers=3, model="EleutherAI/pythia-1.4b",
+           layer=12, k=32)
+N_SEEDS = int(os.environ.get("N_SEEDS", "8"))
+SEEDS = set(range(N_SEEDS))
+L0_TARGET, L0_TOL, L0_BAND = 32.0, 3.0, (24.0, 40.0)   # matched: |dL0|<=TOL and both in band
+LOCK_LAM = os.environ.get("LOCK_LAM")                   # frozen L1 lambda (from calibration); checked if set
 
 def load(arch):
     rows = []
@@ -48,159 +52,183 @@ def boot_mean(x, reps=BOOT, seed=1):
     ms = sorted(st.mean(rng.choice(x) for _ in x) for _ in range(reps))
     return ms[int(0.025*reps)], ms[int(0.975*reps)]
 
+def paired(l1, tk, key):
+    """Per-seed paired values (L1[s]-TopK[s]) for seeds present in both arms."""
+    a = {r["seed"]: r for r in l1}; b = {r["seed"]: r for r in tk}
+    return [(s, a[s][key], b[s][key]) for s in sorted(set(a) & set(b))
+            if a[s].get(key) is not None and b[s].get(key) is not None]
+
+def conformance(rows, arch):
+    bad = []
+    for r in rows:
+        for f in ("theta", "sel_min", "n_carriers", "layer"):
+            if r.get(f) != REG[f]: bad.append(f"{r['_path']}: {f}={r.get(f)}!={REG[f]}")
+        if r.get("model") != REG["model"]: bad.append(f"{r['_path']}: model={r.get('model')}")
+        if arch == "topk" and r.get("k") != REG["k"]: bad.append(f"{r['_path']}: k={r.get('k')}")
+        if arch == "l1" and LOCK_LAM is not None and str(r.get("lam")) != str(LOCK_LAM):
+            bad.append(f"{r['_path']}: lam={r.get('lam')}!=LOCK_LAM {LOCK_LAM}")
+    if arch == "l1" and len({r.get("lam") for r in rows}) > 1:
+        bad.append(f"L1 lam not constant across seeds: {sorted({r.get('lam') for r in rows})}")
+    return bad
+
 def main():
     l1 = load("l1"); tk = load("topk")
     print(f"L1 SAEs={len(l1)}  TopK SAEs={len(tk)}")
     if not l1 or not tk:
         print("MISSING SAE fl.json files"); return
+
+    # ---- gate: config conformance (frozen scorer must enforce the frozen design) ----
+    viol = conformance(l1, "l1") + conformance(tk, "topk")
+    conf_ok = not viol
+    print(f"\n=== config-conformance gate ===")
+    print("  OK" if conf_ok else "  VIOLATIONS:\n    " + "\n    ".join(viol))
+
+    # ---- gate: registered seed set present in both arms ----
+    s_l1 = sorted(r["seed"] for r in l1); s_tk = sorted(r["seed"] for r in tk)
+    seeds_ok = (set(s_l1) == SEEDS and set(s_tk) == SEEDS
+                and len(s_l1) == len(SEEDS) and len(s_tk) == len(SEEDS))
+    print(f"=== seed gate (registered {sorted(SEEDS)}) ===")
+    print(f"  L1 seeds={s_l1}  TopK seeds={s_tk}  -> {'OK' if seeds_ok else 'MISMATCH (P1 not confirmable)'}")
+
     for tag, rows in (("TopK", tk), ("L1", l1)):
         for r in rows:
-            print(f"  {tag} {r['_path']}: absorption={r['absorption_rate']} L0={r.get('l0')} "
-                  f"grid={r.get('absorption_by_theta')} fvu={r.get('fvu')} "
-                  f"n_letters={r.get('n_letters_scored')} conc={r.get('causal_conc_mean')} "
-                  f"spec={r.get('causal_spec_mean')} n_causal={r.get('n_causal')}")
-    a_l1 = [r["absorption_rate"] for r in l1]
-    a_tk = [r["absorption_rate"] for r in tk]
+            print(f"  {tag} {r['_path']}: absorption={r['absorption_rate']} loss={r.get('loss_rate')} "
+                  f"L0={r.get('l0')} fvu={r.get('fvu')} n_letters={r.get('n_letters_scored')} "
+                  f"conc={r.get('causal_conc_mean')} grid={r.get('absorption_by_theta')}")
 
-    # ---- Finding-3 check: are the two arms scored on the same letters? ----
-    nl_l1 = [r.get("n_letters_scored", 0) for r in l1]
-    nl_tk = [r.get("n_letters_scored", 0) for r in tk]
-    print(f"\n=== letters-scored (selection-bias check) ===")
-    print(f"  n_letters_scored  L1 mean={st.mean(nl_l1):.1f} {nl_l1}   TopK mean={st.mean(nl_tk):.1f} {nl_tk}")
-    if len(nl_l1) >= 2 and len(nl_tk) >= 2:
-        nlo, nhi = boot_diff(nl_l1, nl_tk)
-        print(f"  diff (L1-TopK) letters = {st.mean(nl_l1)-st.mean(nl_tk):+.1f}, 95% CI [{nlo:+.1f},{nhi:+.1f}]"
-              + ("  <- arms score DIFFERENT letter sets; P1 confounded unless intersection agrees" if (nlo>0 or nhi<0) else ""))
-
-    # ---- matched-L0 gate (P1 is only valid at matched sparsity) ----
-    BAND, WIDE = (28.0, 36.0), (24.0, 40.0)
+    # ---- matched-L0 gate: arms must MATCH, not merely each sit in a band ----
     l0_l1 = [r["l0"] for r in l1 if r.get("l0") is not None]
     l0_tk = [r["l0"] for r in tk if r.get("l0") is not None]
-    print(f"\n=== matched-L0 gate (registered band {BAND}, widen {WIDE}) ===")
+    print(f"\n=== matched-L0 gate (|dL0|<={L0_TOL}, both in {L0_BAND}, target {L0_TARGET}) ===")
     if l0_l1 and l0_tk:
         ml1, mtk = st.mean(l0_l1), st.mean(l0_tk)
-        rng_l1 = (min(l0_l1), max(l0_l1)); rng_tk = (min(l0_tk), max(l0_tk))
-        print(f"  L1  mean L0={ml1:.1f} range={rng_l1}   TopK mean L0={mtk:.1f} range={rng_tk}")
-        inband = lambda v, b: b[0] <= v <= b[1]
-        if inband(ml1, BAND) and inband(mtk, BAND):
-            l0_ok, l0_note = True, "MATCHED (both means in registered band)"
-        elif inband(ml1, WIDE) and inband(mtk, WIDE):
-            l0_ok, l0_note = True, "MATCHED-WIDENED (both means in widened band; disclosed)"
-        else:
-            l0_ok, l0_note = False, "UNMATCHED (a mean L0 is outside the band -> P1 confounded)"
+        dl0 = abs(ml1 - mtk); inband = all(L0_BAND[0] <= v <= L0_BAND[1] for v in (ml1, mtk))
+        l0_ok = dl0 <= L0_TOL and inband
+        print(f"  L1 mean L0={ml1:.1f} {(min(l0_l1),max(l0_l1))}   TopK mean L0={mtk:.1f} {(min(l0_tk),max(l0_tk))}")
+        print(f"  |dL0|={dl0:.1f}  both-in-band={inband}  -> {'MATCHED' if l0_ok else 'UNMATCHED (P1 confounded)'}")
     else:
-        l0_ok, l0_note = False, "NO L0 DATA (cannot confirm matched sparsity)"
-    print(f"  L0 gate: {l0_note}")
+        l0_ok = False; print("  NO L0 DATA")
 
-    print("\n=== P1 (PRIMARY: absorption L1 vs TopK, at primary theta) ===")
-    m1, mt = st.mean(a_l1), st.mean(a_tk)
-    lo, hi = boot_diff(a_l1, a_tk)
-    print(f"  mean absorption  L1={m1:.4f} (n={len(a_l1)})  TopK={mt:.4f} (n={len(a_tk)})")
-    print(f"  diff (L1-TopK) = {m1-mt:+.4f}, 95% CI [{lo:+.4f}, {hi:+.4f}]")
-    if lo > 0:
-        p1_ci = "L1>TopK (CI excludes 0)"
-    elif hi < 0:
-        p1_ci = "TopK>L1 (CI excludes 0, FALSIFIED direction)"
+    # ---- loss vs absorption (sanity: absorption must not be feature loss) ----
+    lr_l1 = [r.get("loss_rate") for r in l1 if r.get("loss_rate") is not None]
+    lr_tk = [r.get("loss_rate") for r in tk if r.get("loss_rate") is not None]
+    if lr_l1 and lr_tk:
+        print(f"  loss_rate  L1 mean={st.mean(lr_l1):.4f}  TopK mean={st.mean(lr_tk):.4f} "
+              f"(reported so absorption is not confounded by feature loss)")
+
+    # ---- P1: PAIRED per-seed bootstrap ----
+    print("\n=== P1 (PRIMARY: absorption L1 vs TopK, paired per-seed, theta=0 matched) ===")
+    pr = paired(l1, tk, "absorption_rate")
+    if len(pr) >= 2:
+        diffs = [d - t for _, d, t in pr]
+        m1 = st.mean(v for _, v, _ in pr); mt = st.mean(v for _, _, v in pr)
+        lo, hi = boot_mean(diffs)
+        allpos = all(x > 0 for x in diffs); allneg = all(x < 0 for x in diffs)
+        print(f"  L1={m1:.4f} TopK={mt:.4f}  paired diff mean={st.mean(diffs):+.4f} 95% CI [{lo:+.4f},{hi:+.4f}] "
+              f"(n_pairs={len(pr)}; per-seed diffs {[round(x,3) for x in diffs]})")
+        print(f"  sign consistent across all seed-pairs: {'yes' if (allpos or allneg) else 'NO'} "
+              f"(exact paired sign-test floor 2/2^{len(pr)}={2/2**len(pr):.4f})")
+        p1_dir = "L1>TopK" if lo > 0 else ("TopK>L1" if hi < 0 else "straddles-0")
     else:
-        p1_ci = "CI straddles 0 (inconclusive)"
-    print(f"  P1 CI result: {p1_ci}")
-    # combined P1 verdict: theta=0 CI direction AND matched L0. (theta=0 is the ONLY
-    # matched point and is CONSERVATIVE for L1 -- see the grid below -- so L1>TopK
-    # here is the strong result.)
-    if lo > 0 and l0_ok:
-        p1 = "CONFIRM (L1 absorbs more than TopK at matched theta=0 sparsity: CI excludes 0, L0 matched)"
-    elif hi < 0 and l0_ok:
-        p1 = "FALSIFIED (TopK absorbs more than L1 at matched theta=0: CI excludes 0 in the other direction, L0 matched)"
-    elif not l0_ok:
-        p1 = f"NOT CONFIRMED - L0 gate: {l0_note}; CI={p1_ci}"
+        lo = hi = 0; p1_dir = "insufficient pairs"; diffs = []
+        print("  insufficient paired seeds")
+
+    # ---- P1 matched-letter robustness: absorption on letters clean in EVERY SAE ----
+    def clean_letters(rows):
+        sets = [{L for L, v in (r.get("per_letter") or {}).items() if v.get("clean_latent")} for r in rows]
+        return set.intersection(*sets) if sets else set()
+    common = clean_letters(l1) & clean_letters(tk)
+    def matched_abs(r, S):
+        pres = sum(r["per_letter"][L]["letter_present"] for L in S)
+        absd = sum(r["per_letter"][L]["absorbed"] for L in S)
+        return absd / pres if pres else None
+    prc = [(s, matched_abs(a, common), matched_abs(b, common))
+           for s, a, b in [(s, {r["seed"]: r for r in l1}[s], {r["seed"]: r for r in tk}[s])
+                           for s in sorted(set(r["seed"] for r in l1) & set(r["seed"] for r in tk))]]
+    prc = [(s, d, t) for s, d, t in prc if d is not None and t is not None]
+    print(f"  intersection letters (clean in EVERY SAE): {len(common)} {sorted(common)}")
+    matched_sign_ok = False
+    if len(prc) >= 2:
+        cd = [d - t for _, d, t in prc]
+        clo, chi = boot_mean(cd)
+        same = (lo > 0 and clo > 0) or (hi < 0 and chi < 0)
+        matched_sign_ok = same
+        print(f"  matched-letter L1={st.mean(v for _,v,_ in prc):.4f} TopK={st.mean(v for _,_,v in prc):.4f} "
+              f"diff={st.mean(cd):+.4f} CI [{clo:+.4f},{chi:+.4f}] -> sign {'HOLDS' if same else 'DOES NOT HOLD'} vs full")
     else:
-        p1 = f"INCONCLUSIVE ({p1_ci})"
+        print("  insufficient common-letter data")
+
+    # ---- combined P1 verdict ----
+    gates = dict(conformance=conf_ok, seeds=seeds_ok, matched_L0=l0_ok, matched_letters=matched_sign_ok)
+    if lo > 0 and all(gates.values()):
+        p1 = "CONFIRM-SUGGESTIVE (L1 absorbs more than TopK at matched theta=0; all gates pass; few-seed => suggestive)"
+    elif hi < 0 and gates["conformance"] and gates["seeds"] and gates["matched_L0"]:
+        p1 = "FALSIFIED-DIRECTION (TopK absorbs more than L1; L0 matched)"
+    else:
+        failed = [k for k, v in gates.items() if not v]
+        p1 = f"NOT CONFIRMED (dir={p1_dir}; failing gates: {failed or 'none, but CI straddles 0'})"
+    print(f"  P1 gates: {gates}")
     print(f"  P1 VERDICT: {p1}")
-    # theta grid: DESCRIPTIVE ONLY. theta>0 is UNMATCHED (L1's soft acts get zeroed
-    # more than TopK's -> L1 effective-L0 drops -> absorption inflated toward L1), so
-    # it is an UPPER bracket, not a robustness check. It can only DISCONFIRM: if the
-    # gap shrinks/reverses as theta rises despite the pro-L1 bias, that argues against L1.
-    print("  theta grid (DESCRIPTIVE; theta>0 unmatched, biased toward L1 -> upper bracket):")
+
+    # ---- theta grid: DESCRIPTIVE (theta>0 unmatched, biased toward L1) ----
+    print("  theta grid (DESCRIPTIVE; theta>0 unmatched/biased+L1 -> upper bracket):")
     thetas = sorted({t for r in (l1 + tk) for t in (r.get("absorption_by_theta") or {})}, key=float)
     for t in thetas:
         gl = [r["absorption_by_theta"][t] for r in l1 if t in (r.get("absorption_by_theta") or {})]
         gt = [r["absorption_by_theta"][t] for r in tk if t in (r.get("absorption_by_theta") or {})]
         if gl and gt:
             print(f"    theta={t}: L1={st.mean(gl):.4f} TopK={st.mean(gt):.4f} diff={st.mean(gl)-st.mean(gt):+.4f}"
-                  + ("  (matched)" if float(t) == 0 else "  (unmatched/biased+L1)"))
+                  + ("  (matched)" if float(t) == 0 else "  (unmatched/+L1)"))
 
-    # ---- P1 robustness: absorption on the INTERSECTION of letters both arms score
-    # cleanly (Finding 3 -- removes the different-letter-subset confound) ----
-    def majority_clean(rows):
-        cnt = {}
-        for r in rows:
-            for L, v in (r.get("per_letter") or {}).items():
-                if v.get("clean_latent"): cnt[L] = cnt.get(L, 0) + 1
-        return {L for L, c in cnt.items() if c >= (len(rows) + 1) // 2}
-    common = majority_clean(l1) & majority_clean(tk)
-    def matched_abs(r, S):
-        pres = sum((r["per_letter"][L].get("letter_present", 0)) for L in S
-                   if L in r.get("per_letter", {}) and r["per_letter"][L].get("clean_latent"))
-        absd = sum((r["per_letter"][L].get("absorbed", 0)) for L in S
-                   if L in r.get("per_letter", {}) and r["per_letter"][L].get("clean_latent"))
-        return absd / pres if pres else None
-    mi_l1 = [x for x in (matched_abs(r, common) for r in l1) if x is not None]
-    mi_tk = [x for x in (matched_abs(r, common) for r in tk) if x is not None]
-    print(f"  intersection-matched letters ({len(common)}): {sorted(common)}")
-    if len(mi_l1) >= 2 and len(mi_tk) >= 2:
-        milo, mihi = boot_diff(mi_l1, mi_tk)
-        p1_matched = ("L1>TopK (holds on common letters)" if milo > 0 else
-                      "TopK>L1 (common letters)" if mihi < 0 else "straddles 0 on common letters")
-        print(f"  matched-letter absorption  L1={st.mean(mi_l1):.4f} TopK={st.mean(mi_tk):.4f} "
-              f"diff={st.mean(mi_l1)-st.mean(mi_tk):+.4f} 95% CI [{milo:+.4f},{mihi:+.4f}] -> {p1_matched}")
-    else:
-        p1_matched = "insufficient common-letter data"
-        print(f"  matched-letter absorption: {p1_matched}")
+    # ---- letters-scored (selection-bias descriptive) ----
+    nl_l1 = [r.get("n_letters_scored", 0) for r in l1]; nl_tk = [r.get("n_letters_scored", 0) for r in tk]
+    print(f"  n_letters_scored  L1 mean={st.mean(nl_l1):.1f} {nl_l1}  TopK mean={st.mean(nl_tk):.1f} {nl_tk}")
 
-    print("\n=== P2 (attribution, DESCRIPTIVE; real causal test = deferred Chanin forward-pass) ===")
-    # PRIMARY P2 contrast: CONCENTRATION = cos(top-carrier recon, wL) - cos(random
-    # firing recon, wL). Magnitude-normalized (cosine) -> NOT the "does recon contain
-    # the present letter" near-tautology; asks if the letter is concentrated in the
-    # dominant latents. Falsifiable (diffuse/tail letter -> <=0).
-    conc = [r["causal_conc_mean"] for r in (l1 + tk) if r.get("causal_conc_mean") is not None]
-    spec = [r["causal_spec_mean"] for r in (l1 + tk) if r.get("causal_spec_mean") is not None]
-    if len(conc) >= 2:
-        clo, chi = boot_mean(conc)
-        p2 = ("CONCENTRATED (letter rides on the dominant latents; CI>0)" if clo > 0 else
-              "DIFFUSE/TAIL (CI includes 0 or <0 -> letter not concentrated in dominant latents)")
-        print(f"  concentration (falsifiable) mean={st.mean(conc):+.4f} 95% CI [{clo:+.4f},{chi:+.4f}] (n={len(conc)} SAEs)")
-        if spec:
-            print(f"  specificity (descriptive, near-guaranteed +): mean={st.mean(spec):+.4f}")
-    else:
-        p2 = "NO ATTRIBUTION DATA"
-    print(f"  P2 (descriptive): {p2}")
+    # ---- P2: DESCRIPTIVE concentration, BY ARCH ----
+    print("\n=== P2 (attribution, DESCRIPTIVE by arch; real causal test = deferred Chanin) ===")
+    p2_lines = []
+    for name, rows in (("L1", l1), ("TopK", tk)):
+        c = [r["causal_conc_mean"] for r in rows if r.get("causal_conc_mean") is not None]
+        if len(c) >= 2:
+            clo, chi = boot_mean(c)
+            verd = "CONCENTRATED(+)" if clo > 0 else "diffuse/tail"
+            p2_lines.append(f"{name}: conc mean={st.mean(c):+.4f} CI [{clo:+.4f},{chi:+.4f}] -> {verd}")
+        elif c:
+            p2_lines.append(f"{name}: conc={c[0]:+.4f} (n=1)")
+    for ln in p2_lines: print("  " + ln)
+    print("  (caveat: probe direction is in-fold and the tail control is magnitude-asymmetric; descriptive only)")
 
-    print("\n=== P3 (recall of main-L-latents in detector flagged set) ===")
+    # ---- P3: recall vs opportunity baseline + precision ----
+    print("\n=== P3 (detector recall of main-L-latents vs opportunity baseline) ===")
     fl_by_tag = {r["_path"].replace("_fl.json", ""): r for r in (l1 + tk)}
     p3_lines = []
     for arch in ("topk", "l1"):
-        recs = []
+        recs, bases, precs = [], [], []
         for p in sorted(glob.glob(os.path.join(RD, f"sae_*_{arch}_*_pairs.json"))):
             base = os.path.basename(p).replace("_pairs.json", "")
-            fl = fl_by_tag.get(base)
-            d = json.load(open(p))
+            fl = fl_by_tag.get(base); d = json.load(open(p))
             involved = set(d.get("involved_latents") or [])
-            if fl and fl.get("main_latents") and involved is not None:
+            m = d.get("m") or (fl.get("m") if fl else None)
+            if fl and fl.get("main_latents") and m:
                 gt = set(fl["main_latents"].values())
                 rec = len(gt & involved) / max(len(gt), 1)
-                recs.append(rec)
-                print(f"  {base} [{arch}]: main-L-latents={len(gt)} recalled={len(gt & involved)} "
-                      f"recall={rec:.3f} (flagged={d.get('n_flagged')} per_Mpairs={d.get('flagged_per_million_pairs')})")
+                baseline = len(involved) / m                # chance recall of any latent set
+                prec = len(gt & involved) / max(len(involved), 1)
+                recs.append(rec); bases.append(baseline); precs.append(prec)
+                enr = f"{rec/baseline:.2f}x" if baseline else "n/a"
+                print(f"  {base} [{arch}]: recall={rec:.3f} baseline={baseline:.3f} "
+                      f"enrichment={enr} precision={prec:.4f}")
         if recs:
-            p3_lines.append(f"{arch} mean main-L-latent recall={st.mean(recs):.3f} (n={len(recs)})")
-    for ln in p3_lines: print(f"  {ln}")
+            mb = st.mean(bases)
+            enr = f"{st.mean(recs)/mb:.2f}x" if mb else "n/a"
+            p3_lines.append(f"{arch}: recall={st.mean(recs):.3f} vs baseline={mb:.3f} (enrichment {enr})")
+    for ln in p3_lines: print("  " + ln)
 
     print("\n=== REGISTERED VERDICTS ===")
-    print(f"  L0 gate: {l0_note}")
+    print(f"  gates: {gates}")
     print(f"  P1 (PRIMARY): {p1}")
-    print(f"     robustness: matched-letter -> {p1_matched}")
-    print(f"  P2 (descriptive attribution): {p2}")
-    print(f"  P3 (secondary): " + ("; ".join(p3_lines) if p3_lines else "no detector/GT overlap data"))
+    print(f"  P2 (descriptive): " + " | ".join(p2_lines))
+    print(f"  P3 (secondary): " + ("; ".join(p3_lines) if p3_lines else "no detector/GT overlap"))
 
 if __name__ == "__main__":
     main()
