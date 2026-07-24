@@ -115,9 +115,20 @@ def score_sae():
             f = f * (f >= thr).float()
     F = f.numpy()
     uniq = sorted(set(letters))
+    # SAE reconstruction in RAW residual space (for the retention check below).
+    with torch.no_grad():
+        Xhat = ((f @ W_dec.T + b_dec) / scale + mu).numpy().astype("float32")
 
     # ---- pass A: probes (theta-independent) + eligible letters ----
-    probes = {}                                            # L -> (unit probe dir, present mask, oof)
+    # present(x): out-of-fold probe on the RAW residual (leak-free label).
+    # retained(x_hat): a full-fit probe applied to the SAE RECONSTRUCTION -- this
+    # separates ABSORPTION (letter still linearly present in x_hat, just not via the
+    # main latent) from feature LOSS (SAE dropped the letter). Without it P1 would
+    # score an SAE that simply reconstructs the letter worse as "more absorbing"
+    # (review Finding 1). Full-fit is in-sample on x, but applied to x_hat -- a tiny
+    # leak in a binary retention check, immaterial.
+    from sklearn.linear_model import LogisticRegression
+    probes = {}                                            # L -> (unit probe dir, present mask, oof, retained mask)
     for L in uniq:
         yL = (letters == L).astype(int)
         if yL.sum() < MIN_WORDS or (1 - yL).sum() < MIN_WORDS:
@@ -125,15 +136,19 @@ def score_sae():
         oof, wdir = probe_oof(Xr, yL, C=float(os.environ.get("PROBE_C", "1.0")))
         wdirt = torch.tensor(wdir, dtype=torch.float32)
         wdirt = wdirt / wdirt.norm().clamp_min(1e-8)
-        probes[L] = (wdirt, oof > 0.5, oof)
+        lrf = LogisticRegression(C=float(os.environ.get("PROBE_C", "1.0")), max_iter=200,
+                                 class_weight="balanced").fit(Xr, yL)
+        retained = lrf.predict_proba(Xhat)[:, 1] > 0.5     # letter survives in the reconstruction
+        probes[L] = (wdirt, oof > 0.5, oof, retained)
 
     def absorption_at(theta):
-        """Main-L-latent selection + absorbed-instance counting at a fire
-        threshold. Returns (rate, per_letter, main_latent{L:j}, absorbed{L:[wi]})."""
+        """Main-L-latent selection + absorbed-instance counting at a fire threshold.
+        absorbed = present(x) AND retained(x_hat) AND main-L-latent misses.
+        Returns (rate, per_letter, main_latent, absorbed_words, loss_rate)."""
         fires = F > theta
         per_letter, main_latent, absorbed = {}, {}, {}
-        tot_present, tot_miss = 0, 0
-        for L, (_wd, present, oof) in probes.items():
+        tot_present, tot_miss, tot_lost = 0, 0, 0
+        for L, (_wd, present, oof, retained) in probes.items():
             yL = (letters == L).astype(int)
             sel = fires[yL == 1].mean(0) - fires[yL == 0].mean(0)
             j = int(sel.argmax())
@@ -141,21 +156,25 @@ def score_sae():
                 per_letter[L] = dict(n=int(yL.sum()), clean_latent=False, sel=round(float(sel[j]), 3))
                 continue
             Lw = np.where(yL == 1)[0]
-            present_L = present[Lw]
-            miss = present_L & (~fires[Lw, j])             # letter present but L-latent misses
-            np_, nm = int(present_L.sum()), int(miss.sum())
-            tot_present += np_; tot_miss += nm
+            present_L = present[Lw]; retained_L = retained[Lw]
+            latent_miss = present_L & (~fires[Lw, j])      # letter present but L-latent misses
+            miss = latent_miss & retained_L                # ABSORBED: and letter survives in x_hat
+            lost = latent_miss & (~retained_L)             # LOST: letter dropped by the SAE
+            np_, nm, nl = int(present_L.sum()), int(miss.sum()), int(lost.sum())
+            tot_present += np_; tot_miss += nm; tot_lost += nl
             per_letter[L] = dict(n=int(yL.sum()), clean_latent=True, latent=j,
                                  sel=round(float(sel[j]), 3),
                                  probe_acc=round(float(((oof > 0.5) == yL).mean()), 3),
-                                 letter_present=np_, absorbed=nm, rate=round(nm / max(np_, 1), 4))
+                                 letter_present=np_, absorbed=nm, lost=nl,
+                                 rate=round(nm / max(np_, 1), 4))
             main_latent[L] = j
             absorbed[L] = [int(w) for w in Lw[miss]]
-        return tot_miss / max(tot_present, 1), per_letter, main_latent, absorbed
+        return (tot_miss / max(tot_present, 1), per_letter, main_latent, absorbed,
+                tot_lost / max(tot_present, 1))
 
-    # primary metric at THETA, plus a theta-sensitivity grid (a theta artifact
-    # would show as the L1-vs-TopK sign flipping across the grid; the scorer checks it)
-    absorption_rate, per_letter, main_latent, absorbed = absorption_at(THETA)
+    # primary metric at THETA (matched), plus a DESCRIPTIVE theta grid (theta>0 is
+    # unmatched/biased toward L1 -- an upper bracket, not a robustness gate).
+    absorption_rate, per_letter, main_latent, absorbed, loss_rate = absorption_at(THETA)
     grid = {f"{t:g}": round(absorption_at(t)[0], 4) for t in THETA_GRID}
 
     # ---- P2 attribution (DESCRIPTIVE, reconstruction-space; NOT a causal-validity
@@ -205,9 +224,12 @@ def score_sae():
     res = dict(sae=os.path.basename(os.environ["SAE"]), arch=arch, seed=int(s.get("seed", -1)),
                k=k, lam=s.get("lam"), fvu=s.get("stats", {}).get("fvu"),
                l0=s.get("stats", {}).get("l0"),           # matched-sparsity check (gates P1)
+               model=s.get("model"), layer=s.get("layer"),   # conformance (scorer checks)
                theta=THETA, sel_min=SEL_MIN, n_carriers=N_CARRIERS,
+               min_words=MIN_WORDS, probe_c=float(os.environ.get("PROBE_C", "1.0")),
                n_letters_scored=sum(1 for v in per_letter.values() if v.get("clean_latent")),
-               absorption_rate=round(absorption_rate, 4), absorption_by_theta=grid,
+               absorption_rate=round(absorption_rate, 4), loss_rate=round(loss_rate, 4),
+               absorption_by_theta=grid,
                causal_conc_mean=_m(conc),                  # PRIMARY P2 contrast (magnitude-normalized, falsifiable)
                causal_conc_sd=round(float(np.std(conc)), 4) if conc else None,
                causal_spec_mean=_m(spec),                  # descriptive (near-guaranteed +; not a bar)
@@ -217,7 +239,7 @@ def score_sae():
                per_letter=per_letter)
     out = os.environ.get("OUT", os.environ["SAE"].replace(".pt", "_fl.json"))
     json.dump(res, open(out, "w"), indent=2)
-    print(f"wrote {out}: absorption={absorption_rate:.4f} grid={grid} "
+    print(f"wrote {out}: absorption={absorption_rate:.4f} loss={loss_rate:.4f} grid={grid} "
           f"conc={res['causal_conc_mean']} spec={res['causal_spec_mean']} "
           f"n_letters={res['n_letters_scored']} n_causal={len(conc)}", flush=True)
 

@@ -44,8 +44,8 @@ cat logs_calib.log
 LAM=$(grep '^CHOSEN_LAM' logs_calib.log | awk '{print $2}')
 echo "chosen lambda = $LAM"; echo "$LAM" > chosen_lambda.txt
 
-echo "=== TRAIN 10 SAEs (5 seeds x {topk k=32, l1 lam=$LAM}), held-out eval ==="
-for SEED in 0 1 2 3 4; do
+echo "=== TRAIN 16 SAEs (8 seeds x {topk k=32, l1 lam=$LAM}), held-out eval ==="
+for SEED in 0 1 2 3 4 5 6 7; do
   ACTS=$TRAIN EVAL_ACTS=$EVAL ARCH=topk K=32 SEED=$SEED STEPS=$STEPS python3 experiments/real_train_sae.py >> logs_train.log 2>&1
   ACTS=$TRAIN EVAL_ACTS=$EVAL ARCH=l1 LAM=$LAM SEED=$SEED STEPS=$STEPS python3 experiments/real_train_sae.py >> logs_train.log 2>&1
   # upload weights as each seed completes (spot-preemption safe)
@@ -65,7 +65,7 @@ for f in $RR/sae_pythia-1.4b_L12_*.pt; do
 done
 
 echo "=== FROZEN SCORER (P1/P2/P3) ==="
-python3 analysis/analyze_round12.py > results_round12.txt 2>&1
+N_SEEDS=8 LOCK_LAM=$LAM python3 analysis/analyze_round12.py > results_round12.txt 2>&1
 cat results_round12.txt
 
 echo "=== upload result JSONs to GCS ==="
