@@ -1,12 +1,23 @@
-# Feature absorption under TopK SAEs: a capacity-limited law, and why overcomplete TopK resists it
+# Feature absorption under TopK SAEs: a two-atom oracle crossover, and the overcomplete escape
 
-*Theory note, 2026-07-24, revised same day after two pre-lock external reviews
+> **STATUS BANNER (updated 2026-07-24 after round 10 + the whole-repo review).**
+> The results below are the **oracle two-atom propositions** (verified). The
+> *practical* prediction that "trained overcomplete TopK resists the absorption
+> L1 suffers" was **contradicted in round 10's tested isolated regime** (there
+> overcomplete L1 recovered the child in 100% of runs vs TopK 0.62–0.83; the
+> registered trained-SAE crossover was inconclusive and the capacity-collapse
+> prediction was falsified — `results/round10/SUMMARY.md`). Round 11's
+> background-rich comparison is **unresolved** (its detector count was
+> confounded; the semantic claim is withdrawn — `results/real/SUMMARY.md`). So
+> this note is a statement about a *capacity-limited two-atom oracle model and
+> an overcomplete escape*, **not** a claim that TopK is more absorption-resistant
+> in practice.
+
+*Theory note, 2026-07-24, revised after two pre-lock external reviews
 (Gemini 2.5 Pro: minor; **GPT-5.6: major** — it constructed the 3-atom
-zero-loss counterexample that fixes the scope of the crossover, and corrected
-several overclaims). Numerical regression tests + scope checks in
-`theory/verify_topk_absorption.py` (all pass, incl. the counterexample).
-Status: pre-experiment; the SGD test is pre-registered in
-`notes/prereg-topk-absorption.md`.*
+zero-loss counterexample that scopes the crossover) and the whole-repo review.
+Numerical regression tests + scope checks in
+`theory/verify_topk_absorption.py` (all pass, incl. the counterexample).*
 
 ## 1. Why this matters
 
@@ -18,9 +29,11 @@ two-sided and sharper than a naive port: under a **capacity-limited**
 (exactly-two-pair-atom) dictionary, TopK has an exact absorption crossover
 **ε\*_TopK = 2q with no λ**; but an **overcomplete** dictionary *escapes* it,
 because a free dedicated child atom gives a zero-loss child-recovering
-solution. The practical upshot is the headline of this note: **TopK resists
-the feature absorption that L1 suffers**, because it has no shrinkage tax to
-prune the rarely-used child atom.
+solution. The *conjecture* this motivated — that TopK would therefore resist
+L1's absorption in practice — did **not** survive testing (see the status
+banner): round 10 found the opposite in its isolated regime, and round 11's
+background-rich test is unresolved. This note is the two-atom oracle theory
+plus the overcomplete-escape observation, not a practical resistance claim.
 
 ## 2. Model and the exact object being analysed
 
@@ -124,25 +137,29 @@ faithful dictionary remains *a* global optimum at ε = 0. The wall is a
 non-uniqueness of the reconstruction objective (matching the project's
 Theorem 1 framing), not an impossibility claim.
 
-## 8. The headline: TopK resists the absorption L1 suffers
+## 8. The conjecture this motivated — and why it did NOT survive testing
 
-Put §4 and §6 together against the L1 results:
+Put §4 and §6 together against the L1 results and one gets a *conjecture*:
 
-- **L1, overcomplete, small ε:** L1 absorbs (the established §8 experiments:
-  φ → 45° at small ε even with m = 32). Mechanism: the child atom, used only
-  on rare child-solo events, does not pay its way against the λ/2 tax and the
-  "good-enough" composite, so training does not maintain a functional child
-  latent.
+- **L1, overcomplete, small ε:** L1 absorbs (the earlier planted-pair
+  experiments: φ → 45° at small ε even with m = 32). Mechanism (proposed): the
+  child atom, used only on rare child-solo events, does not pay its way against
+  the λ/2 tax and the "good-enough" composite.
 - **TopK, overcomplete, small ε > 0:** the child atom is **free** (no tax),
-  and the zero-loss κ=1 solution keeps it (§6). Training can recover the child
-  where L1 absorbs it.
+  and the zero-loss κ=1 solution keeps it (§6).
 
-So switching the sparsity mechanism from L1 shrinkage to a hard TopK budget
-should **reduce feature absorption at fixed capacity** — a concrete,
-practitioner-relevant prediction, and a sharper form of the project's capacity
-thesis: L1 absorption is a shrinkage artifact that a budgeted objective avoids
-(except in the genuinely capacity-limited two-atom regime, where TopK has its
-own ε\*_TopK = 2q crossover, and at ε = 0, the architecture-independent wall).
+This *suggested* that switching L1 → TopK might reduce absorption at fixed
+capacity. **That practical prediction did not survive testing** (status
+banner): round 10's registered trained-SAE crossover was inconclusive and its
+capacity-collapse prediction *falsified*, with overcomplete L1 recovering the
+child *more* cleanly than TopK in the isolated regime (P4's direction
+inverted); round 11's background-rich comparison is unresolved (confounded
+detector count, semantic claim withdrawn). So the honest status is: the
+two-atom oracle crossover (§4) and the overcomplete escape (§6) are the
+established content; **whether a hard budget helps or hurts absorption in
+trained SAEs is an open question**, not a result of this note. The clean test
+is the queued causal first-letter comparison with matched seeds and a Pareto
+sweep (`results/real/SUMMARY.md`).
 
 ## 9. JumpReLU (predicted, exploratory)
 

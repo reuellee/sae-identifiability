@@ -41,74 +41,83 @@ codes** → causal features → reusable abstractions → novel-task adaptation)
 
 ## Infrastructure milestone (achieved)
 
-A real Pythia-1.4B layer-12 SAE (m = 16384, x8) trains to high quality on the
-L4: **FVU ≈ 0.048** (95% of activation variance reconstructed), **L0 = 32**
-(TopK budget), with dead-latent resampling recovering latents online. This
-proves the real-model SAE infrastructure works end to end on the available
-hardware. Activations (~1.4 M tokens) and weights are in GCS.
+A real Pythia-1.4B layer-12 SAE (m = 16384, x8) trains on the L4 with
+**FVU ≈ 0.043 (TopK) / 0.056 (L1)** and **L0 = 32**, with dead-latent
+resampling online. These are **legitimate real SAEs in the minimal sense**
+(wide SAEs trained on real Pythia-1.4B residual-stream activations), which is
+the infrastructure milestone. They are **not** established as benchmark-quality
+SAEs (whole-repo review §2): the reported FVU is an **in-cache Monte Carlo
+evaluation, not held-out generalization** — the "held-out slab" in
+`real_train_sae.py` is sampled from the same ~1.4 M-token cache used for
+training (training draws ~123 M rows ≈ 88 cache-passes), and the corpus is a
+narrow ≤4-novel Gutenberg set with no document-level train/test split. FVU
+alone does not measure feature disentanglement, behavior preservation, or
+absorption; a proper evaluation (doc-separated test set, loss-recovered /
+KL after SAE insertion, an L0–reconstruction Pareto rather than one λ/one k)
+is queued.
 
-## First L1-vs-TopK absorption look (exploratory)
+## First L1-vs-TopK detector pass (raw fact only — semantic headline WITHDRAWN)
 
-*Exploratory (not pre-registered): the first pass to see whether the detector
-finds sane absorbed-pair structure on real SAEs and to calibrate a
-confirmatory comparison. A pre-registered L1-vs-TopK comparison (matched
-seeds, bars) follows once these numbers are in hand.*
+*Exploratory, not pre-registered. The whole-repo review (GPT-5.6, 2026-07-24,
+`reviews/WHOLE_REPO_REVIEW_GPT-5.6_2026-07-24.md`, finding #1) showed the
+original "~27× more redundant/split pairs" interpretation is **not
+scientifically defensible as written** — the analysis is architecture-asymmetric
+and not reproducibly sampled or opportunity-normalized. The semantic claim is
+**withdrawn** pending the corrected, pre-registered comparison below. What
+survives is the raw fact.*
 
-Two matched Pythia-1.4B layer-12 SAEs (m = 16384, x8), same activations, same
-detector:
+**Raw fact.** Under `experiments/real_analyze.py` as run (one seed per arch):
 
-| SAE | FVU | L0 | dead% | rate-window latents | cosine-band pairs | flagged pairs |
-|---|---|---|---|---|---|---|
-| **TopK** (k=32) | 0.043 | 32.0 | 5.8% | 9,518 | 1,072 | **936** |
-| **L1** (λ=5) | 0.056 | 32.0 | 2.1% | 12,573 | 25,158 | **25,041** |
+| SAE | FVU | L0 | rate-window latents | cosine-band pairs | flagged pairs |
+|---|---|---|---|---|---|
+| TopK (k=32) | 0.043 | 32.0 | 9,518 | 1,072 | **936** |
+| L1 (λ=5) | 0.056 | 32.0 | 12,573 | 25,158 | **25,041** |
 
-**The detector flags ~27× more candidate pairs in the L1 SAE than in the TopK
-SAE** (and ~23× more decoder-cosine-band pairs). Inspecting the top-activating
-tokens of the flagged pairs (`*_pairs.json`) shows *what* the difference is:
+**Why the "27×" and "supports the hypothesis" reading is not established (all
+correct, per the review; the analysis script is being fixed):**
+1. **Architecture-asymmetric firing threshold.** The script sets θ = **0.0**,
+   *not* the rounds-8/9 registered θ = 0.05. Under L1 every tiny positive ReLU
+   output counts as "firing"; TopK emits exact zeros outside its selected set —
+   so "same detector" is false, and the counts aren't comparable.
+2. **Not reproducibly sampled.** `torch.randperm(N)` is unseeded, so the two
+   architectures were scored on *different* 50k-token subsamples.
+3. **Absolute-cosine geometry.** `|D·D|` lets *negatively* aligned decoder pairs
+   enter a detector described as finding "aligned" features.
+4. **Raw counts, not opportunity-normalized.** L1 has more eligible latents
+   (12,573 → 79.0M possible pairs) than TopK (9,518 → 45.3M). Normalizing by
+   opportunity turns 26.75× into **~15.3×**, and pair counts also over-count
+   redundant *clusters* (a cluster of size r → r(r-1)/2 pairs — quadratic
+   amplification).
+5. **The co-firing test barely discriminates here.** 99.5% of L1 cosine-band
+   pairs and 87.3% of TopK's are flagged, so **most of the difference already
+   lives in the decoder-cosine geometry**, not the absorption-specific co-firing
+   signal.
+6. **Only the top-15 pairs were saved/inspected** — an extreme-value sample, not
+   evidence about the other ~25,000.
 
-- **L1 pairs are dominated by feature-splitting** — pairs of latents firing on
-  **near-identical** token sets with aligned decoders and high overlap
-  (0.75–0.89): e.g. two latents both firing on `_bow/_in` (lift 273), two both
-  on the `čĊč` newline, two both on the `âĢĻ` apostrophe byte-fragment. These
-  are the same feature represented by multiple latents.
-- **TopK pairs are far fewer and are mostly low-overlap (0.03–0.06)
-  coincidental decoder alignments** — a function-word latent and a newline
-  latent that share decoder geometry but fire on *different* tokens (not
-  splitting).
+Qualitatively the saved examples *do* show L1 feature-splitting (latents on
+near-identical tokens — two on `_bow/_in`, two on the `čĊč` newline, two on the
+`âĢĻ` apostrophe fragment), which is consistent with the well-documented L1
+splitting problem and with the field's move to TopK/BatchTopK. But that is a
+qualitative lead, **not** a validated absorption measurement or a robust
+architecture-effect size.
 
-**Interpretation (exploratory).** L1 SAEs exhibit far more redundant / split
-feature structure than TopK SAEs on real Pythia-1.4B activations. This
-**supports the original round-11 hypothesis — that TopK resists the
-absorption/splitting L1 suffers — in exactly the regime round 10 said was the
-meaningful one.** Round 10 (isolated, no background) *refuted* the hypothesis
-and identified background competition as the missing ingredient; round 11
-(real model = background-rich) finds the predicted direction: TopK's hard
-budget yields cleaner, less-redundant, more orthogonal features than L1's
-shrinkage. This is consistent with the field's move to TopK/BatchTopK and with
-the north-star's *identifiable codes* stage — the sparsity mechanism strongly
-affects code redundancy at scale.
-
-**Honest caveats (why this is exploratory, not a confirmed count of
-"absorption").**
-1. **The toy-calibrated detector conflates splitting and absorption at real
-   scale.** Its overlap veto (< 0.9) was tuned on the toy model to remove
-   feature-splitting doublets, which there sat at overlap ≈ 1.0. Real L1 splits
-   sit at overlap 0.75–0.89 and slip *under* the veto, so "25,041 flagged" is a
-   **redundant-pair** count (splitting + absorption), not a clean absorption
-   count. The detector needs recalibration for real-SAE scale.
-2. **Absolute counts are noisy** (the TopK flags are largely coincidental
-   low-overlap alignments); the robust signal is the **~27× ratio**, driven by
-   L1's heavy splitting.
-3. **One SAE per arch, one seed, one λ/k, one layer.** No multiplicity, no
-   validation that flagged pairs are causal absorption.
-
-**Confirmatory next steps (to pre-register).** (a) Recalibrate the detector to
-separate splitting from absorption on real SAEs (tighter overlap, or an
-explicit split-vs-absorb classifier); (b) validate flagged pairs with the
-first-letter absorption task (Chanin/SAEBench); (c) multiple seeds and a
-λ/k sweep so the L1-vs-TopK contrast has error bars; (d) the causal test —
-does ablating a "recovered" child code actually remove the child feature's
-effect (the bridge to the north-star's *causally valid features*).
+**The corrected, pre-registered experiment (queued; the review's
+highest-value next step, combined into one).** A matched-seed L1-vs-TopK
+real-SAE comparison whose **primary endpoint is causal first-letter absorption
+on a held-out SAEBench-style dataset**, with the label-free detector evaluated
+only as a *secondary* predictor of those ground-truth outcomes. Minimum design:
+≥5 seeds/arch on identical model/layer/corpus/token-order/init/width/budget; a
+λ/k sweep compared at matched points on the L0–loss-recovered Pareto frontier
+(not one λ vs one k); fixed persisted held-out eval tokens shared by every SAE;
+first-letter absorption *with the causal ablation component* as the primary
+metric; splitting measured separately (sparse-probe / connected-component
+criteria); the detector scored blind (precision/recall/calibration vs the
+first-letter labels); pair- *and* cluster-level redundancy reported; and, if
+compute permits, a modern control (BatchTopK / Matryoshka / OrtSAE / C2R). This
+answers the real question — *does the toy geometry predict a reproducible
+difference in causally-validated absorption between real SAE objectives?* — and
+validates or falsifies the detector on the phenomenon it is meant to measure.
 
 Artifacts: SAE weights + activations in `gs://sae-identifiability-artifacts-ebd5a273/round11/`;
 detector outputs `results/real/sae_pythia-1.4b_L12_{topk,l1}_x8_pairs.json`
