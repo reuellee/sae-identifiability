@@ -8,6 +8,8 @@
 set -u
 Z=us-east1-b; L4=dev-gpu-2
 BUCKET=gs://sae-identifiability-artifacts-ebd5a273/round12
+LAUNCH=${LAUNCH:-1}          # 0 = the L4 resume is already running, just wait+finalize
+CAP=${CAP:-120}             # poll count (x5min); 120=10h, 220=~18h
 cd ~/sae-identifiability
 log(){ echo "$(date -u +%F' '%H:%M:%S) $*" | tee -a ~/drive_r12.log; }
 # the orchestrator's gcloud ssh lands as the service-account user; the caches +
@@ -19,13 +21,17 @@ log "=== drive_r12 start ==="
 git pull -q || log "repo pull failed"
 
 # 1. update the L4's ~/r12 code (keep caches) and launch the resume
-log "launching corrected resume on $L4"
-SSHL4 "cd ~/r12 && git pull -q && chmod +x ops/l4_r12_resume.sh && nohup bash ops/l4_r12_resume.sh > ~/r12_run.log 2>&1 </dev/null & echo launched"
+if [ "$LAUNCH" = "1" ]; then
+  log "launching corrected resume on $L4"
+  SSHL4 "cd ~/r12 && git pull -q && chmod +x ops/l4_r12_resume.sh && nohup bash ops/l4_r12_resume.sh > ~/r12_run.log 2>&1 </dev/null & echo launched"
+else
+  log "LAUNCH=0: resume already running, wait+finalize only"
+fi
 
 # 2. wait for completion (r12_done) or death
-log "waiting for L4 (poll 5min, cap ~10h)"
+log "waiting for L4 (poll 5min, cap $((CAP*5))min)"
 DONE=0
-for i in $(seq 1 120); do
+for i in $(seq 1 $CAP); do
   sleep 300
   S=$(SSHL4 "ls ~/r12_done 2>/dev/null && echo DONE; pgrep -f l4_r12_resume >/dev/null && echo ALIVE || echo DEAD")
   N=$(SSHL4 "grep -c ^STATS ~/r12/logs_train.log 2>/dev/null")
