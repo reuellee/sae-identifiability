@@ -247,3 +247,13 @@ Dual pre-lock external review (Gemini 2.5 Pro via Vertex; GPT-5.6 via
 chatgpt.com pointed at the public repo). "Review" = LLM-assisted adversarial
 review, not human peer review. Verdicts + applied changes archived in
 `reviews/`; lock hash recorded by amendment.
+
+## Amendments
+
+- **2026-07-24 (λ lock):** the registered λ-calibration (seed 0, geometric grid
+  {2,4,8,16,32,64}, pick L0 closest to 32 in [28,36]) ran on the L4 and selected
+  **λ = 4.0 → L0 = 32.20** (`band=in`). Grid: λ2→128.1, λ4→32.2, λ8→10.8,
+  λ16→11.1, λ32→5.4, λ64→4.6 — λ=4.0 is unambiguously closest to TopK's L0=32
+  (|ΔL0|=0.2, inside the scorer's |ΔL0|≤3 gate). This λ is frozen for all 8 L1
+  seeds and passed to the scorer as `LOCK_LAM=4.0`. The 16-SAE run proceeds under
+  this value; no other parameter changed.
