@@ -10,14 +10,17 @@ Z=us-east1-b; L4=dev-gpu-2
 BUCKET=gs://sae-identifiability-artifacts-ebd5a273/round12
 cd ~/sae-identifiability
 log(){ echo "$(date -u +%F' '%H:%M:%S) $*" | tee -a ~/drive_r12.log; }
-SSHL4(){ timeout 120 gcloud compute ssh $L4 --zone=$Z --quiet --command="$1" 2>/dev/null; }
+# the orchestrator's gcloud ssh lands as the service-account user; the caches +
+# repo live under reuellee_gmail_com, so run L4 commands as that user. Commands
+# passed here must NOT contain single quotes (they'd break the bash -lc wrapper).
+SSHL4(){ timeout 120 gcloud compute ssh $L4 --zone=$Z --quiet --command="sudo -u reuellee_gmail_com bash -lc '$1'" 2>/dev/null; }
 
 log "=== drive_r12 start ==="
 git pull -q || log "repo pull failed"
 
 # 1. update the L4's ~/r12 code (keep caches) and launch the resume
 log "launching corrected resume on $L4"
-SSHL4 "cd ~/r12 && git pull -q && chmod +x ops/l4_r12_resume.sh && nohup bash ops/l4_r12_resume.sh > ~/r12_run.log 2>&1 & echo launched"
+SSHL4 "cd ~/r12 && git pull -q && chmod +x ops/l4_r12_resume.sh && nohup bash ops/l4_r12_resume.sh > ~/r12_run.log 2>&1 </dev/null & echo launched"
 
 # 2. wait for completion (r12_done) or death
 log "waiting for L4 (poll 5min, cap ~10h)"
@@ -25,7 +28,7 @@ DONE=0
 for i in $(seq 1 120); do
   sleep 300
   S=$(SSHL4 "ls ~/r12_done 2>/dev/null && echo DONE; pgrep -f l4_r12_resume >/dev/null && echo ALIVE || echo DEAD")
-  N=$(SSHL4 "grep -c '^STATS' ~/r12/logs_train.log 2>/dev/null")
+  N=$(SSHL4 "grep -c ^STATS ~/r12/logs_train.log 2>/dev/null")
   log "poll $i: $(echo $S | tr '\n' ' ') SAEs=$N"
   echo "$S" | grep -q DONE && { DONE=1; log "L4 reports DONE"; break; }
   echo "$S" | grep -q DEAD && { log "L4 resume DIED (no done flag) -- leaving box up for inspection"; break; }
