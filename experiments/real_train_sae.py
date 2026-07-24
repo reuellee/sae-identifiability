@@ -115,7 +115,9 @@ def main():
                 dead_pct = float((fired > RESAMPLE_EVERY // 2).float().mean())
             print(f"  [{ARCH} {t}/{STEPS}] FVU={fvu:.4f} L0={l0:.1f} dead={dead_pct:.2%} "
                   f"({time.time()-t0:.0f}s)", flush=True)
-    # final eval on a held-out random slab
+    # final eval: IN-CACHE Monte Carlo FVU (NOT held-out generalization -- this
+    # slab is drawn from the same activation cache used for training; a proper
+    # eval needs a document-separated held-out set, see results/real/SUMMARY.md)
     with torch.no_grad():
         ev = batch_norm(Xh[torch.randint(0, N, (min(50000, N),), generator=g)])
         xh, f = sae(ev, ARCH, K)
