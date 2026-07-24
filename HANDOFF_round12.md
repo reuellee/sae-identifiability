@@ -40,16 +40,23 @@ commits `results/real/SUMMARY_round12.md` + JSONs, pushes, and **deletes the L4*
 on clean completion (leaves it up if the run died, for inspection). Progress in
 `~/drive_r12.log`.
 
-## Judgment layer (the "orchestrator session")
-After results land (repo has `results/real/results_round12.txt`), a Claude
-session should: (1) sanity-check the frozen-scorer verdict + the matched-L0 /
-conformance / seed / matched-letter gates all passed; (2) if P1 confirmed,
-confirm it also survives the matched-letter intersection; (3) write the honest
-narrative into `results/real/SUMMARY_round12.md` and update `RESEARCH_PLAN.md` +
-`CLAIM_LEDGER.md`; (4) confirm the L4 is deleted (`gcloud compute instances list`).
+## Judgment layer — do INTERACTIVELY (not an unsupervised autonomous agent)
+`drive_r12.sh` already commits a FAITHFUL result (the frozen scorer decides
+CONFIRM/FALSIFIED/NOT-CONFIRMED honestly and it is committed verbatim) and stops
+the L4 — so the science + honest report + cleanup complete with no agent. A
+cron-fired `claude -p --dangerously-skip-permissions` finalize routine was
+considered and **removed**: a standing full-permission autonomous agent running
+unsupervised (nobody watching) is an unacceptable risk, and it is not needed.
+When someone next opens a session (orchestrator or laptop), do the judgment layer
+interactively: (1) sanity-check the frozen-scorer verdict + that the matched-L0 /
+conformance / seed / matched-letter gates all passed; (2) enrich
+`results/real/SUMMARY_round12.md` (keep the verdict verbatim; add per-arch
+absorption/loss/dead%/FVU, P2 concentration by arch, P3 recall-vs-baseline, and
+the north-star meaning); (3) update `RESEARCH_PLAN.md` + `CLAIM_LEDGER.md`;
+(4) confirm the L4 is gone (`gcloud compute instances list`).
 The north star: geometry → identifiable codes → **causally valid features** →
 reusable abstractions. If P1 holds, the registered next step is the deferred
-**Chanin model-behavior causal test** (P2 here was only reconstruction-space).
+**Chanin model-behavior causal test** (round-12 P2 was only reconstruction-space).
 
 ## Infra notes
 - L4 `dev-gpu-2` us-east1-b; GCS `gs://sae-identifiability-artifacts-ebd5a273/round12`.
