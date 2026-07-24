@@ -119,6 +119,7 @@ def main():
                n_cosine_band=n_band, n_flagged=int(len(pairs)),
                flagged_per_million_pairs=round(1e6*len(pairs)/max(n_possible, 1), 2),
                n_flagged_neg_aligned=n_neg, redundant_clusters=n_clusters,
+               involved_latents=sorted(int(keep[i]) for i in involved),   # original latent ids in any flagged pair (P3 recall)
                fvu=s.get("stats", {}).get("fvu"),
                note="EXPLORATORY; opportunity-normalize (flagged_per_million_pairs) and "
                     "compare clusters not raw pairs; examples are a top-40 sample, not all pairs",

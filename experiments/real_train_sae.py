@@ -25,6 +25,8 @@ K = int(os.environ.get("K", "32"))
 STEPS = 300 if SMOKE else int(os.environ.get("STEPS", "30000"))
 BATCH = int(os.environ.get("BATCH", "4096"))
 LR = float(os.environ.get("LR", "4e-4"))
+SEED = int(os.environ.get("SEED", "0"))
+GPU_ACTS = bool(int(os.environ.get("GPU_ACTS", "0")))   # hold acts on GPU -> fast
 RESAMPLE_EVERY = 5000
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -68,19 +70,24 @@ def main():
     var = (((sub - mu) * scale) ** 2).sum(1).mean().item()
     del sub
     mu_dev = mu.to(dev)
+    Xg = Xh.to(dev) if (GPU_ACTS and dev == "cuda") else None   # acts resident on GPU (fast)
     def batch_norm(rows):                          # fp16 rows -> normalized on GPU
         return (rows.float().to(dev) - mu_dev) * scale
+    def get_batch(gen):
+        if Xg is not None:
+            idx = torch.randint(0, N, (BATCH,), generator=gen, device=dev)
+            return (Xg[idx].float() - mu_dev) * scale
+        return batch_norm(Xh[torch.randint(0, N, (BATCH,), generator=gen)])
     print(f"acts {tuple(Xh.shape)} fp16 model={blob.get('model')} layer={blob.get('layer')} "
-          f"-> m={m} arch={ARCH} (lam={LAM} k={K})", flush=True)
-    torch.manual_seed(0)
+          f"-> m={m} arch={ARCH} (lam={LAM} k={K}) seed={SEED} gpu_acts={Xg is not None}", flush=True)
+    torch.manual_seed(SEED)
     sae = SAE(d, m).to(dev)
     opt = torch.optim.Adam(sae.parameters(), lr=LR)
-    g = torch.Generator().manual_seed(1)
+    g = (torch.Generator(device=dev) if Xg is not None else torch.Generator()).manual_seed(1000 + SEED)
     fired = torch.zeros(m, device=dev)            # steps-since-fired tracker
     t0 = time.time()
     for t in range(STEPS):
-        idx = torch.randint(0, N, (BATCH,), generator=g)
-        x = batch_norm(Xh[idx])
+        x = get_batch(g)
         xh, f = sae(x, ARCH, K)
         rec = ((x - xh) ** 2).sum(-1).mean()
         if ARCH == "l1":
@@ -98,9 +105,9 @@ def main():
             dead = torch.where(fired > RESAMPLE_EVERY // 2)[0]
             if len(dead) > 0:
                 with torch.no_grad():
-                    xb = batch_norm(Xh[torch.randint(0, N, (8192,), generator=g)])
+                    xb = get_batch(g)
                     resid = (xb - (sae(xb, ARCH, K)[0])).norm(dim=1)
-                    pick = torch.multinomial(resid ** 2 + 1e-6, min(len(dead), 8192))
+                    pick = torch.multinomial(resid ** 2 + 1e-6, min(len(dead), xb.shape[0]))
                     dirs = (xb[pick] - sae.b_dec)
                     dirs = dirs / dirs.norm(dim=1, keepdim=True).clamp_min(1e-8)
                     nd = min(len(dead), len(pick))
@@ -115,25 +122,34 @@ def main():
                 dead_pct = float((fired > RESAMPLE_EVERY // 2).float().mean())
             print(f"  [{ARCH} {t}/{STEPS}] FVU={fvu:.4f} L0={l0:.1f} dead={dead_pct:.2%} "
                   f"({time.time()-t0:.0f}s)", flush=True)
-    # final eval: IN-CACHE Monte Carlo FVU (NOT held-out generalization -- this
-    # slab is drawn from the same activation cache used for training; a proper
-    # eval needs a document-separated held-out set, see results/real/SUMMARY.md)
+    # final eval: HELD-OUT if EVAL_ACTS given (a doc-separated cache), else the
+    # honest in-cache Monte Carlo FVU. var recomputed on the eval source.
+    EVAL_ACTS = os.environ.get("EVAL_ACTS", "")
     with torch.no_grad():
-        ev = batch_norm(Xh[torch.randint(0, N, (min(50000, N),), generator=g)])
+        if EVAL_ACTS:
+            Ev = safe_load(EVAL_ACTS)["acts"]
+            ei = torch.randperm(Ev.shape[0])[:min(50000, Ev.shape[0])]
+            ev = batch_norm(Ev[ei]) if Xg is None else (Ev[ei].float().to(dev) - mu_dev) * scale
+            eval_src = "held-out:" + os.path.basename(EVAL_ACTS)
+        else:
+            ei = torch.randint(0, N, (min(50000, N),), generator=torch.Generator().manual_seed(7))
+            ev = batch_norm(Xh[ei])
+            eval_src = "in-cache (NOT held-out)"
+        var_ev = (ev ** 2).sum(-1).mean().item()
         xh, f = sae(ev, ARCH, K)
-        fvu = float(((ev - xh) ** 2).sum(-1).mean() / var)
+        fvu = float(((ev - xh) ** 2).sum(-1).mean() / var_ev)
         l0 = float((f > 0).float().sum(-1).mean())
         dead_pct = float((fired > STEPS // 4).float().mean())
-    tag = f"{blob.get('model','m').split('/')[-1]}_L{blob.get('layer')}_{ARCH}_x{EXPANSION}"
+    tag = f"{blob.get('model','m').split('/')[-1]}_L{blob.get('layer')}_{ARCH}_x{EXPANSION}_s{SEED}"
     out = os.path.join(OUTDIR, f"sae_{tag}.pt")
     torch.save(dict(W_enc=sae.W_enc.detach().cpu(), b_enc=sae.b_enc.detach().cpu(),
                     W_dec=sae.W_dec.detach().cpu(), b_dec=sae.b_dec.detach().cpu(),
-                    mu=mu, scale=scale, d=d, m=m, arch=ARCH, lam=LAM, k=K,
+                    mu=mu, scale=scale, d=d, m=m, arch=ARCH, lam=LAM, k=K, seed=SEED,
                     model=blob.get("model"), layer=blob.get("layer"),
-                    stats=dict(fvu=fvu, l0=l0, dead_pct=dead_pct)), out)
-    print(f"saved {out}: FVU={fvu:.4f} L0={l0:.1f} dead={dead_pct:.2%} "
+                    stats=dict(fvu=fvu, l0=l0, dead_pct=dead_pct, eval_src=eval_src)), out)
+    print(f"saved {out}: FVU={fvu:.4f} ({eval_src}) L0={l0:.1f} dead={dead_pct:.2%} "
           f"({time.time()-t0:.0f}s)", flush=True)
-    print("STATS " + json.dumps(dict(tag=tag, fvu=round(fvu,4), l0=round(l0,1),
+    print("STATS " + json.dumps(dict(tag=tag, seed=SEED, fvu=round(fvu,4), l0=round(l0,1),
                                      dead_pct=round(dead_pct,4))), flush=True)
 
 if __name__ == "__main__":
