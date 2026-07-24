@@ -4,11 +4,19 @@
 experiment: a confirmatory matched-seed L1-vs-TopK first-letter-absorption
 comparison on real SAEs, with a ground-truth residual probe, a retention check
 separating absorption from feature loss, and a descriptive reconstruction-space
-attribution (P2). Status: DRAFT — under dual pre-lock LLM-assisted adversarial
-review (Gemini 2.5 Pro + GPT via codex); Gemini cleared LOCK-READY, GPT returned
-12 findings (all dispositioned — see `reviews/`). Locks after the targeted
-re-check + the D-phase (SMOKE) are committed. After lock, changes only by dated
-amendment.*
+attribution (P2).*
+
+**STATUS: LOCKED 2026-07-24.** Frozen artifacts = the metric
+(`experiments/real_firstletter.py`), the scorer (`analysis/analyze_round12.py`),
+the word-set rule, θ=0, the probe protocol, 8 seeds, and the P1/P2/P3 predictions
+below, as of commit `0722212` (this lock commit changes only status). Dual
+pre-lock LLM-assisted adversarial review complete: **Gemini 2.5 Pro → LOCK-READY**
+(2 rounds); **GPT via codex → 12 findings, all dispositioned** (`reviews/`), the
+3 that let P1 mislead fixed and **re-verified by GPT as correctly implemented**
+(loss-vs-absorption retention, ΔL0-difference gate, matched-letter verdict gate).
+The only remaining pre-run free parameter is the L1 **λ**, fixed by the registered
+calibration on the L4 (seed 0, L0∈[28,36]) and appended by **amendment +
+`LOCK_LAM`** before the 16-SAE run. After lock, changes only by dated amendment.*
 
 ## Claim under test (primary)
 
