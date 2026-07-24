@@ -3,7 +3,13 @@
 **Living paper draft.** This document is the formal distillation of `report.md`
 (the session-log-style record) at the current repository state; claims follow
 the guardrails established in `reviews/`. Experimental provenance: README
-table (results CSV → commit). *Current through round 8.*
+table (results CSV → commit). *Current through round 11 (2026-07-24).* The
+theory sections (§1–§13) are the strongest content; the detector (§17), the
+gating-corrected estimator (§18/round 9), the TopK note (round 10) and the
+real-model round 11 are scoped empirical/exploratory results, flagged as such.
+"External review" throughout means **LLM-assisted adversarial review**
+(Gemini 2.5 Pro + GPT-5.6), which materially improved the work but is **not**
+human peer review.
 
 ---
 
@@ -25,8 +31,11 @@ controlled width experiment shows capacity scarcity is the operative cause of
 the two-latent transition in this model: with one nominal spare slot, SGD
 frequently finds the redundant parent–child–composite triple instead of
 absorbing. Pairwise-coherence (Gram) penalties have a proved rotation blind
-spot on orthonormal frames and cannot remove absorption in the
-co-occurrence-dominated regime $p_0 < p_0^*(\lambda,q) \approx \sqrt2\,q$;
+spot on orthonormal frames, and — **within the restricted orthonormal-frame
+class** ($m \le d$, stated column conditions; the overcomplete and
+mixed-plane cases are open) — cannot remove absorption in the
+co-occurrence-dominated regime $p_0 < p_0^*(\lambda,q)$ (with
+$p_0^*/q \to \sqrt2$ only asymptotically as $\lambda\to0$);
 inverse-density event weighting removes the transition exactly but requires
 an oracle. In trained models, decoder-level absorption coexists with
 code-level separation through encoder gating — dictionary identifiability and
@@ -117,6 +126,13 @@ enumerating KKT cases gives closed-form event losses (verified symbolically):
 | parent solo ($p_0$) | $\lambda - \lambda^2/4$ | $\lambda - \lambda^2/4$ |
 | child solo ($\varepsilon$) | $\lambda - \lambda^2/4$ | $\tfrac12 + \tfrac{\sqrt2\lambda}{2} - \tfrac{\lambda^2}{4}$ |
 
+**Active-set domain (required).** The absorbed child-solo entry uses the
+positive composite coefficient $1/\sqrt2 - \lambda/2$, so that active set — and
+hence the displayed formula — is valid only for $\lambda < \sqrt2$; above it the
+optimum changes active set and the formula must be extended piecewise. All
+experiments and the machine check (which tests $\lambda \le 0.5$) sit safely
+inside this range.
+
 Parent-solo terms cancel, so $p_0$ plays no role. Subtracting,
 
 $$\mathcal{L}_{\text{faithful}} - \mathcal{L}_{\text{absorbed}} \;=\; q\Big[(2-\sqrt2)\lambda - \tfrac{\lambda^2}{4}\Big] \;-\; \varepsilon\Big[\tfrac12 - \tfrac{(2-\sqrt2)\lambda}{2}\Big],$$
@@ -136,8 +152,10 @@ child-side latent sits at intermediate angles (e.g. $69^\circ$ at
 $0.9\,\varepsilon^*$, $80^\circ$ at $2\varepsilon^*$, $85^\circ$ at
 $4\varepsilon^*$ for $\lambda{=}0.1, q{=}0.2$), approaching $90^\circ$
 asymptotically. The functional $67.5^\circ$ crossing of the tilt curve sits
-at $\approx 0.88\,\varepsilon^*$. This is an exact mechanism for the
-empirically reported "feature hedging" [Minder et al., 2025].
+at $\approx 0.88\,\varepsilon^*$. This is a **solvable toy analogue / candidate
+mechanism** for the empirically reported "feature hedging"
+[Chanin, Dulka \& Garriga-Alonso, 2025] — not a claim to be the exact mechanism
+of all reported hedging (a different model and phenomenon).
 
 **Remark (redundant triple; spare capacity).** For $\varepsilon > 0$ and
 $\lambda < 1/(2-\sqrt2)$, the unconstrained global optimum is the triple
@@ -228,11 +246,15 @@ simultaneously on one NVIDIA L4; environment pinned in `ENVIRONMENT.md`.
 ### 6.1 Transition measurement
 
 135-run grid + 1,040-run fine measurement: the empirical transition (per-seed
-functional-child crossing) sits at $0.58$–$0.70\,\varepsilon^*$ uniformly
-across $\lambda$ spanning $6\times$ and $q$ spanning $2\times$ — the
-$\lambda q$ scaling collapse holds; the prefactor is
+functional-child crossing) sits at $0.58$–$0.70\,\varepsilon^*$ across
+$\lambda$ spanning $6\times$ and $q$ spanning $2\times$; the prefactor is
 $\approx 0.7\times$ the continuous-optimum midpoint ($0.88\,\varepsilon^*$),
 consistent with a uniform effective-$\lambda$ rescale from encoder shrinkage.
+*(Scoped: this is consistency with $\lambda q$ scaling on a modest grid with
+seed-level spread — not a certified "uniform scaling collapse." A proper test
+regresses the transition estimate on $\lambda q$ and reports the exponent/
+intercept uncertainty against separate-$\lambda$/separate-$q$ alternatives;
+queued.)*
 
 ### 6.2 Capacity, controlled
 
@@ -551,9 +573,9 @@ natural future host for detector benchmarking.
   Absorption in Sparse Autoencoders*, arXiv:2409.14507.
 - B. Bussmann et al., *Matryoshka Sparse Autoencoders*, arXiv:2503.17547.
 - OrtSAE: *Orthogonal Sparse Autoencoders*, arXiv:2509.22033.
-- Jin et al., *C$^2$R: Consistency-Contrast Regularization*, arXiv:2606.30609.
+- Jin et al., *C$^2$R: Cross-sample Consistency Regularization*, arXiv:2606.30609.
 - Cui et al., arXiv:2506.15963 (asymptotic closed forms).
-- Minder et al., *Feature Hedging*, arXiv:2505.11756.
+- Chanin, Dulka \& Garriga-Alonso, *Feature Hedging*, arXiv:2505.11756.
 - D. Donoho, M. Elad, PNAS 2003 (uniqueness); C. Hillar, F. Sommer, 2015
   (dictionary identifiability).
 - S. Arora, R. Ge, A. Moitra, FOCS 2012; A. Anandkumar et al., JMLR 2014;

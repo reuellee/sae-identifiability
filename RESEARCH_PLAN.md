@@ -1,7 +1,9 @@
 # Research plan (living document)
 
-*Updated 2026-07-24 (post round-10). Every confirmatory experiment gets a
-pre-registration note + pre-results commit; exploratory work is labeled.*
+*Updated 2026-07-24 (post round-11 + whole-repo review). Every confirmatory
+experiment gets a pre-registration note + pre-results commit; exploratory work
+is labeled. "Review" = LLM-assisted adversarial review (Gemini + GPT), not
+human peer review.*
 
 ## North star (owner, 2026-07-24)
 
