@@ -68,8 +68,14 @@ echo "=== FROZEN SCORER (P1/P2/P3) ==="
 N_SEEDS=8 LOCK_LAM=$LAM python3 analysis/analyze_round12.py > results_round12.txt 2>&1
 cat results_round12.txt
 
-echo "=== upload result JSONs to GCS ==="
-set +e; gcloud storage cp $RR/sae_pythia-1.4b_L12_*_fl.json $RR/sae_pythia-1.4b_L12_*_pairs.json $BUCKET/ 2>&1 | tail -1; set -e
+echo "=== upload result JSONs + text results to GCS (clean collection) ==="
+set +e
+gcloud storage cp $RR/sae_pythia-1.4b_L12_*_fl.json $RR/sae_pythia-1.4b_L12_*_pairs.json $BUCKET/ 2>&1 | tail -1
+gcloud storage cp results_round12.txt stats_summary.txt chosen_lambda.txt logs_calib.log $BUCKET/ 2>&1 | tail -1
+# bundle the small JSONs so the laptop can pull one clean archive from GCS
+tar czf r12_results.tgz $RR/sae_pythia-1.4b_L12_*_fl.json $RR/sae_pythia-1.4b_L12_*_pairs.json results_round12.txt stats_summary.txt chosen_lambda.txt 2>/dev/null
+gcloud storage cp r12_results.tgz $BUCKET/ 2>&1 | tail -1
+set -e
 
 touch ~/r12_done
 echo "L4 R12 PIPELINE COMPLETE"
