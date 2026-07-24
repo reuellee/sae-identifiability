@@ -97,7 +97,11 @@ bar on the project's thesis), because a pure sign test here is near-tautological
 (see below).
 
 For each absorbed instance w, carriers = top **N_CARRIERS = 3** firing latents
-by **activation magnitude** (chosen independently of the probe). Let Δ_top =
+by **activation magnitude** (chosen independently of the probe). *(N_CARRIERS = 3
+is a frozen, declared choice — a small fixed set capturing the word's dominant
+latents; because P2 is descriptive, the concentration value may be sensitive to
+it, and that sensitivity is a caveat on the descriptive read, not a bar. Review
+noted this as non-blocking.)* Let Δ_top =
 Σ_{j∈carriers} f_j·W_dec[:,j] and Δ_rand the same for a random equal-count set
 of w's *other* firing latents. Two contrasts:
 
