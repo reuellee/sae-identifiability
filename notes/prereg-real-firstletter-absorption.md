@@ -11,10 +11,12 @@ are committed. After lock, changes only by dated amendment.*
 
 On real Pythia-1.4B layer-12 activations, at **matched sparsity (L0)**, **L1
 SAEs exhibit a higher first-letter feature-absorption rate than TopK SAEs**
-(H1). Secondary (P2): the absorbed first letter is causally carried by the
-word's dominant (magnitude-selected) latents, tested **non-circularly**.
-Secondary (P3): the project's label-free pair detector, scored **blind**,
-recalls the ground-truth main-L-latents better than its opportunity baseline.
+(H1). Secondary (P2, **descriptive**): the absorbed first letter is
+*concentrated* in the word's dominant (magnitude-selected) latents — a
+reconstruction-space attribution, **not** a causal-validity claim (the
+model-behavior causal test is the deferred Chanin follow-up). Secondary (P3):
+the label-free pair detector, scored **blind**, recalls the ground-truth
+main-L-latents better than its opportunity baseline.
 
 Scope: this is a **first-letter absorption metric in the spirit of Chanin et
 al. (arXiv:2409.14507)** — main-first-letter-latent fails to fire despite the
@@ -67,8 +69,10 @@ Per SAE, per letter L ∈ {a…z} with ≥ 30 words:
    L1's soft-thresholded (smaller) activations than TopK's, biasing absorption
    toward L1 — the round-11 θ-asymmetry failure class. We therefore threshold
    at 0 for the primary and **report the θ-sensitivity grid** θ ∈ {0, 0.01,
-   0.05, 0.1} (see P1 robustness). L-latent = argmax_j s_j; require s_j ≥ 0.30
-   else "no clean L-latent" (that letter excluded from the SAE's score, disclosed).
+   0.05, 0.1} as a *descriptive, biased upper bracket* (θ > 0 is unmatched — see
+   the θ-grid note under P1). L-latent = argmax_j s_j; require s_j ≥ 0.30 else
+   "no clean L-latent" (that letter excluded from the SAE's score, disclosed;
+   the count `n_letters_scored` is compared across arms — review Finding 3).
 3. **Absorbed instance:** an L-word w is **absorbed** iff it is letter-present
    (probe > 0.5) AND the L-latent does **not** fire on w (act ≤ θ). (The model
    represents the first letter, but the dedicated latent misses it → absorbed
@@ -79,35 +83,39 @@ Per SAE, per letter L ∈ {a…z} with ≥ 30 words:
    words the main L-latent fails on. Computed at the primary θ and at every
    grid θ.
 
-## Causal component (FROZEN) — non-circular by construction
+## P2 attribution (FROZEN) — DESCRIPTIVE, reconstruction-space (not a causal bar)
 
-The naïve test "ablate the latents most aligned with the L-probe direction,
-then measure the L-probe logit drop" is **circular** (selecting latents by
-readout alignment and then measuring readout alignment is an identity — it
-cannot fail). We therefore select and measure along **independent** axes:
+**Scope, stated up front (two review rounds pushed on this).** The genuine
+causal-validity test is the Chanin-style **model-behavior intervention** (patch
+the ablated reconstruction back into the residual stream, run the model forward,
+measure the drop in the model's own spelling behavior). That needs a
+spelling-prompt format and is the registered **follow-up** — *out of scope for
+this round*. What P2 reports here is a **reconstruction-space attribution**: of
+the firing latents that carry an absorbed word, is its first letter concentrated
+in the *dominant* (magnitude) latents? P2 is **descriptive** (no confirm/falsify
+bar on the project's thesis), because a pure sign test here is near-tautological
+(see below).
 
-For each absorbed instance w:
-1. **Carriers (selected by ACTIVATION MAGNITUDE, independent of the probe):**
-   the top **N_CARRIERS = 3** firing latents of w by activation value f_j.
-2. **Ablate** the carriers from w's SAE reconstruction: Δ = Σ_{j∈carriers}
-   f_j · W_dec[:,j] (the removed contribution, in residual space).
-3. **Letter-specific readout:** drop in the **true** letter's probe logit
-   d_true = ŵ_L · Δ, versus the mean drop in **every other** scored letter's
-   probe logit d_other = mean_{L'≠L} ŵ_{L'} · Δ (ŵ are unit probe directions).
-4. **Per-instance statistic:** d_true − d_other. Because the *same* carriers
-   are used for both, the magnitude confound (big latents drop any logit)
-   cancels; because carriers are chosen by magnitude, not by L-alignment, a
-   letter-agnostic carrier gives d_true ≈ d_other ≈ 0. The test **can fail.**
+For each absorbed instance w, carriers = top **N_CARRIERS = 3** firing latents
+by **activation magnitude** (chosen independently of the probe). Let Δ_top =
+Σ_{j∈carriers} f_j·W_dec[:,j] and Δ_rand the same for a random equal-count set
+of w's *other* firing latents. Two contrasts:
 
-Registered expectation: the top-magnitude latents that fire on an absorbed word
-carry that word's **own first letter** more than they carry other letters
-(d_true − d_other > 0), i.e. the absorbed letter rides on the word's dominant
-(splitting) latents. **NOTE — scope:** this is a *reconstruction-space* causal
-attribution, not a model-behavior intervention. The stronger Chanin-style test
-(patch the ablated reconstruction back into the residual stream, run the model
-forward, measure the drop in the model's own spelling behavior) is the
-registered **follow-up** (needs a spelling-prompt format) and is out of scope
-for this round.
+1. **Concentration (the falsifiable one):** cos(Δ_top, ŵ_L) − cos(Δ_rand, ŵ_L).
+   Cosine **normalizes out magnitude**, so this is *not* the near-tautology
+   "does the reconstruction contain the letter that is present" — it asks
+   whether the letter is **concentrated in the dominant latents** vs diffuse.
+   If the letter sits in the tail, cos(Δ_top,ŵ_L) < cos(Δ_rand,ŵ_L) and this is
+   **negative**. Genuinely can fail.
+2. **Specificity (descriptive only):** d_true − d_other, where d_true = ŵ_L·Δ_top
+   and d_other = mean_{L'≠L} ŵ_{L'}·Δ_top. Reported for interpretability, but
+   flagged **near-guaranteed positive** for any low-FVU SAE (w contains L, not
+   L'), so it is *not* evidence for anything and carries no bar.
+
+Space note: Δ is in the SAE's *normalized* residual space, ŵ in *raw* space;
+normalization is a **scalar**, so the cosine (concentration) is exactly
+invariant and the sign of the specificity contrast is valid. Breaks under
+per-dimension normalization.
 
 ## Registered predictions
 
@@ -115,26 +123,38 @@ Cell statistic per SAE = absorption rate; compare arch means over 5 seeds
 (report mean ± seed SD, and a 10k-seed bootstrap CI on the difference).
 
 - **P1 (PRIMARY):** mean absorption rate (L1) − mean absorption rate (TopK)
-  **> 0** at the primary θ = 0, with the seed-bootstrap 95% CI on the
-  difference excluding 0. **FALSIFIED** if the CI excludes 0 in the *other*
-  direction (TopK > L1); **inconclusive** if the CI straddles 0. (Effect-size
-  expectation, not a bar: L1 materially higher, per the L1-splitting
-  literature; but the *registered* test is the sign + CI.)
-  **P1 robustness (registered):** the sign of (L1 − TopK) must be **stable
-  across the θ grid** {0, 0.01, 0.05, 0.1}. If the sign flips with θ, the
-  effect is a thresholding artifact and P1 is **not** counted as confirmed
-  regardless of the θ = 0 CI (reported, not hidden).
+  **> 0** at the primary **θ = 0** (the *only* matched-sparsity point), with the
+  seed-bootstrap 95% CI on the difference excluding 0. **FALSIFIED** if the CI
+  excludes 0 in the *other* direction (TopK > L1); **inconclusive** if it
+  straddles 0. θ = 0 is deliberately **conservative for L1** (its soft acts make
+  its L-latent fire a hair more often → *fewer* L1 misses), so L1 > TopK *here*
+  is the strong result. (Effect-size expectation, not a bar: L1 materially
+  higher, per the L1-splitting literature; but the *registered* test is sign + CI.)
   **P1 matched-L0 gate (registered):** the scorer records each SAE's realized
-  (held-out) L0 and gates P1 on **both arches' mean L0 falling in [28, 36]**
-  (or the widened [24, 40], disclosed). If either mean L0 is outside, the arms
-  are not matched and P1 is **not** confirmed (λ is frozen on one seed, so
-  per-seed L0 drift is a real confound and must be surfaced, not assumed away).
-- **P2 (causal validity, non-circular):** pooling the per-SAE mean
-  (d_true − d_other) across the 10 SAEs, the 95% bootstrap CI is **> 0** — the
-  magnitude-selected carriers letter-specifically carry the first letter. If
-  the CI includes 0, the carriers are letter-agnostic and the "absorption" the
-  metric flags is not carried by the word's dominant latents (a genuine
-  negative about the mechanism).
+  (held-out) L0 and gates P1 on **both arches' mean L0 in [28, 36]** (or widened
+  [24, 40], disclosed). If either mean L0 is outside, the arms are not matched
+  and P1 is **not** confirmed (λ is frozen on one seed, so per-seed L0 drift is
+  a real confound and must be surfaced).
+  **P1 matched-letter robustness (registered):** because L1 splitting can make
+  more letters fail the clean-L-latent test (s_j ≥ 0.30) — so the arms could be
+  scored on *different* letter subsets — the scorer also reports `n_letters_scored`
+  per arm **and** recomputes absorption on the **intersection** of letters both
+  arms score cleanly. If the L1 > TopK sign does not survive on the common
+  letters, P1 is a letter-subset artifact (reported).
+  **θ grid — DESCRIPTIVE only (not a gate):** absorption at θ ∈ {0, 0.01, 0.05,
+  0.1} is reported, but θ > 0 is **unmatched** (a positive threshold zeros more
+  of L1's small acts than TopK's, dropping L1's effective L0 and *inflating* its
+  absorption) — it is an **upper bracket biased toward L1**, so it can only
+  *disconfirm* (a gap that shrinks/reverses as θ rises argues against L1). It is
+  **not** a robustness confirmation. (Review Finding 2.)
+- **P2 (attribution, DESCRIPTIVE — no bar on the thesis):** pooling the per-SAE
+  **concentration** contrast (cos(Δ_top,ŵ_L) − cos(Δ_rand,ŵ_L)) across the 10
+  SAEs, report the 95% bootstrap CI. **> 0** ⇒ the absorbed first letter is
+  concentrated in the word's *dominant* latents (consistent with absorption into
+  word-specific splitting latents); **≤ 0** ⇒ diffuse/tail. Reported by arch.
+  The specificity contrast (d_true − d_other) is reported but carries no weight
+  (near-guaranteed positive). Neither substitutes for the deferred Chanin
+  model-behavior test. (Review Finding 1.)
 - **P3 (detector recall, secondary):** the fixed pair detector
   (`real_analyze.py`, seeded, opportunity-normalized) is scored for **recall of
   the ground-truth main-L-latents**: the fraction of clean main-L-latents that
@@ -156,11 +176,13 @@ project's L1-splitting intuition at real scale).
 
 - **D1 (SMOKE):** the full pipeline on `pythia-70m` (tiny): extraction +
   word-set + probe + one L1 + one TopK SAE + the absorption metric (θ grid) +
-  the **non-circular** causal test + detector recall, end to end on CPU,
-  producing sane numbers. *(Done 2026-07-24: pipeline green; the non-circular
-  P2 gives d_true≫d_other with magnitude-selected carriers; θ-sign machinery
-  and P3 recall wired. Smoke P1 sign is the expected unmatched-L0 artifact,
-  fixed by the run's λ-matching.)*
+  the P2 attribution (concentration + specificity) + detector recall + the
+  intersection-matched-letter robustness, end to end on CPU, producing sane
+  numbers. *(Done 2026-07-24: pipeline green. The magnitude-normalized
+  concentration contrast (+0.065) is far below the near-tautological specificity
+  (+0.49), confirming the normalization strips the guaranteed part; L0 gate,
+  θ-bracket labels, n_letters comparison, and intersection machinery all wired.
+  Smoke P1 is the expected unmatched-L0 artifact, gated off, fixed by λ-matching.)*
 - **λ-calibration:** one L1 seed to pick λ for L0∈[28,36]; record in the lock.
 - At lock: metric code, word-set rule, θ, probe protocol, seeds, and the
   scorer are frozen; the lock hash is recorded by amendment.
