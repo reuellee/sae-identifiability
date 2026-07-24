@@ -29,6 +29,7 @@ they advance.
 | Natural-feature adjudication (S1) | **Null on wild absorption:** 0/15 seed-stable candidate clusters meet asymmetric-nesting; all are correlated (typographic byte-fragment family, incl. the 4-clique) or anti-correlated linguistic-feature pairs = the CDX equivalence class. Max child→parent containment 0.46 ≪ 0.80. | `results/round8/natfeat_SUMMARY.md` |
 | Round 9 | **Gating-corrected ρ̂ (dominance partition): mechanism endpoints P1M/P2M PASS 16/16 cells (MAE ≤ 0.0026 vs naive 0.25 bias); P4 inversion check PASS 16/16; P1O/P2O INCONCLUSIVE overall (14 cell-level passes + one ρ=0.1 cell per harness in the zone — measured h_B background pull, RC one disclosed a-priori); P3 margin FALSIFIED in 2 σ=0 synthetic cells (post-hoc diagnosis: eligibility model overpredicted baseline bias; ρ̂_D still more accurate there).** Lock `b0276cc`; dual pre-lock review (Gemini minor / GPT-5.6 major) + dual results-stage review (Gemini ACCEPT; GPT-5.6 minor→accept after corrections — it independently reproduced all six verdicts from the public repo). | §18, `results/round9/SUMMARY.md` + `REPORTING_APPENDIX.md` |
 | Round 10 (TopK, largely NEGATIVE) | **Theory (2-atom oracle): ε\*_TopK = 2q, capacity collapse — verified (M0), incl. GPT-5.6's 3-atom zero-loss counterexample that scopes it to two atoms. SGD experiment: P1 INCONCLUSIVE, P2 FALSIFIED (the m=2 SGD arm is degenerate — high rec, non-selective atoms — not the clean 2-atom optimum), P3 PARTIAL (overcomplete TopK recovers 0.62–0.83), P4 REFUTED (L1 recovers 1.00 > TopK — the hard budget HURTS rare-feature recovery). Findings: dictionary width (not per-token k) drives recovery; isolated L1 does NOT absorb → prior L1 absorption is background-driven, not rarity alone; "TopK resists absorption" refuted.** Lock `f2e92fc`; dual pre-lock review (Gemini minor / GPT-5.6 major — reframed the round). | `theory/topk_absorption.md`, `results/round10/SUMMARY.md` |
+| Round 11 (real model, EXPLORATORY) | **Graduated to real SAEs on Pythia-1.4B (A100 quota=0 → L4 + Pythia; extract→cache→train). Two matched m=16384 SAEs train to high quality (TopK FVU 0.043 / L1 FVU 0.056, L0=32). First result: the detector flags ~27× more redundant/split pairs in L1 (25,041) than TopK (936); token inspection shows L1 is dominated by feature-splitting (near-identical-token latents, overlap 0.75–0.89). SUPPORTS "TopK resists L1's splitting/absorption" in the background-rich regime round 10 said was the meaningful one (round 10 isolated refuted it; round 11 real-model confirms the direction). Exploratory: toy-calibrated detector conflates splitting/absorption at scale; one seed.** Infra + pipeline; weights/acts in GCS. | `results/real/SUMMARY.md`, `experiments/real_*.py` |
 
 ## Round 8 (in flight): `notes/prereg-round8-scaling-robustness.md`
 
@@ -39,7 +40,24 @@ they advance.
 | **E3 — robustness cells** (pre-registered descriptive) | Nonorthogonal pairs (cos 0.3/0.5), prevalence ρ=0.6 (composite not rarer → orientation stress), TopK encoder | m=32 cells, 8 seeds each | prereg locked, GPU queued |
 | **S1 — audit-v3 candidate stability** (exploratory, CPU) | Do Arm 2's flagged real-feature pairs recur across seeds? | Match flagged pairs across the 8 saved SAEs per width by decoder cosine | running locally |
 
-## Queued (priority order; each needs its own prereg)
+## Real-model track (round 11+; the credibility jump — highest priority)
+
+1. **Recalibrate the detector for real-SAE scale** (separate feature-splitting
+   from absorption; the toy overlap-veto lets real L1 splits at overlap
+   0.75–0.89 through). Then **first-letter absorption validation**
+   (Chanin/SAEBench) to confirm flagged pairs are causal absorption, not just
+   redundancy. *(identifiable codes)*
+2. **Confirmatory L1-vs-TopK at real scale** (pre-registered): seed × λ/k
+   sweep, matched FVU/L0, so the ~27× redundancy contrast gets error bars and
+   a locked metric. *(identifiable codes)*
+3. **Causal validity** (the north-star bridge): ablate/steer a "recovered"
+   child code and measure whether the child feature's downstream effect
+   actually changes — the step from *identifiable* to *causally valid* codes.
+   Runs on the same real-model forward-pass infra. *(causal features)*
+4. Gemma-2-2B (SAEBench standard) once an HF token is available on the box;
+   scale to 8B+ only if an A100/bigger-GPU quota is granted.
+
+## Queued (toy-model / theory track; each needs its own prereg)
 
 1. ~~**Natural-feature evaluation** of seed-stable audit-v3 candidates.~~
    **DONE 2026-07-23 (`results/round8/natfeat_SUMMARY.md`, prereg
