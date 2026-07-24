@@ -11,11 +11,12 @@ Env: SAE (path to sae_*.pt), ACTS (path to acts_*.pt), N_ANALYZE (default 100000
      from round 8/9 (C_LO,C_HI,L_LO,L_HI,OVL_MAX,RATE_LO,RATE_HI,THETA).
 """
 import os, json
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 import torch
 
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 SAE = os.environ["SAE"]; ACTS = os.environ["ACTS"]
-N_ANALYZE = int(os.environ.get("N_ANALYZE", "100000"))
+N_ANALYZE = int(os.environ.get("N_ANALYZE", "50000"))
 OUT = os.environ.get("OUT", SAE.replace(".pt", "_pairs.json"))
 # detector v1.1 constants (as locked in rounds 8/9)
 C_LO, C_HI, L_LO, L_HI, OVL_MAX = 0.45, 0.90, 0.5, 2.0, 0.9
@@ -50,19 +51,24 @@ def main():
         json.dump(dict(sae=os.path.basename(SAE), m=m, n_window=int(len(keep)),
                        n_cosine_band=0, n_flagged=0, examples=[]), open(OUT, "w"), indent=2)
         return
-    fk = fire[:, keep]                                # [n, K]
-    rk = rates[keep]
-    Dk = W_dec[:, keep]                               # [d, K], unit-norm cols
-    C = (Dk.T @ Dk).abs()                             # [K,K] |cos|
-    Pj = (fk.T @ fk) / fk.shape[0]                    # co-firing
+    # the [K,K] detector matrices are large (K can be >12k -> ~640MB each); do
+    # the two matmuls on GPU, move to CPU, and do the boolean detector on CPU
+    # (32GB host RAM) to avoid GPU OOM.
+    fk = fire[:, keep]                                # [n, K] GPU
+    fk_act = f[:, keep].cpu()                         # activations (CPU, for top_tokens)
+    rk = rates[keep].cpu()
+    Dk = W_dec[:, keep]                               # [d, K] GPU, unit-norm cols
+    C = (Dk.T @ Dk).abs().cpu()                       # [K,K] |cos| -> CPU
+    n = fk.shape[0]
+    Pj = (fk.T @ fk).cpu() / n                        # co-firing -> CPU
+    del fire, f, fk, Dk
+    if dev == "cuda": torch.cuda.empty_cache()
     L = Pj / torch.clamp(torch.outer(rk, rk), min=1e-12)
     O = Pj / torch.clamp(torch.minimum(rk[:, None], rk[None, :]), min=1e-12)
-    band = (C > C_LO) & (C < C_HI)
-    lift = (L <= L_LO) | (L >= L_HI)
-    veto = O < OVL_MAX
     iu = torch.triu(torch.ones_like(C, dtype=torch.bool), diagonal=1)
-    flagged = band & lift & veto & iu
+    band = (C > C_LO) & (C < C_HI)
     n_band = int((band & iu).sum())
+    flagged = band & ((L <= L_LO) | (L >= L_HI)) & (O < OVL_MAX) & iu
     pairs = torch.nonzero(flagged)
     print(f"  cosine-band pairs={n_band}, flagged (band+lift+veto)={len(pairs)}", flush=True)
     # interpretable examples: top-activating tokens per latent of the top few pairs
@@ -73,9 +79,9 @@ def main():
     except Exception:
         tk = None
     def top_tokens(local_j, n=6):
-        act = f[:, keep[local_j]]                 # activation magnitude
+        act = fk_act[:, local_j]                  # activation magnitude (CPU)
         top = torch.topk(act, min(n, act.shape[0])).indices
-        ids = toks_a[top.cpu()].tolist()
+        ids = toks_a[top].tolist()
         return tk.convert_ids_to_tokens(ids) if tk else ids
     order = pairs[torch.argsort(C[flagged], descending=True)] if len(pairs) else pairs
     for p in order[:15]:
