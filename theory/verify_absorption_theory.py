@@ -15,7 +15,10 @@ Checks:
   2. Confirm L_F - L_A and the threshold eps*(lam, q).
   3. Numeric global scan over ALL unit-norm 2-latent dictionaries
      (angles t1, t2) to confirm faithful/absorbed are the competing optima
-     and the global-optimum switchover matches eps*.
+     and the pure-candidate crossover matches eps*. NOTE: the global optimum
+     over all 2-latent dictionaries does NOT jump at eps*; it tilts CONTINUOUSLY
+     (child-side angle 45deg -> 90deg), so eps* organizes the pure-strategy
+     crossover, it is not a global-optimum discontinuity (see check 3 output).
 """
 import numpy as np
 from sympy import (symbols, sqrt, Rational, simplify, solve, Piecewise,

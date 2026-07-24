@@ -108,10 +108,17 @@ The general derivation exposes a dependence the 2D pair-comparison hid: setting
 
 **p₀\*(λ, q) = q·[(2−√2) − λ/4] / [(√2−1) − λ/4], with p₀\*/q → √2 as λ → 0.**
 
-- **p₀ < p₀\*** (co-occurrence-dominated hierarchies): the no-go bites in full —
-  ε\*\*_∞ > 0, no penalty of any form or strength rescues children below it, the
-  anti-rotated evasion wins. (Our GPU experiments used p₀ = q, ratio 1 < √2:
-  this regime.)
+- **p₀ < p₀\*** (co-occurrence-dominated hierarchies): the no-go bites **within
+  the restricted orthonormal-frame (O₂) class this note proves** (m ≤ d; the
+  two pair columns exactly span the pair plane; remaining columns orthogonal to
+  it; penalties from the pairwise-angle class) — ε\*\*_∞ > 0, and no penalty of
+  that class rescues children below it in that class; the anti-rotated evasion
+  wins. Mixed-in-plane/background columns were checked only by random-rotation
+  search (not proved) and the overcomplete m > d case is open (§scope below), so
+  this is **not** an unconditional "no penalty of any form can ever remove
+  absorption" claim. (Our GPU experiments used p₀ = q, ratio 1 < √2: this
+  regime.) The **√2 ratio is asymptotic** (p₀\*/q → √2 as λ → 0), not the exact
+  finite-λ boundary, which is the displayed formula.
 - **p₀ > p₀\***: the anti frame's Achilles heel — it reconstructs parent-solo
   events 2-sparsely, paying the λ/2 tax twice — becomes decisive, and the faithful
   frame wins the orthogonal competition **even at ε = 0**. Finite-β spot check

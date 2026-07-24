@@ -5,12 +5,15 @@ recover true features — centered on **feature absorption** (a parent/child con
 pair merging into one latent) in an analytically solvable model.
 
 **Status: actively developed technical report** (started 2026-07-21; revised
-2026-07-22 after an external review — `reviews/EXTERNAL_REVIEW_GPT-5.6_2026-07-22.md`
-and the point-by-point response beside it). Ten experiment rounds so far
-(3,800+ trained SAEs, all confirmatory predictions pre-registered — rounds 9
-and 10 additionally dual-reviewed *before* their lock by Gemini 2.5 Pro and
-GPT-5.6, `reviews/ROUND9_PREREG_*`, `reviews/ROUND10_PREREG_*`; round 10 is a
-deliberately-reported **negative** round on TopK SAEs), theory
+through 2026-07-24). **Eleven experiment rounds** so far (3,800+ trained SAEs
+in the toy/semi-synthetic rounds plus round 11's real Pythia-1.4B SAEs; all
+*confirmatory* predictions pre-registered — rounds 9 and 10 dual-reviewed
+*before* their lock, and the whole repo reviewed at HEAD by GPT-5.6
+(`reviews/WHOLE_REPO_REVIEW_GPT-5.6_2026-07-24.md`, verdict: major revision —
+theory strong, empirical/exploratory claims scoped down; round 11's semantic
+claim withdrawn). Round 10 is a deliberately-reported **negative** round on
+TopK SAEs; round 11 is exploratory. "Review" throughout = **LLM-assisted
+adversarial review** (Gemini + GPT), not human peer review), theory
 computationally verified (sympy — not a proof assistant), semi-synthetic
 validation of the capacity-dependent regime structure on real GPT-2 activations
 (report.md §14–15b), plus a fresh-context LLM referee pass (adversarial, not

@@ -39,10 +39,13 @@ falsified.**
 
 ## Headline numbers
 
-- **The registered mechanism endpoint passed decisively in these
-  oracle-scoped harnesses** — the estimator beat its pre-registered pass
-  criterion by more than 10× in every one of the 16 cells. Given the pair
-  and orientation, on parent-event tokens, ρ̂_D recovers ρ with MAE
+- **The registered mechanism endpoint (P1M/P2M) passed in all 16 cells in
+  these oracle-scoped harnesses** — the estimator beat its pre-registered
+  MAE pass bar by >10× on the P1M/P2M endpoint. (The P4 side-effect check
+  also passed 16/16, but with sparse contributor counts in the clean-gating
+  σ=0 cells — 1–10 seeds with adequate class-11 denominators — so the σ=0 P4
+  evidence is thinner than "decisive"; disclosed in the appendix.) Given the
+  pair and orientation, on parent-event tokens, ρ̂_D recovers ρ with MAE
   ≤ 0.0026 in every cell — both harnesses, ρ ∈ {0.1 … 0.7},
   σ ∈ {0, 0.05, 0.1} — with no new harness-tuned constant beyond the
   inherited θ = 0.05, under unit decoder normalization — while the leak
