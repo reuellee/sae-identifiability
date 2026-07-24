@@ -44,20 +44,34 @@ they advance.
 
 ## Real-model track (round 11+; the credibility jump — highest priority)
 
-1. **Recalibrate the detector for real-SAE scale** (separate feature-splitting
-   from absorption; the toy overlap-veto lets real L1 splits at overlap
-   0.75–0.89 through). Then **first-letter absorption validation**
-   (Chanin/SAEBench) to confirm flagged pairs are causal absorption, not just
-   redundancy. *(identifiable codes)*
-2. **Confirmatory L1-vs-TopK at real scale** (pre-registered): seed × λ/k
-   sweep, matched FVU/L0, so the ~27× redundancy contrast gets error bars and
-   a locked metric. *(identifiable codes)*
-3. **Causal validity** (the north-star bridge): ablate/steer a "recovered"
-   child code and measure whether the child feature's downstream effect
-   actually changes — the step from *identifiable* to *causally valid* codes.
-   Runs on the same real-model forward-pass infra. *(causal features)*
-4. Gemma-2-2B (SAEBench standard) once an HF token is available on the box;
-   scale to 8B+ only if an A100/bigger-GPU quota is granted.
+**THE single highest-value next experiment (whole-repo review): combine
+detector-recalibration + first-letter validation + the confirmatory
+L1-vs-TopK comparison into ONE pre-registered experiment** whose **primary
+endpoint is causal first-letter absorption on a held-out SAEBench-style
+dataset**, with the label-free detector scored only as a *secondary* predictor
+of those ground-truth outcomes. This answers the program's central open
+question — *does the toy geometry predict a reproducible difference in
+causally-validated absorption between real SAE objectives?* — and
+validates/falsifies the detector on the phenomenon it's meant to measure.
+Minimum design (all registered before the run):
+   - ≥5 seeds/arch, identical model/layer/corpus/token-order/init/width/budget.
+   - λ and k **swept**; compare matched points on the L0–loss-recovered Pareto
+     frontier (not one λ vs one k).
+   - fixed **persisted held-out** eval tokens shared by every SAE
+     (document-separated from training).
+   - **primary metric = Chanin/SAEBench first-letter absorption incl. the
+     causal-ablation component** (the north-star's *causally valid features*).
+   - splitting measured *separately* (sparse-probe / connected-component).
+   - detector scored **blind** to labels: precision / recall / calibration.
+   - report **pair- and cluster-level** redundancy, opportunity-normalized.
+   - if compute permits, a modern control (BatchTopK / Matryoshka / OrtSAE /
+     C2R). *(identifiable → causally valid codes)*
+
+Prereq fixes already applied: `real_analyze.py` (θ=0.05, seeded shared
+subsample, signed cosine, opportunity + cluster stats); proper SAE eval
+(doc-separated test, loss-recovered/KL, not in-cache FVU) is part of the run.
+Gemma-2-2B (SAEBench standard) once an HF token is on the box; scale to 8B+
+only with a bigger-GPU quota grant.
 
 ## Queued (toy-model / theory track; each needs its own prereg)
 
