@@ -5,3 +5,5 @@ experiments/*.log
 experiments/activations_l6.pt
 experiments/token_data.json
 experiments/gpt2_encoder.json
+results/real/*.pt
+results/real/acts_*
