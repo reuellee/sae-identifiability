@@ -22,3 +22,16 @@ All accepted. #1,#3,#4,#5,#7 are about the PRIMARY manufacturing confirmation �
 Rewrite: word-level OOF probe (per-word held-out dir+intercept), discovery/estimation split,
 loss-vs-absorption, config+seed conformance gate, ΔL0 gate, true-intersection P1 gate, paired
 bootstrap @8 seeds, P3 baseline+precision, P2 permuted null + by-arch. Then re-review + lock.
+
+## Targeted re-verification (GPT via codex, 2026-07-24)
+
+After fixing #1/#4/#5, a TIGHTLY-SCOPED re-check (verify these three only; no
+open-ended new-findings pass, per advisor guidance to avoid the review treadmill):
+- #1 loss-vs-absorption: YES — Xhat mapped to raw space, full-fit retention probe,
+  absorbed = present ∧ retained ∧ latent-miss; loss_rate separate. "Feature loss
+  cannot count as absorption."
+- #4 matched-L0 gate: YES — gates on |ΔL0|≤3 AND both in band; L1=28/TopK=36 now
+  FAILS (|Δ|=8); no auto-widening.
+- #5 matched-letter: YES — true intersection across every SAE; P1 confirmation
+  gated on the L1>TopK sign holding on common letters.
+Verdict: **#1/#4/#5 CORRECTLY FIXED.** Round 12 LOCKED at commit 0722212.
