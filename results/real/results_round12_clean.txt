@@ -1,0 +1,72 @@
+L1 SAEs=8  TopK SAEs=8
+
+=== config-conformance gate ===
+  OK
+=== seed gate (registered [0, 1, 2, 3, 4, 5, 6, 7]) ===
+  L1 seeds=[0, 1, 2, 3, 4, 5, 6, 7]  TopK seeds=[0, 1, 2, 3, 4, 5, 6, 7]  -> OK
+  TopK sae_pythia-1.4b_L12_topk_x8_s0_fl.json: absorption=0.0826 loss=0.031 L0=32.0 fvu=0.05888775736093521 n_letters=24 conc=0.0947 grid={'0': 0.0826, '0.01': 0.0826, '0.05': 0.0826, '0.1': 0.0826}
+  TopK sae_pythia-1.4b_L12_topk_x8_s1_fl.json: absorption=0.076 loss=0.034 L0=32.0 fvu=0.06180212274193764 n_letters=24 conc=0.0886 grid={'0': 0.076, '0.01': 0.076, '0.05': 0.076, '0.1': 0.076}
+  TopK sae_pythia-1.4b_L12_topk_x8_s2_fl.json: absorption=0.0711 loss=0.0303 L0=32.0 fvu=0.05838361009955406 n_letters=24 conc=0.0811 grid={'0': 0.0711, '0.01': 0.0711, '0.05': 0.0711, '0.1': 0.0711}
+  TopK sae_pythia-1.4b_L12_topk_x8_s3_fl.json: absorption=0.0577 loss=0.0286 L0=32.0 fvu=0.07318810373544693 n_letters=24 conc=0.118 grid={'0': 0.0577, '0.01': 0.0577, '0.05': 0.0577, '0.1': 0.0577}
+  TopK sae_pythia-1.4b_L12_topk_x8_s4_fl.json: absorption=0.0784 loss=0.0367 L0=32.0 fvu=0.06610795110464096 n_letters=24 conc=0.0776 grid={'0': 0.0784, '0.01': 0.0784, '0.05': 0.0784, '0.1': 0.0784}
+  TopK sae_pythia-1.4b_L12_topk_x8_s5_fl.json: absorption=0.0787 loss=0.0356 L0=32.0 fvu=0.06116103008389473 n_letters=24 conc=0.0766 grid={'0': 0.0787, '0.01': 0.0787, '0.05': 0.0787, '0.1': 0.0787}
+  TopK sae_pythia-1.4b_L12_topk_x8_s6_fl.json: absorption=0.0744 loss=0.0313 L0=32.0 fvu=0.0622444674372673 n_letters=24 conc=0.1064 grid={'0': 0.0744, '0.01': 0.0744, '0.05': 0.0744, '0.1': 0.0744}
+  TopK sae_pythia-1.4b_L12_topk_x8_s7_fl.json: absorption=0.0528 loss=0.0241 L0=32.0 fvu=0.06334114074707031 n_letters=24 conc=0.1042 grid={'0': 0.0528, '0.01': 0.0528, '0.05': 0.0528, '0.1': 0.0528}
+  L1 sae_pythia-1.4b_L12_l1_x8_s0_fl.json: absorption=0.0882 loss=0.0438 L0=32.656700134277344 fvu=0.07397333532571793 n_letters=24 conc=0.0604 grid={'0': 0.0882, '0.01': 0.089, '0.05': 0.0907, '0.1': 0.0934}
+  L1 sae_pythia-1.4b_L12_l1_x8_s1_fl.json: absorption=0.0865 loss=0.0564 L0=31.871938705444336 fvu=0.07786623388528824 n_letters=24 conc=0.0766 grid={'0': 0.0865, '0.01': 0.087, '0.05': 0.0885, '0.1': 0.0904}
+  L1 sae_pythia-1.4b_L12_l1_x8_s2_fl.json: absorption=0.0673 loss=0.0379 L0=30.44683837890625 fvu=0.07476446032524109 n_letters=24 conc=0.0788 grid={'0': 0.0673, '0.01': 0.0677, '0.05': 0.0691, '0.1': 0.0714}
+  L1 sae_pythia-1.4b_L12_l1_x8_s3_fl.json: absorption=0.0641 loss=0.0278 L0=31.917299270629883 fvu=0.09266296029090881 n_letters=24 conc=0.0746 grid={'0': 0.0641, '0.01': 0.0645, '0.05': 0.0656, '0.1': 0.0678}
+  L1 sae_pythia-1.4b_L12_l1_x8_s4_fl.json: absorption=0.0866 loss=0.0383 L0=31.849699020385742 fvu=0.0829705223441124 n_letters=24 conc=0.0847 grid={'0': 0.0866, '0.01': 0.0872, '0.05': 0.089, '0.1': 0.0917}
+  L1 sae_pythia-1.4b_L12_l1_x8_s5_fl.json: absorption=0.0714 loss=0.0456 L0=31.941898345947266 fvu=0.07696158438920975 n_letters=24 conc=0.093 grid={'0': 0.0714, '0.01': 0.0717, '0.05': 0.0731, '0.1': 0.0754}
+  L1 sae_pythia-1.4b_L12_l1_x8_s6_fl.json: absorption=0.0767 loss=0.0523 L0=30.824779510498047 fvu=0.07898490130901337 n_letters=24 conc=0.0684 grid={'0': 0.0767, '0.01': 0.0769, '0.05': 0.0785, '0.1': 0.0803}
+  L1 sae_pythia-1.4b_L12_l1_x8_s7_fl.json: absorption=0.0547 loss=0.0372 L0=32.53521728515625 fvu=0.07949019223451614 n_letters=24 conc=0.0757 grid={'0': 0.0547, '0.01': 0.0553, '0.05': 0.056, '0.1': 0.0576}
+
+=== matched-L0 gate (|dL0|<=3.0, both in (24.0, 40.0), target 32.0) ===
+  L1 mean L0=31.8 (30.44683837890625, 32.656700134277344)   TopK mean L0=32.0 (32.0, 32.0)
+  |dL0|=0.2  both-in-band=True  -> MATCHED
+  loss_rate  L1 mean=0.0424  TopK mean=0.0314 (reported so absorption is not confounded by feature loss)
+
+=== P1 (PRIMARY: absorption L1 vs TopK, paired per-seed, theta=0 matched) ===
+  L1=0.0744 TopK=0.0715  paired diff mean=+0.0030 95% CI [-0.0010,+0.0067] (n_pairs=8; per-seed diffs [0.006, 0.01, -0.004, 0.006, 0.008, -0.007, 0.002, 0.002])
+  sign consistent across all seed-pairs: NO (exact paired sign-test floor 2/2^8=0.0078)
+  intersection letters (clean in EVERY SAE): 24 ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
+  matched-letter L1=0.0744 TopK=0.0715 diff=+0.0030 CI [-0.0010,+0.0067] -> sign DOES NOT HOLD vs full
+  P1 gates: {'conformance': True, 'seeds': True, 'matched_L0': True, 'matched_letters': False}
+  P1 VERDICT: NOT CONFIRMED (dir=straddles-0; failing gates: ['matched_letters'])
+  theta grid (DESCRIPTIVE; theta>0 unmatched/biased+L1 -> upper bracket):
+    theta=0: L1=0.0744 TopK=0.0715 diff=+0.0030  (matched)
+    theta=0.01: L1=0.0749 TopK=0.0715 diff=+0.0034  (unmatched/+L1)
+    theta=0.05: L1=0.0763 TopK=0.0715 diff=+0.0049  (unmatched/+L1)
+    theta=0.1: L1=0.0785 TopK=0.0715 diff=+0.0070  (unmatched/+L1)
+  n_letters_scored  L1 mean=24.0 [24, 24, 24, 24, 24, 24, 24, 24]  TopK mean=24.0 [24, 24, 24, 24, 24, 24, 24, 24]
+
+=== P2 (attribution, DESCRIPTIVE by arch; real causal test = deferred Chanin) ===
+  L1: conc mean=+0.0765 CI [+0.0703,+0.0828] -> CONCENTRATED(+)
+  TopK: conc mean=+0.0934 CI [+0.0841,+0.1036] -> CONCENTRATED(+)
+  (caveat: probe direction is in-fold and the tail control is magnitude-asymmetric; descriptive only)
+
+=== P3 (detector recall of main-L-latents vs opportunity baseline) ===
+  sae_pythia-1.4b_L12_topk_x8_s0 [topk]: recall=0.292 baseline=0.029 enrichment=10.04x precision=0.0147
+  sae_pythia-1.4b_L12_topk_x8_s1 [topk]: recall=0.292 baseline=0.028 enrichment=10.32x precision=0.0151
+  sae_pythia-1.4b_L12_topk_x8_s2 [topk]: recall=0.542 baseline=0.032 enrichment=17.13x precision=0.0251
+  sae_pythia-1.4b_L12_topk_x8_s3 [topk]: recall=0.250 baseline=0.032 enrichment=7.89x precision=0.0116
+  sae_pythia-1.4b_L12_topk_x8_s4 [topk]: recall=0.375 baseline=0.032 enrichment=11.88x precision=0.0174
+  sae_pythia-1.4b_L12_topk_x8_s5 [topk]: recall=0.292 baseline=0.029 enrichment=10.17x precision=0.0149
+  sae_pythia-1.4b_L12_topk_x8_s6 [topk]: recall=0.250 baseline=0.029 enrichment=8.61x precision=0.0126
+  sae_pythia-1.4b_L12_topk_x8_s7 [topk]: recall=0.375 baseline=0.028 enrichment=13.62x precision=0.0200
+  sae_pythia-1.4b_L12_l1_x8_s0 [l1]: recall=0.667 baseline=0.150 enrichment=4.45x precision=0.0065
+  sae_pythia-1.4b_L12_l1_x8_s1 [l1]: recall=0.833 baseline=0.159 enrichment=5.25x precision=0.0077
+  sae_pythia-1.4b_L12_l1_x8_s2 [l1]: recall=0.833 baseline=0.126 enrichment=6.61x precision=0.0097
+  sae_pythia-1.4b_L12_l1_x8_s3 [l1]: recall=0.792 baseline=0.156 enrichment=5.06x precision=0.0074
+  sae_pythia-1.4b_L12_l1_x8_s4 [l1]: recall=0.833 baseline=0.162 enrichment=5.13x precision=0.0075
+  sae_pythia-1.4b_L12_l1_x8_s5 [l1]: recall=0.917 baseline=0.158 enrichment=5.80x precision=0.0085
+  sae_pythia-1.4b_L12_l1_x8_s6 [l1]: recall=0.792 baseline=0.154 enrichment=5.16x precision=0.0076
+  sae_pythia-1.4b_L12_l1_x8_s7 [l1]: recall=0.833 baseline=0.157 enrichment=5.32x precision=0.0078
+  topk: recall=0.333 vs baseline=0.030 (enrichment 11.23x)
+  l1: recall=0.812 vs baseline=0.153 (enrichment 5.32x)
+
+=== REGISTERED VERDICTS ===
+  gates: {'conformance': True, 'seeds': True, 'matched_L0': True, 'matched_letters': False}
+  P1 (PRIMARY): NOT CONFIRMED (dir=straddles-0; failing gates: ['matched_letters'])
+  P2 (descriptive): L1: conc mean=+0.0765 CI [+0.0703,+0.0828] -> CONCENTRATED(+) | TopK: conc mean=+0.0934 CI [+0.0841,+0.1036] -> CONCENTRATED(+)
+  P3 (secondary): topk: recall=0.333 vs baseline=0.030 (enrichment 11.23x); l1: recall=0.812 vs baseline=0.153 (enrichment 5.32x)

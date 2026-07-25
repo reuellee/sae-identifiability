@@ -1,0 +1,56 @@
+SAEs: L1=8 TopK=8   letters=24
+*** POST-HOC / EXPLORATORY — the registered P1 verdict is unchanged ***
+
+=== A. POWER & EQUIVALENCE ===
+  seed-level (registered unit, n=8): diff=+0.0030 CI [-0.0011,+0.0067]
+  letter-level (n=24, seed-paired):  diff=+0.0050 CI [-0.0096,+0.0189]
+  letters with L1>TopK: 17/24  (sign test is uninformative at 17/24)
+  pooled base absorption rate = 0.0554
+  equivalence read (is the null informative?):
+    +/- 25% of base (=0.0139): seed-level EXCLUDED | letter-level not excluded
+    +/- 50% of base (=0.0277): seed-level EXCLUDED | letter-level EXCLUDED
+    +/-100% of base (=0.0554): seed-level EXCLUDED | letter-level EXCLUDED
+
+=== B. HETEROGENEITY ACROSS LETTERS ===
+  l1   : rate min=0.0043 max=0.1967 (ratio 46x)  top-3 letters ['s', 'r', 'k'] carry 53% of all absorbed instances
+  topk : rate min=0.0000 max=0.2314 (ratio 231376099x)  top-3 letters ['s', 'r', 'c'] carry 73% of all absorbed instances
+
+=== C. METRIC VALIDITY (endpoint vs main-latent selectivity) ===
+  NOTE the construction:  sel[j] = P(fire_j | L) - P(fire_j | not L)
+                          rate   ~ P(main latent MISSES | L present, retained)
+  so rate ~ (1 - FPR) - sel ALGEBRAICALLY. They share the same fires[.,j] term.
+  => a regression of rate on arch CONTROLLING for sel conditions on a function of
+     the outcome and is INVALID. It is deliberately not reported here. Quantify
+     instead how much of the endpoint the identity already accounts for:
+  pooled (384 SAE-letter cells): rate = -0.587*sel +0.555, R^2=0.673
+    (exact identity would be slope -1.000, R^2 ~ 1; observed leaves 32.7% residual)
+    l1   : spearman(sel, rate) = -0.706 (perm p=0.0005, n=24 letters)
+    topk : spearman(sel, rate) = -0.839 (perm p=0.0000, n=24 letters)
+  READ: ~2/3 of the endpoint's variance is a re-expression of 'does the top
+        letter-latent fire'. That is what feature SPLITTING also moves. The
+        endpoint does not, on its own, separate absorption from splitting.
+
+  --- valid arch contrast: selectivity itself (not conditioned on the outcome) ---
+  mean sel: L1=0.828  TopK=0.872
+  paired diff (L1-TopK), letter-clustered bootstrap: -0.0444 CI [-0.0679,-0.0218]  (19/24 letters lower for L1)
+  => L1 main latents are LESS selective, i.e. L1 SPLITS the letter feature more.
+     This is a clean architecture difference and it is NOT the absorption endpoint.
+     (consistent with round-11 L1-splitting and with P3 L1 recall >> TopK.)
+
+=== D. FREQUENCY (q) DEPENDENCE — toy theory: eps* increases with q ===
+  l1   : spearman(n_instances, rate) = +0.370 (perm p=0.0730)  [weak proxy for q; n is corpus letter frequency, not latent firing rate]
+  topk : spearman(n_instances, rate) = +0.157 (perm p=0.4670)  [weak proxy for q; n is corpus letter frequency, not latent firing rate]
+
+=== READ ===
+  Generated hypotheses for round 13 (NOT results):
+   H1 regime: dead%=46-57% at m=16384 => spare-capacity regime; toy theory
+      puts absorption pressure under capacity SCARCITY, so an arch gap is
+      not predicted here. Test: sweep m downward at fixed L0.
+   H2 metric: ~2/3 of endpoint variance is a re-expression of main-latent
+      selectivity, which feature SPLITTING also moves; and L1 demonstrably
+      splits more than TopK. So the registered endpoint cannot separate
+      'L1 absorbs more' from 'L1 splits more'. Test: a FAMILY-based endpoint
+      (score the letter against its whole split family, not one main latent).
+   NB: H1 and H2 both predict a null for round 12 WITHOUT the toy theory being
+       wrong. They are the two ways the registered test could have been
+       under-powered in principle rather than in sample size.

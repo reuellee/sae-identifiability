@@ -1,0 +1,6 @@
+=== pip transformers ===
+=== SMOKE gate ===
+smoke ok
+=== EXTRACT Pythia-1.4B layer 12, 2M tokens ===
+=== TRAIN TopK (K=32, x8) ===
+r11/ops/l4_real_pipeline.sh: line 22:  1918 Killed                  ACTS=$ACTS ARCH=topk K=32 EXPANSION=8 python3 experiments/real_train_sae.py > logs_train_topk.log 2>&1
