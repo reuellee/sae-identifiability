@@ -9,3 +9,6 @@ results/real/*.pt
 results/real/acts_*
 .venv/
 results/real/sae_pythia-70m_*.json
+
+# Derived artifact: rebuild with ops/build_paper.sh (avoids binary churn every round).
+PAPER.pdf

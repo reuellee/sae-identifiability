@@ -1,0 +1,24 @@
+% LaTeX preamble for the PDF build of PAPER.md (see ops/build_paper.sh).
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float}
+
+% Section headings: the markdown numbers its own sections ("## 4. The exact
+% pure-strategy crossover"), so LaTeX numbering is OFF in build_paper.sh
+% (--number-sections is deliberately not passed). Keep headings tight.
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.4ex plus .2ex}{0.8ex}
+\titlespacing*{\subsection}{0pt}{1.1ex plus .2ex}{0.6ex}
+
+% Figures drift to the end of a long math paper otherwise.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+
+\usepackage[font=small,labelfont=bf]{caption}
+\setlength{\emergencystretch}{3em}   % long arXiv ids / URLs in the references
+
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!50!black}
