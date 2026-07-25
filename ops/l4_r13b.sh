@@ -54,7 +54,18 @@ for X in $EXPANSIONS; do
       python3 experiments/real_train_sae.py >> "$R/train.log" 2>&1
   done
   echo "width x$X done ($(ls "$RR"/sae_*.pt 2>/dev/null | wc -l) SAEs so far)"
-  set +e; gcloud storage cp "$RR"/sae_pythia-1.4b_L12_*_x${X}_s*.pt "$BUCKET/round13b/" 2>&1 | tail -1; set -e
+  # NOTE (2026-07-25): this upload FAILS on a dev-gpu rebuilt from snapshot -- that
+  # box runs as the default compute SA without storage scopes ("Provided scope(s)
+  # are not authorized"), and scopes cannot be changed while the instance runs.
+  # The failure used to be silent (`set +e` + `tail -1`), so ~9h of training
+  # produced an empty bucket prefix. Make it LOUD; retrieval is handled
+  # out-of-band by ops/collect_r13b.sh, which PULLS from the orchestrator.
+  set +e
+  if ! gcloud storage cp "$RR"/sae_pythia-1.4b_L12_*_x${X}_s*.pt "$BUCKET/round13b/" 2>&1 | tail -2; then
+    echo "!!! GCS UPLOAD FAILED for width x$X -- check instance scopes."
+    echo "!!! Results stay on local disk; pull with ops/collect_r13b.sh."
+  fi
+  set -e
 done
 
 # ------------------------------------------------- 3. enforce the naming gate
@@ -84,5 +95,9 @@ set +e
 gcloud storage cp "$R/round13b_results.json" "$R/results_round13b.txt" \
   "$R/chosen_lambda_by_width.txt" "$R"/calib_x*.log "$R/train.log" \
   "$BUCKET/round13b/" 2>&1 | tail -2
+if [ $? -ne 0 ]; then
+  echo "!!! FINAL GCS UPLOAD FAILED -- artifacts are ONLY on this box's disk."
+  echo "!!! Do not delete this instance until ops/collect_r13b.sh has pulled them."
+fi
 set -e
 echo "L4 R13B COMPLETE"

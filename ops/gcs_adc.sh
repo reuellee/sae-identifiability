@@ -41,7 +41,8 @@ case "${1:-}" in
       python3 -c 'import json,sys
 d=json.load(sys.stdin)
 for it in d.get("items",[]):
-    print(f"{int(it[\"size\"]):>14,}  {it.get(\"updated\",\"\")[:19]}  {it[\"name\"]}")'
+    size, upd, name = int(it["size"]), it.get("updated","")[:19], it["name"]
+    print("%14s  %s  %s" % (format(size,","), upd, name))'
     ;;
   get)
     T=$(tok); OBJ="$2"; DEST="$3"
