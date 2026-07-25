@@ -116,6 +116,41 @@ absorbs 1.87× TopK at m=2048 versus 0.98× at m=16384.)*
 - The endpoint's construct validity is now the central open question, ahead of any
   further architecture comparison.
 
+## Theory scorecard — two notes committed pre-unblinding (added post-unblinding)
+
+Chronology, auditable from git + agent transcripts: results auto-committed by the ops
+pipeline at 18:54:35 UTC (`25e3df0`); two theory notes were being derived at that time
+by agents under an enforced blinding instruction (no file matching `*round13b*`/`*r13b*`);
+transcript audit confirms neither agent touched any 13b artifact or ran git inspection
+(only 13a files read). Notes committed 19:04:39 (`9adaea3`, splitting asymmetry) and
+19:05:22 (`ac4b7ca`, matched-L0 agreement). First human/orchestrator read of any 13b
+number: 19:06 UTC. So the predictions are blind-to-results, though the results predate
+the commits on the clock — stated plainly.
+
+**`theory/splitting_asymmetry.md` (blind predictions → outcome):**
+- Families shrink as m falls with sign persisting (high conf) — **HIT** (L1 2.61→1.84,
+  TopK flat, sign persists at all widths).
+- Paired splitting gap shrinks monotonically (medium) — **HIT** (1.36→1.01→0.63).
+- Quantitative ranges — TopK@2048 1.21 ∈ [1.0,1.25] **HIT**; gap@2048 +0.63 ≤ +0.7
+  **HIT**; L1@2048 1.84 vs [1.2,1.8], L1@4096 2.23 vs [1.6,2.2] — high-edge misses by
+  0.04/0.03.
+- Mechanistic exposure "gap tracks dead%, not m" — consistent (dead% collapsed at
+  m=2048 and the gap fell).
+- Its mechanism (L1 self-gated nucleation splits; splitting consumes live latents) is
+  also the natural reading of P2's positive sign, per §"read it carefully" above.
+
+**`theory/matched_L0_invariance.md` (blind predictions → outcome):**
+- Boxed P2 prediction (interaction ≈ 0) — **FALSIFIED** (CI [+0.0014,+0.0135] excludes
+  0). The note's pre-stated escape channel ("L1 splitting consumes live capacity →
+  positive sign; toy silent on sign if nonzero") matches the observed sign, but that is
+  an escape, not a hit: matched-L0 single-pair agreement does not govern the scarce
+  regime across pairs.
+- Conditional P1 prediction (absorption rises if scarcity binds) — **FALSIFIED-DIRECTION**.
+- What stands: the λ_c agreement theorem as toy mathematics (35/35 checks) and its
+  account of the round-12/13a null in the spare-capacity regime; what fails is any
+  extension of toy capacity-scarcity logic to this real endpoint (consistent with the
+  construct-validity reading above).
+
 ## Cost / ops
 
 One L4 (dev-gpu, us-west1-a), ~13h, ~$9. Box **TERMINATED** — the watchdog powered
