@@ -116,16 +116,38 @@ absorbs 1.87× TopK at m=2048 versus 0.98× at m=16384.)*
 - The endpoint's construct validity is now the central open question, ahead of any
   further architecture comparison.
 
-## Theory scorecard — two notes committed pre-unblinding (added post-unblinding)
+## Theory scorecard — two AUDITED-BLIND notes (not pre-registered; see caveat)
 
-Chronology, auditable from git + agent transcripts: results auto-committed by the ops
-pipeline at 18:54:35 UTC (`25e3df0`); two theory notes were being derived at that time
-by agents under an enforced blinding instruction (no file matching `*round13b*`/`*r13b*`);
-transcript audit confirms neither agent touched any 13b artifact or ran git inspection
-(only 13a files read). Notes committed 19:04:39 (`9adaea3`, splitting asymmetry) and
-19:05:22 (`ac4b7ca`, matched-L0 agreement). First human/orchestrator read of any 13b
-number: 19:06 UTC. So the predictions are blind-to-results, though the results predate
-the commits on the clock — stated plainly.
+**These are AUDITED-BLIND predictions, not pre-registered ones. The distinction is
+load-bearing and is not the standard P1–P5 met.** For P1–P5 the lock commit precedes
+the training run, so git alone proves the criteria could not have been fitted. Here it
+does not: the results were committed at 18:54:56 (`25e3df0`) and the theory notes at
+19:04:39 (`9adaea3`) and 19:05:22 (`ac4b7ca`) — **ten minutes later**. On timestamps
+alone the "pre-unblinding" claim is unsupported, and a reviewer checking `git log`
+will see exactly that.
+
+The evidence is in the agent transcripts instead, and it has been **independently
+re-verified by a second session** (not self-reported) with `ops/audit_blinding.sh`,
+which anyone can rerun:
+
+- Both theory agents were spawned **18:49:22** and **18:49:56** — before the results
+  were committed, and before any results file had been opened by anyone.
+- Both prompts carry an explicit blinding instruction ("YOU MUST NOT look at any
+  round-13b results … This blinding is load-bearing"), and both were given only
+  round-12/13a numbers as the empirical premise.
+- Across 40 tool calls the two agents made **zero** substantive accesses to any 13b
+  artifact. The single pattern match is `grep -v round13b` — an *exclusion*, i.e.
+  compliance, not a breach.
+- The parent session's activity before spawning was ops only: instance status,
+  collection progress, directory listings, `theory/topk_absorption.md`, and the
+  **prereg** (`18:47:38`). It opened no results file until after the notes were done.
+
+Residual limitations, stated rather than argued away: the parent knew the run had
+finished and which files existed (filenames and counts, not contents), so the *choice
+of which theory questions to pose* was made with that context; and "audited blinding"
+rests on transcript integrity, which is weaker than a timestamped lock. Treat these
+notes as **stronger than post-hoc, weaker than pre-registered** — and if they are to
+carry weight in the paper, re-test them on data they have not seen.
 
 **`theory/splitting_asymmetry.md` (blind predictions → outcome):**
 - Families shrink as m falls with sign persisting (high conf) — **HIT** (L1 2.61→1.84,
