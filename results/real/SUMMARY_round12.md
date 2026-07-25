@@ -1,7 +1,7 @@
 # Round 12 — real-model causal L1-vs-TopK absorption test (Pythia-1.4B L12)
 
 Registered, locked at commit `0722212`. Frozen scorer `analysis/analyze_round12.py`.
-16 SAEs = 8 seeds × {TopK k=32, L1 λ=5.0}, m=16384, d=2048, matched at L0≈32.
+16 SAEs = 8 seeds × {TopK k=32, L1 λ=4.5}, m=16384, d=2048, matched at L0≈32.
 Ran on L4 `dev-gpu-2` (us-east1-b), ~8h, box deleted on completion.
 
 ## Registered verdict (verbatim, from the frozen scorer)
@@ -18,7 +18,7 @@ P3 (secondary): topk: recall=0.333 vs baseline=0.030 (enrichment 11.23x);
 **P1 NOT CONFIRMED.** The toy geometry does not predict a reproducible real-scale
 L1-vs-TopK gap in first-letter absorption at this width.
 
-| | L1 (λ=5.0) | TopK (k=32) |
+| | L1 (λ=4.5) | TopK (k=32) |
 |---|---|---|
 | absorption rate (θ=0) | 0.0744 | 0.0715 |
 | loss rate | 0.0424 | 0.0314 |

@@ -24,7 +24,7 @@ opposite implications and the round-12 architectures differ on the splitting axi
 
 **No new training.** Re-score the 16 **existing, frozen** round-12 SAEs
 (`gs://sae-identifiability-artifacts-ebd5a273/round12/`, 8 seeds ×
-{L1 λ=5.0, TopK k=32}, m=16384) on the **same held-out** `acts_eval.pt` and
+{L1 λ=4.5, TopK k=32}, m=16384) on the **same held-out** `acts_eval.pt` and
 `words_pythia-1.4b_L12.pt`, changing only the endpoint. CPU-only on a throwaway
 ephemeral VM (no GPU).
 
@@ -93,8 +93,8 @@ Registered expectation from the diagnosis: `|F_L|` larger for L1.
 ## Gates (any failure ⇒ P1/P2 not confirmable, reported as such)
 
 1. **Conformance:** every scored SAE has `model=EleutherAI/pythia-1.4b`,
-   `layer=12`, `m=16384`, `θ=0`, `τ_fam=0.30`; L1 arm all `λ=5.0`; TopK arm all
-   `k=32`.
+   `layer=12`, `m=16384`, `θ=0`, `τ_fam=0.30`; L1 arm all `λ=4.5`
+   (see Amendment 1); TopK arm all `k=32`.
 2. **Seeds:** exactly seeds {0..7} in each arm, 16 SAEs, no duplicates.
    *(Round-12's contamination was a duplicate seed — this gate is load-bearing.)*
 3. **Provenance:** each weight file's SHA256 recorded in the output. No file may
@@ -105,6 +105,26 @@ Registered expectation from the diagnosis: `|F_L|` larger for L1.
 
 Gate 4 is the important one: it proves the new harness reproduces the frozen
 result before its new endpoint is believed.
+
+## Amendment 1 (2026-07-25, PRE-RESULTS) — L1 λ is 4.5, not 5.0
+
+At lock this document and `results/real/SUMMARY_round12.md` stated the L1 arm was
+trained at **λ=5.0**. That is wrong. The round-12 resume script recalibrated λ at
+15k steps over the grid {4.5,5,5.5,6,7} and selected **λ=4.5**
+(`results/real/chosen_lambda.txt` = `4.5`; every L1 `fl.json` records `lam: 4.5`;
+the SAE weight files record `lam: 4.5`).
+
+The error was mine and it is a transcription error, not a data problem: I read the
+`lam` field off a **TopK** `fl.json`, where `lam: 5.0` is an unused leftover
+default (TopK has no λ). The gate above is corrected to λ=4.5.
+
+Declared **before any 13a result was read**: the 13a scorer was still running, the
+output JSON had not been collected, and no `rate_family` value had been observed.
+The amendment is outcome-blind on its face — λ does not enter the family endpoint
+at all, and the gate's scientific content ("λ is constant across the L1 arm and
+equals round 12's calibrated value") is unchanged. Only the recorded constant moves.
+
+`SUMMARY_round12.md` is corrected in the same commit.
 
 ## What this does NOT do
 
