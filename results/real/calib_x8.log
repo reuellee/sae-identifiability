@@ -1,0 +1,9 @@
+  lam=4.5: L0=32.7
+  lam=9.0: L0=5.4
+  lam=6.364: L0=18.7
+  lam=5.3514: L0=24.4
+  lam=4.9073: L0=28.3
+  lam=4.6992: L0=30.2
+  evaluated {4.5: 32.7, 4.6992: 30.2, 4.9073: 28.3, 5.3514: 24.4, 6.364: 18.7, 9.0: 5.4}
+  monotone(L0 decreasing in lambda) = True
+CHOSEN_LAM 4.5 L0=32.7 band=in
