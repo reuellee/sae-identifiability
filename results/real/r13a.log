@@ -1,0 +1,44 @@
+words=(18350, 2048) letters=26
+fitting SAE-independent probes once...
+  probe a: n=1405
+  probe b: n=780
+  probe c: n=1914
+  probe d: n=1223
+  probe e: n=988
+  probe f: n=775
+  probe g: n=480
+  probe h: n=583
+  probe i: n=926
+  probe j: n=107
+  probe k: n=117
+  probe l: n=557
+  probe m: n=917
+  probe n: n=374
+  probe o: n=431
+  probe p: n=1571
+  probe q: n=90
+  probe r: n=1094
+  probe s: n=1961
+  probe t: n=938
+  probe u: n=324
+  probe v: n=338
+  probe w: n=392
+  probe y: n=38
+  sae_pythia-1.4b_L12_l1_x8_s0.pt: single=0.0876 family=0.0538 arch=l1 seed=0
+  sae_pythia-1.4b_L12_l1_x8_s1.pt: single=0.0852 family=0.0603 arch=l1 seed=1
+  sae_pythia-1.4b_L12_l1_x8_s2.pt: single=0.0669 family=0.0498 arch=l1 seed=2
+  sae_pythia-1.4b_L12_l1_x8_s3.pt: single=0.0639 family=0.0441 arch=l1 seed=3
+  sae_pythia-1.4b_L12_l1_x8_s4.pt: single=0.0857 family=0.0491 arch=l1 seed=4
+  sae_pythia-1.4b_L12_l1_x8_s5.pt: single=0.0711 family=0.0649 arch=l1 seed=5
+  sae_pythia-1.4b_L12_l1_x8_s6.pt: single=0.0750 family=0.0673 arch=l1 seed=6
+  sae_pythia-1.4b_L12_l1_x8_s7.pt: single=0.0542 family=0.0395 arch=l1 seed=7
+  sae_pythia-1.4b_L12_topk_x8_s0.pt: single=0.0822 family=0.0505 arch=topk seed=0
+  sae_pythia-1.4b_L12_topk_x8_s1.pt: single=0.0760 family=0.0543 arch=topk seed=1
+  sae_pythia-1.4b_L12_topk_x8_s2.pt: single=0.0710 family=0.0709 arch=topk seed=2
+  sae_pythia-1.4b_L12_topk_x8_s3.pt: single=0.0575 family=0.0454 arch=topk seed=3
+  sae_pythia-1.4b_L12_topk_x8_s4.pt: single=0.0779 family=0.0572 arch=topk seed=4
+  sae_pythia-1.4b_L12_topk_x8_s5.pt: single=0.0788 family=0.0528 arch=topk seed=5
+  sae_pythia-1.4b_L12_topk_x8_s6.pt: single=0.0736 family=0.0684 arch=topk seed=6
+  sae_pythia-1.4b_L12_topk_x8_s7.pt: single=0.0521 family=0.0387 arch=topk seed=7
+
+wrote /home/sa_110201476474221697918/round13a_family.json (16 SAEs)

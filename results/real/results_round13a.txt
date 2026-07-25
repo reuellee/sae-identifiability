@@ -1,0 +1,57 @@
+scored SAEs: 16
+
+=== gate 1 conformance === OK
+=== gate 2 seeds [l1] === [0, 1, 2, 3, 4, 5, 6, 7] -> OK
+=== gate 2 seeds [topk] === [0, 1, 2, 3, 4, 5, 6, 7] -> OK
+=== gate 3 provenance === all sha256 present & distinct: OK
+
+=== gate 4 baseline reproduction (|d| <= 0.002) ===
+  sae_pythia-1.4b_L12_l1_x8_s0.pt: recomputed=0.0876 frozen=0.0882 |d|=0.0006 ok
+  sae_pythia-1.4b_L12_l1_x8_s1.pt: recomputed=0.0852 frozen=0.0865 |d|=0.0013 ok
+  sae_pythia-1.4b_L12_l1_x8_s2.pt: recomputed=0.0669 frozen=0.0673 |d|=0.0004 ok
+  sae_pythia-1.4b_L12_l1_x8_s3.pt: recomputed=0.0639 frozen=0.0641 |d|=0.0002 ok
+  sae_pythia-1.4b_L12_l1_x8_s4.pt: recomputed=0.0857 frozen=0.0866 |d|=0.0009 ok
+  sae_pythia-1.4b_L12_l1_x8_s5.pt: recomputed=0.0711 frozen=0.0714 |d|=0.0003 ok
+  sae_pythia-1.4b_L12_l1_x8_s6.pt: recomputed=0.0750 frozen=0.0767 |d|=0.0017 ok
+  sae_pythia-1.4b_L12_l1_x8_s7.pt: recomputed=0.0542 frozen=0.0547 |d|=0.0005 ok
+  sae_pythia-1.4b_L12_topk_x8_s0.pt: recomputed=0.0822 frozen=0.0826 |d|=0.0004 ok
+  sae_pythia-1.4b_L12_topk_x8_s1.pt: recomputed=0.0760 frozen=0.0760 |d|=0.0000 ok
+  sae_pythia-1.4b_L12_topk_x8_s2.pt: recomputed=0.0710 frozen=0.0711 |d|=0.0001 ok
+  sae_pythia-1.4b_L12_topk_x8_s3.pt: recomputed=0.0575 frozen=0.0577 |d|=0.0002 ok
+  sae_pythia-1.4b_L12_topk_x8_s4.pt: recomputed=0.0779 frozen=0.0784 |d|=0.0005 ok
+  sae_pythia-1.4b_L12_topk_x8_s5.pt: recomputed=0.0788 frozen=0.0787 |d|=0.0001 ok
+  sae_pythia-1.4b_L12_topk_x8_s6.pt: recomputed=0.0736 frozen=0.0744 |d|=0.0008 ok
+  sae_pythia-1.4b_L12_topk_x8_s7.pt: recomputed=0.0521 frozen=0.0528 |d|=0.0007 ok
+  gate 4 -> OK
+
+=== P1 (PRIMARY): does absorption survive the family correction? ===
+  pooled rate_single = 0.0724
+  pooled rate_family = 0.0542  95% CI [0.0494,0.0592]
+  reduction: 25.2% of the single-latent endpoint is removed by scoring against the family
+  P1 VERDICT: SURVIVES (CI lower 0.0494 > 0.01)
+    l1   : single=0.0737 family=0.0536
+    topk : single=0.0711 family=0.0548
+
+=== P2 (PRIMARY): is the family endpoint still a selectivity re-expression? ===
+  n cells=384  rate_family = -0.298*max_sel +0.293  R^2=0.381
+  comparator (single-latent endpoint) R^2 = 0.673
+  P2 VERDICT: PASS (bar R^2 < 0.4)
+
+=== P3 (secondary): heterogeneity under the family endpoint ===
+  l1   : top-3 ['s', 'c', 'p'] carry 51% (single-latent comparator: 53%)
+  topk : top-3 ['s', 'c', 'r'] carry 69% (single-latent comparator: 73%)
+
+=== P4 (secondary, NOT confirmatory): arch diff on the family endpoint ===
+  paired L1-TopK diff = -0.0012 95% CI [-0.0081,+0.0049] (n=8)
+  per-seed: [0.0033, 0.006, -0.0211, -0.0013, -0.0081, 0.0121, -0.0011, 0.0008]
+  CAVEAT: reuses round-12 weights+data. Cannot confirm an arch claim; sizes 13b.
+
+=== P5 (descriptive): split-family size |F_L| ===
+  l1   : mean |F_L|=2.61 median=2 max=9 (cap 32)
+  topk : mean |F_L|=1.25 median=1 max=5 (cap 32)
+  paired-by-letter |F_L| diff (L1-TopK) = +1.36 CI [+0.94,+1.88] (22/24 letters larger for L1)
+
+=== REGISTERED VERDICTS ===
+  gates: conformance=True seeds=True provenance=True baseline_repro=True
+  P1 (primary): SURVIVES (CI lower 0.0494 > 0.01)
+  P2 (primary): R^2=0.381 -> PASS
