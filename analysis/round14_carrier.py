@@ -191,10 +191,15 @@ def score_one(path, Xr, letters, probes, rng):
 
 
 def main():
-    d = safe_load(os.environ["WORDS"])
-    Xr = d["X"].float().numpy() if torch.is_tensor(d["X"]) else np.asarray(d["X"])
-    letters = np.asarray(d["letters"])
-    print(f"acts {Xr.shape}", flush=True)
+    # Loader COPIED VERBATIM from round13b_scorer.py. The first version of this
+    # file invented its own (d["X"]) and died instantly with KeyError: 'X' -- the
+    # words file's key is "acts". Copying rather than paraphrasing is the whole
+    # reason the 13a->13b counters transferred cleanly; the same discipline applies
+    # to the loader.
+    W = safe_load(os.environ["WORDS"])
+    Xr = W["acts"].numpy().astype("float32")
+    letters = np.array(W["letters"])
+    print(f"words={Xr.shape} letters={len(set(letters))}", flush=True)
     probes = build_probes(Xr, letters)
     rng = np.random.default_rng(SEED)
     rows = []
