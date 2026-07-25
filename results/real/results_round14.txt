@@ -1,0 +1,42 @@
+scored SAEs: 32
+
+=== gate 1 reproduction === max |d rate_family| = 0.0016 (tol 0.002) -> OK
+
+=== gate 2 set sizes ===
+  l1    m=  2048: 26/192 (letter,SAE) cells scored (|A|>=20); median |A|=4 |C|=650
+  topk  m=  2048: 7/192 (letter,SAE) cells scored (|A|>=20); median |A|=2 |C|=658
+  l1    m= 16384: 81/192 (letter,SAE) cells scored (|A|>=20); median |A|=12 |C|=600
+  topk  m= 16384: 66/192 (letter,SAE) cells scored (|A|>=20); median |A|=12 |C|=634
+
+=== P1 (PRIMARY): does the carrier take up the slack? ===
+  m=  2048: mean(act_A - act_C) = +3.1926 CI [+2.4506,+3.9720] (n=15 SAEs)
+  m= 16384: mean(act_A - act_C) = +1.5384 CI [+1.3542,+1.7264] (n=16 SAEs)
+  P1 @ m=2048: CONFIRMED (carrier compensates -> absorption)
+  P1 @ m=16384: CONFIRMED (carrier compensates -> absorption)
+
+=== P2 (PRIMARY): is the carrier a repeated latent? ===
+  m=  2048: share=0.463 null=0.391 diff=+0.072 CI [-0.064,+0.212] (n=15 SAEs)
+  m= 16384: share=0.141 null=0.340 diff=-0.199 CI [-0.217,-0.181] (n=16 SAEs)
+  P2 @ m=2048: NOT CONFIRMED
+  P2 @ m=16384: NOT CONFIRMED
+
+=== P3 (secondary): carrier breadth vs family ===
+  l1    m=  2048: rate(kappa)=0.0384 vs rate(F_L)=0.0902
+  topk  m=  2048: rate(kappa)=0.0459 vs rate(F_L)=0.1471
+  l1    m= 16384: rate(kappa)=0.0235 vs rate(F_L)=0.0837
+  topk  m= 16384: rate(kappa)=0.0104 vs rate(F_L)=0.0713
+
+=== P4 (secondary): concentration of letter-direction mass ===
+  m=  2048: conc on A (kappa) = 0.249 | conc on C (top family) = 0.677
+  m= 16384: conc on A (kappa) = 0.092 | conc on C (top family) = 0.572
+
+=== P5 (secondary): capacity contrast ===
+  P1 verdict m=2048: CONFIRMED (carrier compensates -> absorption)
+  P1 verdict m=16384: CONFIRMED (carrier compensates -> absorption)
+
+=== REGISTERED VERDICTS ===
+  gate 1 reproduction: True
+  P1 @ m= 2048: CONFIRMED (carrier compensates -> absorption)
+  P2 @ m= 2048: NOT CONFIRMED
+  P1 @ m=16384: CONFIRMED (carrier compensates -> absorption)
+  P2 @ m=16384: NOT CONFIRMED
