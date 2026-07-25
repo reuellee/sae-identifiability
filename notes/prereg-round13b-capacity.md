@@ -124,6 +124,54 @@ treatment, not a removable confound, and is reported per cell.
 4. **Provenance:** SHA256 of every scored weight file recorded.
 5. **Manipulation check** as above.
 
+## Amendments (2026-07-25, both PRE-RESULTS — declared before any 13b SAE was trained)
+
+Both are based on **timing and L0 measurements only**. No absorption quantity of
+any kind had been computed when these were written.
+
+### Amendment 1 — adaptive λ calibration replaces the fixed grid
+
+Registered: fixed grid {2,3,4,4.5,5,6}. Replaced by
+`experiments/calibrate_lambda_adaptive.py`: evaluate λ=4.5 (round 12's answer),
+double or halve until L0=32 is bracketed, then bisect on log λ; ≤6 evaluations;
+the monotonicity assumption (L0 decreasing in λ) is checked and reported.
+
+Why: a smoke run showed that at **m=2048, λ=4 gives L0 far above 32**. The
+registered grid may therefore not *bracket* L0=32 at small widths, in which case
+calibration returns an edge value, that width fails the matched-L0 gate, and the
+round loses its most important cell. The adaptive search brackets by
+construction. It is also cheaper (≈5 vs 6 full 15k-step trainings per width).
+
+Outcome-blind: calibration reads **only** the reported held-out L0 and never sees
+any absorption quantity — as the original design already stated. The target
+(L0 closest to 32, evaluated at the 15k training budget) is unchanged; only the
+search over λ changes.
+
+### Amendment 2 — drop m=8192; widths become {2048, 4096, 16384}
+
+Measured on the L4: 2000 steps takes 211.7s at m=16384 and 38.9s at m=2048, i.e.
+≈24 min per SAE at m=16384 for the registered 15k steps. The 4-width design costs
+**≈17h (~$12)**, over the registered ~12h (~$8) budget.
+
+Dropping m=8192 gives ≈12h (~$8), on budget. The sweep still spans **8×** in
+width and retains **three** points for the monotonicity read. Both endpoints that
+define P1 and P2 (m=2048 and m=16384) are **unchanged**, so no registered
+primary is weakened — only the interior resolution of the width profile is.
+
+Cell count becomes 3 widths × 2 arches × 8 seeds = **48 SAEs**. Seeds are kept at
+8 rather than trimmed, because P2 is already the round's least-powered test.
+Gate 2's expected count changes 64 → 48 and the filename pattern's width field
+becomes `x{1,2,8}`.
+
+### Anti-contamination note (implementation, not a design change)
+
+λ calibration invokes the real trainer at SEED=0, which writes files whose names
+are *legitimate* (`..._l1_x{E}_s0.pt`) but whose λ is a discarded search point.
+Training later overwrites them, but to remove the hazard entirely the driver now
+**deletes all `sae_*.pt` after calibration and before training**. This is exactly
+round 12's failure class (a stale file with a valid-looking name and a duplicate
+seed), so it is handled explicitly rather than relied upon.
+
 ## What this cannot do
 
 - It cannot rescue round 12's P1. Round 12 stands as NOT CONFIRMED.

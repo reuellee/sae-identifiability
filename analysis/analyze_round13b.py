@@ -17,12 +17,12 @@ import json, os, re
 import numpy as np
 
 BOOT = 10_000
-WIDTHS = [2048, 4096, 8192, 16384]
+WIDTHS = [2048, 4096, 16384]
 SMALL, LARGE = 2048, 16384
 REG = dict(model="EleutherAI/pythia-1.4b", layer=12, theta=0.0, tau=0.30, k_topk=32)
 L0_TOL, L0_BAND = 3.0, (24.0, 40.0)
 MC_DEAD_DROP = 0.15
-NAME_RE = re.compile(r"^sae_pythia-1\.4b_L12_(l1|topk)_x(1|2|4|8)_s([0-7])\.pt$")
+NAME_RE = re.compile(r"^sae_pythia-1\.4b_L12_(l1|topk)_x(1|2|8)_s([0-7])\.pt$")
 
 
 def boot_ci(x, reps=BOOT, seed=1):
@@ -73,7 +73,7 @@ def main():
         print("   ", v)
 
     # ---------------- gate 2 seeds / anti-contamination ----------------
-    g2 = len(rows) == 64
+    g2 = len(rows) == 48
     bad_names = [r["sae"] for r in rows if not NAME_RE.match(r["sae"])]
     g2 &= not bad_names
     for a in ("l1", "topk"):
@@ -83,7 +83,7 @@ def main():
             g2 &= ok
             if not ok:
                 print(f"  cell {a} m={m}: seeds {seeds} MISMATCH")
-    print(f"=== gate 2 seeds/naming === 64 SAEs, 8 cells x seeds 0-7, "
+    print(f"=== gate 2 seeds/naming === 48 SAEs, 6 cells x seeds 0-7, "
           f"names pinned -> {'OK' if g2 else 'FAIL'}")
     if bad_names:
         print(f"   off-pattern files (contamination risk): {bad_names[:5]}")

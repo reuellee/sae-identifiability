@@ -13,13 +13,13 @@ REPO=$R/sae-identifiability
 RR=$REPO/results/real
 BUCKET=${BUCKET:-gs://sae-identifiability-artifacts-ebd5a273}
 STEPS=${STEPS:-15000}
-LAM_GRID=${LAM_GRID:-"2,3,4,4.5,5,6"}
+MAX_EVALS=${MAX_EVALS:-6}                   # Amendment 1: adaptive calibration
 SEEDS=${SEEDS:-"0 1 2 3 4 5 6 7"}
-EXPANSIONS=${EXPANSIONS:-"1 2 4 8"}
+EXPANSIONS=${EXPANSIONS:-"1 2 8"}          # Amendment 2: m=8192 dropped
 TRAIN=$R/acts_train.pt
 EVAL=$R/acts_eval.pt
 WORDS=$R/words_pythia-1.4b_L12.pt
-NAME_RE='^sae_pythia-1\.4b_L12_(l1|topk)_x(1|2|4|8)_s[0-7]\.pt$'
+NAME_RE='^sae_pythia-1\.4b_L12_(l1|topk)_x(1|2|8)_s[0-7]\.pt$'
 
 cd "$REPO"
 mkdir -p "$RR"
@@ -30,18 +30,22 @@ export PYTHONUNBUFFERED=1 GPU_ACTS=1
 # ---------------------------------------------------------- 1. calibrate lambda
 declare -A LAMS
 for X in $EXPANSIONS; do
-  echo "=== CALIBRATE lambda, EXPANSION=$X (m=$((X*2048))), $STEPS steps, grid $LAM_GRID ==="
-  ACTS=$TRAIN EVAL_ACTS=$EVAL EXPANSION=$X LAM_GRID="$LAM_GRID" \
-    CALIB_STEPS=$STEPS TARGET=32 \
-    python3 experiments/calibrate_lambda.py > "$R/calib_x$X.log" 2>&1
+  echo "=== CALIBRATE lambda (adaptive), EXPANSION=$X (m=$((X*2048))), $STEPS steps ==="
+  ACTS=$TRAIN EVAL_ACTS=$EVAL EXPANSION=$X MAX_EVALS=$MAX_EVALS \
+    CALIB_STEPS=$STEPS TARGET=32 LAM0=4.5 \
+    python3 experiments/calibrate_lambda_adaptive.py > "$R/calib_x$X.log" 2>&1
   cat "$R/calib_x$X.log"
   LAMS[$X]=$(grep '^CHOSEN_LAM' "$R/calib_x$X.log" | awk '{print $2}')
   echo ">>> EXPANSION=$X lambda=${LAMS[$X]}"
   echo "$X ${LAMS[$X]}" >> "$R/chosen_lambda_by_width.txt"
 done
 
-# ------------------------------------------------------------------- 2. train 64
-echo "=== TRAIN 64 SAEs (4 widths x 2 arches x 8 seeds), TF32, held-out eval ==="
+# --- wipe calibration artifacts: they have LEGITIMATE names but discarded lambdas
+echo "=== DELETE calibration artifacts before training (round-12 failure class) ==="
+rm -f "$RR"/sae_*.pt
+
+# ------------------------------------------------------------------- 2. train 48
+echo "=== TRAIN 48 SAEs (3 widths x 2 arches x 8 seeds), TF32, held-out eval ==="
 for X in $EXPANSIONS; do
   for SEED in $SEEDS; do
     ACTS=$TRAIN EVAL_ACTS=$EVAL EXPANSION=$X ARCH=topk K=32 SEED=$SEED STEPS=$STEPS \
@@ -60,7 +64,7 @@ for f in "$RR"/sae_*.pt; do
   if ! [[ $b =~ $NAME_RE ]]; then echo "  DELETING off-pattern: $b"; rm -f "$f"; fi
 done
 N=$(ls "$RR"/sae_*.pt | wc -l)
-echo "  $N SAEs pass the name gate (expect 64)"
+echo "  $N SAEs pass the name gate (expect 48)"
 
 # --------------------------------------------------------------- 4. score them
 echo "=== SCORE (frozen 13b scorer: single + family + lost) ==="
