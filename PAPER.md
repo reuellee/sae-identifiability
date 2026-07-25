@@ -505,10 +505,10 @@ label-free frequency identifiability analysis draws on mixture/topic-model
 identifiability (Arora–Ge–Moitra 2012; Anandkumar et al. 2014;
 Allman–Matias–Rhodes 2009; Fu–Huang–Sidiropoulos 2016), whose common
 linear-independence condition is exactly what full absorption degenerates.
-For the detector arc: co-activation statistics have been used to build
-feature-family hierarchies (O'Neill et al., arXiv:2408.02622), to cluster
-functional structure (Michaud et al., arXiv:2410.19750), and as training
-constraints in hierarchical architectures (Tree SAE, arXiv:2605.07922;
+For the detector arc: prior work groups SAE features into feature
+families spanning levels of abstraction (O'Neill et al., arXiv:2408.00657),
+clusters functional structure (Michaud et al., arXiv:2410.19750), and
+imposes hierarchy as a training constraint (Tree SAE, arXiv:2605.07922;
 HSAE, arXiv:2602.11881); Chanin et al. measure absorption with NPMI given
 probe-based labels; encoder holes and activation-histogram multimodality
 were observed and proposed as detection signals in Chanin et al.'s
