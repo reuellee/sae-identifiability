@@ -3,10 +3,11 @@
 **Living paper draft.** This document is the formal distillation of `report.md`
 (the session-log-style record) at the current repository state; claims follow
 the guardrails established in `reviews/`. Experimental provenance: README
-table (results CSV → commit). *Current through round 11 (2026-07-24).* The
+table (results CSV → commit). *Current through round 13b (2026-07-25).* The
 theory sections (§1–§13) are the strongest content; the detector (§17), the
 gating-corrected estimator (§18/round 9), the TopK note (round 10) and the
-real-model round 11 are scoped empirical/exploratory results, flagged as such.
+real-model rounds 11–13b (§8b; round 11 exploratory, rounds 12–13b
+pre-registered) are scoped empirical results, flagged as such.
 "External review" throughout means **LLM-assisted adversarial review**
 (Gemini 2.5 Pro + GPT-5.6), which materially improved the work but is **not**
 human peer review.
@@ -45,6 +46,19 @@ pairs on matched synthetic data and partially transfers, with strong width
 dependence, to semi-synthetic GPT-2 activations. The detector remains a
 synthetic proof of concept: all-pairs specificity on real backgrounds,
 orientation, scaling, and cutoff transfer are open, pre-registered problems.
+At real scale (pre-registered eight-seed rounds on Pythia-1.4B layer 12,
+matched $L_0 = 32$), the architecture prediction fails cleanly: L1 and TopK
+SAEs show no difference in first-letter absorption (paired diff $+0.0030$,
+95% CI $[-0.0010, +0.0067]$), a null that survives both a
+splitting-corrected family endpoint and — refuting the last pre-registered
+rescue — an $8\times$ capacity sweep. The sweep moreover *inverts* the toy
+capacity story on this endpoint: measured absorption falls monotonically as
+the dictionary shrinks (paired $-0.0445$, CI $[-0.0493, -0.0397]$), a small
+L1$-$TopK gap opens only in the *low*-absorption scarce regime (interaction
+$+0.0070$, CI $[+0.0014, +0.0135]$; the round's least-powered registered
+test), and the endpoint co-moves with feature fragmentation — leaving the
+construct validity of first-letter absorption metrics, rather than the
+architecture comparison, as the central open question.
 
 ---
 
@@ -270,7 +284,11 @@ the two-latent transition here. This suggests — a hypothesis following from
 the model, not an evidenced claim — that for real-world models, where the
 landscape of feature combinations is likely far richer than the number of
 available latents, capacity scarcity may be a primary driver of the
-absorption pathology.
+absorption pathology. *(Round 13b tested the natural transfer of this
+hypothesis at real scale on the first-letter family endpoint and found the
+opposite monotone profile — measured absorption falls as capacity shrinks;
+see §8b.4. The controlled synthetic result above stands; its extrapolation
+to that real endpoint does not.)*
 
 ### 6.3 Semi-synthetic regime structure (synthetic pairs injected into real GPT-2 activations)
 
@@ -487,6 +505,196 @@ scoring: `results/round9/SUMMARY.md`; prereg
 `notes/prereg-gating-corrected-rho.md`; theory
 `theory/gating_corrected_rho.md`.
 
+## 8b. Real scale: the architecture prediction on Pythia-1.4B (rounds 11–13b)
+
+The program's real-model arc tests whether the toy geometry predicts a
+reproducible L1-vs-TopK difference in absorption in a real language model.
+All confirmatory rounds were pre-registered with frozen scorers and
+pre-results locks; full outputs and registered verdicts live in
+`results/real/SUMMARY_round12.md`, `SUMMARY_round13a.md`,
+`SUMMARY_round13b.md`, with locks and amendments recorded per round.
+Common substrate: Pythia-1.4B layer 12 residual activations ($d = 2048$),
+first-letter absorption task, SAEs matched at $L_0 = 32$ (TopK $k = 32$;
+L1 $\lambda$ calibrated to $L_0 \approx 32$, blind to absorption).
+
+### 8b.1 Round 11 (exploratory infrastructure) and round 12 (registered): NOT CONFIRMED
+
+Round 11 (exploratory, no lock) built the extract–cache–train pipeline; its
+semantic "$\sim 27\times$ redundancy" reading was **withdrawn** as
+confounded (see `CLAIM_LEDGER.md`) and is not relied on anywhere below.
+Round 12 (registered, lock `0722212`; 16 SAEs $=$ 8 seeds
+$\times$ {L1 $\lambda{=}4.5$, TopK $k{=}32$} at $m = 16384$): **P1 NOT
+CONFIRMED** — paired per-seed L1$-$TopK first-letter absorption diff
+$+0.0030$, 95% CI $[-0.0010, +0.0067]$ ($n = 8$, 5/8 positive). A stale
+out-of-config file contaminated the first collection; the conformance and
+seed gates caught it, and the disclosed clean re-score (unmodified frozen
+scorer, registered conformance rule) is the reported result. Secondary:
+both architectures' absorption is letter-concentrated (P2), and the §8
+detector's pair flags are enriched for absorption-implicated latents in
+both (P3: recall 0.812 vs baseline 0.153 for L1; 0.333 vs 0.030 for TopK).
+Post-hoc diagnosis (exploratory, hypothesis-generating only): the endpoint
+is carried by $\sim 3$ of 24 letters and is largely a selectivity
+re-expression ($R^2 = 0.673$); two registered rescue hypotheses followed —
+H2, the endpoint conflates absorption with splitting; H1, $m = 16384$ at
+46–57% dead latents is a spare-capacity regime where the toy predicts no
+absorption pressure.
+
+### 8b.2 Round 13a: the null is not a splitting artifact (H2 refuted)
+
+Round 13a (registered, lock `9728663`, amendment + evaluator pre-results)
+re-scored the frozen round-12 SAEs against each letter's whole split family
+instead of one designated latent. Registered verdicts: absorption
+**survives** the correction (family rate $0.0542$, CI $[0.0494, 0.0592]$;
+the single-latent endpoint inflates absorption by $\sim 25\%$ — a validity
+finding for SAEBench-style metrics in current use), the corrected endpoint
+is meaningfully less a selectivity re-expression ($R^2 = 0.381$ vs
+$0.673$; a narrow pass of the registered $0.40$ bar), letter concentration
+is unchanged, and the architecture null **persists** under the corrected
+endpoint ($-0.0012$, CI $[-0.0081, +0.0049]$). The sharp architecture
+difference is in *splitting*, not absorption: mean split-family size
+$|F_L|$ is L1 $2.61$ vs TopK $1.25$ (paired $+1.36$, CI $[+0.94, +1.88]$,
+22/24 letters). H2 is refuted; H1 became the last registered rescue.
+
+### 8b.3 Round 13b: capacity-sweep design, gates, manipulation check
+
+Round 13b (prereg lock `c934d33`; Amendments 1–2 at `7501486`, both
+pre-results and based on timing/$L_0$ measurements only: adaptive
+$\lambda$ calibration, and dropping $m = 8192$ for budget) trained 48
+fresh SAEs — 3 widths $m \in \{2048, 4096, 16384\}$ $\times$ {L1, TopK}
+$\times$ 8 seeds — on round 12's cached activations, 15k steps, family
+endpoint primary. Calibrated $\lambda = 3.784 / 4.1265 / 4.5$ by width.
+**Gates 1–4 all pass** (conformance; exact seed/filename pattern —
+load-bearing after round 12's contamination; matched $L_0$ at every width,
+$|\Delta L_0| \le 1.5$; SHA256 provenance). **Manipulation check passes**:
+dead latents fall from 53.1% to 6.3% (46.8pp against a 15pp bar) and live
+latents are monotone in $m$ ($1919, 3256, 7682$) — scarcity genuinely
+binds at $m = 2048$.
+
+### 8b.4 Round 13b registered outcomes: P1 is not merely unconfirmed, it is backwards
+
+**P1 (primary): FALSIFIED-DIRECTION.** The registered prediction was that
+absorption rises as capacity falls. Instead, the pooled paired diff
+$\mathrm{rate}_{\mathrm{fam}}(m{=}2048) - \mathrm{rate}_{\mathrm{fam}}(m{=}16384)
+= -0.0445$, 95% CI $[-0.0493, -0.0397]$ ($n = 16$; within-arch: L1
+$-0.0410$ $[-0.0468, -0.0356]$, TopK $-0.0480$ $[-0.0548, -0.0413]$). The
+width profile is perfectly monotone in **both** architectures
+(Spearman(live latents, rate) $= +1.00$):
+
+| arch | $m{=}2048$ | $m{=}4096$ | $m{=}16384$ |
+|---|---|---|---|
+| L1 | 0.0133 | 0.0361 | 0.0542 |
+| TopK | 0.0071 | 0.0145 | 0.0551 |
+
+Two artifact explanations were checked and excluded: (i) denominator
+selection — all 48 SAEs score the identical 24 letters with identical
+denominator $n = 17{,}981$, so the comparison is exactly matched; (ii) the
+registered retention confound (P5) does **not** fire — outright loss
+*also* falls with capacity ($0.0322 \to 0.0216$ pooled), and
+absorbed$+$lost falls $\sim 2.7\times$ ($\approx 0.087 \to 0.032$) as the
+dictionary shrinks $8\times$. **H1 is refuted**: round 12's null cannot be
+explained by spare capacity; $m = 16384$ is the *high*-absorption regime
+on this endpoint.
+
+**P2 (primary): CONFIRMED as registered, with caveats stated in advance or
+forced by the data.** Interaction
+$[\mathrm{L1}-\mathrm{TopK}]_{m=2048} - [\mathrm{L1}-\mathrm{TopK}]_{m=16384}
+= +0.0070$, CI $[+0.0014, +0.0135]$ ($n = 8$; gap $+0.0062$ at $m{=}2048$
+vs $-0.0009$ at $m{=}16384$; per-seed 6/8 positive, one zero, one
+negative). Three caveats: (i) the *registered power caveat* applies — a
+difference-of-differences on 8 seeds, CI half-width $0.0061$, lower bound
+barely clear of zero and sensitive to one seed ($+0.0263$); (ii) the gap
+is confirmed in the **opposite regime** from the one H1 posited — where
+absorption is $4$–$8\times$ *lower*, not higher ($+0.0062$ on a base of
+$\sim 0.01$); (iii) because P1 inverted, the CONFIRMED branch's literal
+wording ("round 12's null was regime-bound") is no longer the supported
+reading. What survives is narrower: **at small $m$ the architectures
+differ; at large $m$ they do not** — and given P3, the most likely
+mechanism is splitting, not absorption, consistent with 13a's P5.
+*(Exploratory, not registered: on a relative scale L1 absorbs
+$1.87\times$ TopK at $m = 2048$ vs $0.98\times$ at $m = 16384$.)*
+
+**P3 (secondary):** splitting shrinks under scarcity, and it is an L1
+phenomenon — mean $|F_L|$ grows $1.84 \to 2.23 \to 2.61$ for L1 across
+widths but stays flat $1.21 \to 1.22 \to 1.25$ for TopK. **P4
+(secondary):** the single-latent metric's splitting inflation is 23–33%
+at every width, replicating 13a's metric finding. **P5 (confound
+control):** does not fire, as reported under P1.
+
+### 8b.5 Blind-committed theory notes and their scorecard
+
+Two theory notes were derived by agents under an enforced blinding
+instruction and committed before any 13b number was read
+(`9adaea3`, `ac4b7ca`; results were auto-committed by the ops pipeline
+$\sim 10$ minutes earlier, so the predictions are blind-to-results though
+the results predate the commits on the clock — chronology auditable from
+git plus agent transcripts, stated plainly in `SUMMARY_round13b.md`).
+
+**`theory/matched_L0_invariance.md`** proves, inside the 2-D toy, a
+*matched-$L_0$ agreement theorem*: under fixed-point (emergent) $L_0$
+matching, the L1 and TopK absorption decisions coincide everywhere in
+parameter space for all
+$\lambda \le \lambda_c = 8 - 4\sqrt2 - \sqrt{92 - 64\sqrt2} \approx 1.1224$
+(the unique root of $\varepsilon^*_{L1}(\lambda, q) = 2q$ in the validity
+window), with a real disagreement window only for $\lambda > \lambda_c$
+(machine-checked, 35/35). Its boxed 13b prediction — the P2 interaction
+$\approx 0$ — was **FALSIFIED**: the CI $[+0.0014, +0.0135]$ excludes
+zero. The note's pre-stated escape channel (L1 splitting consumes live
+capacity $\Rightarrow$ positive sign; toy silent on sign if nonzero)
+matches the observed sign, but that is an escape, not a hit: matched-$L_0$
+single-pair agreement does not govern the scarce multi-pair regime. Its
+conditional P1 prediction (absorption rises if scarcity binds) was
+likewise **FALSIFIED-DIRECTION**. What stands is the agreement theorem as
+toy mathematics and its account of the round-12/13a null in the
+spare-capacity regime; what fails is any extension of toy
+capacity-scarcity logic to this real endpoint.
+
+**`theory/splitting_asymmetry.md`** derives the splitting asymmetry: at
+matched per-token $L_0$ the objective's splitting preference is actually
+*larger* for TopK, so the observed L1 excess is attributed to gating
+dynamics — L1's **self-gated** nucleation gives a nascent sub-feature
+latent first-order descent whenever the residual clears $\lambda/2$
+($\lVert\rho\rVert^2 = \sin^2\varphi + \lambda^2/4 > (\lambda/2)^2$ for
+every $\varphi > 0$), while TopK's **rank-gated** spare latent has exactly
+zero gradient below the cutoff, making merged-plus-dead-spare a genuine
+local minimum despite the split being globally better for TopK. Its blind
+13b predictions largely **HIT**: families shrink as $m$ falls with the
+sign persisting at every width (high confidence — hit); the paired
+splitting gap shrinks monotonically ($+1.36 \to +1.01 \to +0.63$, medium
+confidence — hit); quantitatively, TopK at $m{=}2048$ ($1.21 \in
+[1.0, 1.25]$) and the gap bound ($+0.63 \le +0.7$) hit, while L1 at
+$m{=}2048$ and $m{=}4096$ miss their predicted ranges at the high edge by
+$0.04$ and $0.03$; the "gap tracks dead%, not $m$" exposure is consistent
+with the data. Its mechanism is also the natural reading of P2's positive
+sign. Scorecard symmetry, for the record: one note's primary boxed
+prediction was falsified outright; the other's held with small edge
+misses. Both outcomes are reported at equal prominence.
+
+### 8b.6 Standing, and the construct-validity problem now at the center
+
+- Round 12's **NOT CONFIRMED** stands and is now *doubly robust*: 13a
+  removed the splitting-artifact explanation, 13b removed the
+  spare-capacity explanation — the last pre-registered rescue.
+- The toy capacity story does **not** transfer to this endpoint at real
+  scale in the predicted direction; on this endpoint it is inverted.
+- Since absorbed$+$lost is exactly "no sufficiently selective family
+  latent fired", and that quantity falls $\sim 2.7\times$ as the
+  dictionary shrinks $8\times$ while L1 families fragment with width (P3),
+  the reading is that **the endpoint co-moves with fragmentation of the
+  letter representation — a property of dictionary width — rather than
+  with hierarchical merging.** The thesis-defense review raised the same
+  concern independently (`reviews/DEFENSE_round13b_2026-07-25/`, Q2
+  Finding 1): the metric flags "no family latent fired" without verifying
+  that the child's missing mass is picked up by a parent latent. The
+  capacity profile makes that concern concrete rather than hypothetical.
+- The highest-value next experiment is therefore the **residual projection
+  check** — on "absorbed" trials, does a parent latent's activation
+  increase to carry the child's missing mass? It is post-hoc but cheap and
+  decisive for the endpoint's meaning: all 48 round-13b weight files plus
+  round 12's 16 are in hand. Until it is run, first-letter absorption
+  rates (this project's and SAEBench-style metrics generally) should be
+  read as composite fragmentation-sensitive quantities, not as validated
+  measures of parent–child merging.
+
 ## 9. Related work
 
 Chanin et al. (arXiv:2409.14507) coined and mechanistically explained
@@ -538,8 +746,11 @@ natural future host for detector benchmarking.
    child but *less* cleanly than L1; and — the sharpest finding — in isolation
    *neither* architecture absorbs an $\varepsilon>0$ child, so this project's
    own L1 absorption is **background-competition-driven, not rarity alone**.
-   The decisive open experiment is L1-vs-TopK *with* background. JumpReLU
-   remains untested.
+   The decisive open experiment — L1-vs-TopK *with* background — has since
+   been run at real scale (rounds 12–13b, §8b): NOT CONFIRMED at matched
+   $L_0$, robust to the splitting correction and to an $8\times$ capacity
+   sweep, with the endpoint's construct validity now the binding limitation.
+   JumpReLU remains untested.
 2. **Semi-synthetic evidence only.** No positive natural-absorption
    observation exists in this project; real-activation results are injected
    pairs against real backgrounds. A pre-registered adjudication of the 15

@@ -526,3 +526,58 @@ code, vs. it forces a clean child-or-background choice that L1's soft code smear
 head-to-head, in the background regime, is the queued next experiment and the most direct
 handle on **code identifiability** in the program's arc toward causally valid, reusable
 feature abstractions.
+
+## 20. Rounds 11–13b: the head-to-head at real scale — a doubly robust null, an inverted capacity profile, and a construct-validity problem
+
+The §19 head-to-head was run, at real scale, as the pre-registered rounds 12–13b on
+Pythia-1.4B L12 (first-letter absorption, SAEs matched at L0=32). Rounds 11–13a are
+recorded in `results/real/SUMMARY.md`, `SUMMARY_round12.md`, `SUMMARY_round13a.md` and
+distilled in PAPER.md §8b; in brief: round 12 (16 SAEs, m=16384, lock `0722212`) returned
+**P1 NOT CONFIRMED** — paired L1−TopK diff +0.0030, CI [−0.0010, +0.0067] — and round 13a
+(family-endpoint re-score, lock `9728663`) showed the null is **not a splitting artifact**:
+the single-latent endpoint inflates absorption ~25% via splitting, absorption survives the
+correction (0.0542, CI [0.0494, 0.0592]), the arch null persists (−0.0012,
+CI [−0.0081, +0.0049]), and the real architecture difference is *splitting*
+(L1 2.61 vs TopK 1.25 latents/letter).
+
+**Round 13b** (capacity sweep, lock `c934d33`, Amendments 1+2 pre-results; 48 fresh SAEs,
+m ∈ {2048, 4096, 16384} × {L1, TopK} × 8 seeds on round 12's cached activations) tested the
+last registered rescue, H1: that round 12 sat in a spare-capacity regime and scarcity would
+reveal the toy-predicted absorption. All gates and the manipulation check passed (dead%
+53.1 → 6.3; live latents monotone). Registered outcomes, from
+`results/real/SUMMARY_round13b.md` (frozen output `results_round13b.txt`):
+
+- **P1 FALSIFIED-DIRECTION.** Absorption is *lower* under scarcity: paired
+  rate(m=2048) − rate(m=16384) = −0.0445, CI [−0.0493, −0.0397], perfectly monotone in
+  width for **both** arches (Spearman +1.00). Denominator selection excluded (identical 24
+  letters, identical n = 17,981 in all 48 SAEs); the registered retention confound (P5)
+  does not fire (loss also falls). **H1 is refuted.**
+- **P2 CONFIRMED as registered**, read carefully: interaction +0.0070, CI [+0.0014,
+  +0.0135] — the L1−TopK gap opens at m=2048 (+0.0062) and is absent at m=16384 (−0.0009).
+  Caveats: the registered power caveat (8 seeds, CI half-width 0.0061, seed-sensitive); the
+  gap appears in the *opposite* regime from the one H1 posited (absorption 4–8× lower); and
+  with P1 inverted the surviving claim is only "at small m the arches differ; at large m
+  they do not," most plausibly via splitting (13a P5), not absorption.
+- **P3/P4/P5.** L1 families grow with width (1.84 → 2.23 → 2.61) while TopK stays flat
+  (1.21 → 1.25); single-latent inflation is 23–33% at every width; loss falls with
+  capacity.
+- **Theory scorecard** (two notes committed blind-to-results ~10 min after the
+  results auto-commit, agent-transcript-audited): `theory/splitting_asymmetry.md`
+  (self-gated vs rank-gated nucleation) largely **HIT** (family shrinkage, monotone gap
+  +1.36 → +0.63, TopK range; two L1 high-edge misses of 0.04/0.03);
+  `theory/matched_L0_invariance.md` (agreement theorem at
+  λ_c = 8 − 4√2 − √(92 − 64√2) ≈ 1.1224) had its boxed P2 ≈ 0 prediction **FALSIFIED** —
+  its pre-stated escape channel matches the sign but is an escape, not a hit. The theorem
+  stands as toy mathematics (35/35 checks); its capacity-scarcity extrapolation to this
+  endpoint does not.
+
+**Standing.** Round 12's NOT CONFIRMED is now doubly robust (not splitting — 13a; not
+spare capacity — 13b), and the toy capacity story is *inverted* at real scale on this
+endpoint. Since absorbed+lost is just "no selective family latent fired" and it falls
+~2.7× as the dictionary shrinks 8×, the endpoint appears to track **fragmentation** of the
+letter representation across wide dictionaries, not hierarchical merging — the
+construct-validity concern the thesis defense raised independently
+(`reviews/DEFENSE_round13b_2026-07-25/`, Q2 Finding 1). The decisive, cheap next step is
+the **residual projection check** on the in-hand weights (48 round-13b + 16 round-12): on
+"absorbed" trials, does a parent latent's activation increase to carry the child's missing
+mass? Full details: `results/real/SUMMARY_round13b.md`.

@@ -1,6 +1,6 @@
 # Research plan (living document)
 
-*Updated 2026-07-24 (post round-11 + whole-repo review). Every confirmatory
+*Updated 2026-07-25 (post round-13b). Every confirmatory
 experiment gets a pre-registration note + pre-results commit; exploratory work
 is labeled. "Review" = LLM-assisted adversarial review (Gemini + GPT), not
 human peer review.*
@@ -31,7 +31,10 @@ they advance.
 | Natural-feature adjudication (S1) | **Null on wild absorption:** 0/15 seed-stable candidate clusters meet asymmetric-nesting; all are correlated (typographic byte-fragment family, incl. the 4-clique) or anti-correlated linguistic-feature pairs = the CDX equivalence class. Max child→parent containment 0.46 ≪ 0.80. | `results/round8/natfeat_SUMMARY.md` |
 | Round 9 | **Gating-corrected ρ̂ (dominance partition): mechanism endpoints P1M/P2M PASS 16/16 cells (MAE ≤ 0.0026 vs naive 0.25 bias); P4 inversion check PASS 16/16; P1O/P2O INCONCLUSIVE overall (14 cell-level passes + one ρ=0.1 cell per harness in the zone — measured h_B background pull, RC one disclosed a-priori); P3 margin FALSIFIED in 2 σ=0 synthetic cells (post-hoc diagnosis: eligibility model overpredicted baseline bias; ρ̂_D still more accurate there).** Lock `b0276cc`; dual pre-lock review (Gemini minor / GPT-5.6 major) + dual results-stage review (Gemini ACCEPT; GPT-5.6 minor→accept after corrections — it independently reproduced all six verdicts from the public repo). | §18, `results/round9/SUMMARY.md` + `REPORTING_APPENDIX.md` |
 | Round 10 (TopK, largely NEGATIVE) | **Theory (2-atom oracle): ε\*_TopK = 2q, capacity collapse — verified (M0), incl. GPT-5.6's 3-atom zero-loss counterexample that scopes it to two atoms. SGD experiment: P1 INCONCLUSIVE, P2 FALSIFIED (the m=2 SGD arm is degenerate — high rec, non-selective atoms — not the clean 2-atom optimum), P3 PARTIAL (overcomplete TopK recovers 0.62–0.83), P4 REFUTED (L1 recovers 1.00 > TopK — the hard budget HURTS rare-feature recovery). Findings: dictionary width (not per-token k) drives recovery; isolated L1 does NOT absorb → prior L1 absorption is background-driven, not rarity alone; "TopK resists absorption" refuted.** Lock `f2e92fc`; dual pre-lock review (Gemini minor / GPT-5.6 major — reframed the round). | `theory/topk_absorption.md`, `results/round10/SUMMARY.md` |
-| Round 11 (real model, EXPLORATORY) | **Graduated to real SAEs on Pythia-1.4B (A100 quota=0 → L4 + Pythia; extract→cache→train). Two matched m=16384 SAEs train to high quality (TopK FVU 0.043 / L1 FVU 0.056, L0=32). First result: the detector flags ~27× more redundant/split pairs in L1 (25,041) than TopK (936); token inspection shows L1 is dominated by feature-splitting (near-identical-token latents, overlap 0.75–0.89). SUPPORTS "TopK resists L1's splitting/absorption" in the background-rich regime round 10 said was the meaningful one (round 10 isolated refuted it; round 11 real-model confirms the direction). Exploratory: toy-calibrated detector conflates splitting/absorption at scale; one seed.** Infra + pipeline; weights/acts in GCS. | `results/real/SUMMARY.md`, `experiments/real_*.py` |
+| Round 11 (real model, EXPLORATORY) | **Graduated to real SAEs on Pythia-1.4B (A100 quota=0 → L4 + Pythia; extract→cache→train). Two matched m=16384 SAEs train to high quality (TopK FVU 0.043 / L1 FVU 0.056, L0=32).** Infra + pipeline; weights/acts in GCS. *(The exploratory "~27× redundancy / TopK resists L1's splitting-absorption" reading was subsequently **WITHDRAWN** as confounded — see `CLAIM_LEDGER.md`; superseded by the registered rounds 12–13b below.)* | `results/real/SUMMARY.md`, `experiments/real_*.py` |
+| Round 12 (real model, REGISTERED) | **Causal L1-vs-TopK first-letter absorption, m=16384, matched L0=32, 8 seeds/arch: P1 NOT CONFIRMED — clean paired diff +0.0030, CI [−0.0010, +0.0067]. Contamination by a stale out-of-config file caught by the registered gates; disclosed clean re-score. P3 detector enrichment positive (L1 0.812 vs 0.153; TopK 0.333 vs 0.030). Post-hoc (exploratory): endpoint letter-concentrated and largely a selectivity re-expression → H1 (spare capacity) and H2 (splitting artifact) registered as rescues.** Lock `0722212`. | `results/real/SUMMARY_round12.md` |
+| Round 13a (real model, REGISTERED) | **Family (splitting-corrected) endpoint re-score of round 12: P1 SURVIVES (0.0542, CI [0.0494, 0.0592]; single-latent metric inflates absorption ~25% via splitting — a SAEBench-relevant validity finding); P2 R²=0.381 narrow PASS; P4 arch null persists (−0.0012, CI [−0.0081, +0.0049]) → H2 REFUTED; P5: the real arch difference is splitting (L1 2.61 vs TopK 1.25 latents/letter, +1.36, CI [+0.94, +1.88]).** Lock `9728663` (+ pre-results amendment `0ea34f1`). | `results/real/SUMMARY_round13a.md` |
+| Round 13b (real model, REGISTERED) | **Capacity sweep m ∈ {2048, 4096, 16384} × {L1, TopK} × 8 seeds at matched L0 (48 fresh SAEs, round-12 activations). Gates + manipulation check PASS (dead% 53.1→6.3). P1 FALSIFIED-DIRECTION: absorption falls under scarcity (−0.0445, CI [−0.0493, −0.0397], monotone in both arches; denominator + retention confounds excluded) → H1 REFUTED — round 12's null is now doubly robust. P2 CONFIRMED as registered (+0.0070, CI [+0.0014, +0.0135]) with the registered power caveat and an opposite-regime reading (gap opens where absorption is 4–8× lower; splitting the likely mechanism). P3: L1 families grow with width (1.84→2.61), TopK flat. Two blind-committed theory notes scored: splitting-asymmetry largely HIT; matched-L0 boxed P2≈0 prediction FALSIFIED. Endpoint construct validity (fragmentation, not merging?) is now the central open question.** Lock `c934d33` (+ pre-results Amendments `7501486`). | `results/real/SUMMARY_round13b.md`, `theory/matched_L0_invariance.md`, `theory/splitting_asymmetry.md` |
 
 ## Round 8 (in flight): `notes/prereg-round8-scaling-robustness.md`
 
@@ -42,36 +45,48 @@ they advance.
 | **E3 — robustness cells** (pre-registered descriptive) | Nonorthogonal pairs (cos 0.3/0.5), prevalence ρ=0.6 (composite not rarer → orientation stress), TopK encoder | m=32 cells, 8 seeds each | prereg locked, GPU queued |
 | **S1 — audit-v3 candidate stability** (exploratory, CPU) | Do Arm 2's flagged real-feature pairs recur across seeds? | Match flagged pairs across the 8 saved SAEs per width by decoder cosine | running locally |
 
-## Real-model track (round 11+; the credibility jump — highest priority)
+## Real-model track (the credibility jump — highest priority)
 
-**THE single highest-value next experiment (whole-repo review): combine
-detector-recalibration + first-letter validation + the confirmatory
-L1-vs-TopK comparison into ONE pre-registered experiment** whose **primary
-endpoint is causal first-letter absorption on a held-out SAEBench-style
-dataset**, with the label-free detector scored only as a *secondary* predictor
-of those ground-truth outcomes. This answers the program's central open
-question — *does the toy geometry predict a reproducible difference in
-causally-validated absorption between real SAE objectives?* — and
-validates/falsifies the detector on the phenomenon it's meant to measure.
-Minimum design (all registered before the run):
-   - ≥5 seeds/arch, identical model/layer/corpus/token-order/init/width/budget.
-   - λ and k **swept**; compare matched points on the L0–loss-recovered Pareto
-     frontier (not one λ vs one k).
-   - fixed **persisted held-out** eval tokens shared by every SAE
-     (document-separated from training).
-   - **primary metric = Chanin/SAEBench first-letter absorption incl. the
-     causal-ablation component** (the north-star's *causally valid features*).
-   - splitting measured *separately* (sparse-probe / connected-component).
-   - detector scored **blind** to labels: precision / recall / calibration.
-   - report **pair- and cluster-level** redundancy, opportunity-normalized.
-   - if compute permits, a modern control (BatchTopK / Matryoshka / OrtSAE /
-     C2R). *(identifiable → causally valid codes)*
+~~**THE single highest-value next experiment (whole-repo review): the
+confirmatory real-scale L1-vs-TopK comparison.**~~ **EXECUTED as rounds
+12 → 13a → 13b (2026-07-24/25; Completed table above). Answer: the toy
+geometry does NOT predict a real-scale L1-vs-TopK absorption difference at
+matched L0 — NOT CONFIRMED (round 12), robust to the splitting correction
+(13a) and to the spare-capacity rescue (13b, H1 refuted). The capacity
+story is moreover inverted at real scale on this endpoint: absorption falls
+monotonically as capacity shrinks. The architectures do differ — in
+splitting (13a P5), and in a small scarce-regime gap (13b P2, power-capped)
+most plausibly driven by splitting.**
 
-Prereq fixes already applied: `real_analyze.py` (θ=0.05, seeded shared
-subsample, signed cosine, opportunity + cluster stats); proper SAE eval
-(doc-separated test, loss-recovered/KL, not in-cache FVU) is part of the run.
-Gemma-2-2B (SAEBench standard) once an HF token is on the box; scale to 8B+
-only with a bigger-GPU quota grant.
+**New top priorities (2026-07-25, post-13b):**
+
+1. **Residual-projection construct-validity check** on the in-hand weights
+   (48 round-13b + 16 round-12 files, plus 13a's family-endpoint
+   artifacts). On trials the endpoint calls "absorbed", does a
+   parent/composite latent's activation increase to carry the child's
+   missing mass (true absorption), or does nothing compensate (fragmentation
+   / threshold loss)? Post-hoc and CPU-cheap, but **decisive for what the
+   endpoint means** — it adjudicates the fragmentation reading of 13b P1
+   and the defense's Q2 Finding 1. Label as exploratory/post-hoc; no new
+   training.
+2. **Prereg a fragmentation-corrected absorption endpoint** informed by #1
+   (e.g. requiring parent-mass pickup, or normalizing for family size /
+   live-latent count), then re-run the architecture and capacity contrasts
+   on it. Only after this does any further L1-vs-TopK absorption claim make
+   sense.
+3. **TopK aux-k / ghost-grads splitting prediction test**
+   (`theory/splitting_asymmetry.md` §7, "TopK trap vs revival tricks"): the
+   rank-gate trap predicts that a TopK stack with an aux-k loss (gradient to
+   below-cutoff latents) escapes the merged local minimum and splits more,
+   shrinking the 2× family-size gap. A stated, falsifiable prediction of the
+   blind-committed theory note — cheap to prereg at one width.
+
+Still live from the round-11 framing: detector validation against
+ground-truth absorption labels (blocked on #1/#2 — the labels themselves are
+what's in question); Gemma-2-2B (SAEBench standard) once an HF token is on
+the box; scale to 8B+ only with a bigger-GPU quota grant. Single model /
+single layer / single task remains the standing generalization caveat
+(prereg §"what this cannot do").
 
 ## Queued (toy-model / theory track; each needs its own prereg)
 
