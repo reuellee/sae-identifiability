@@ -167,3 +167,4 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
   | round 13a family endpoint (`results/real/results_round13a.txt`) | results `1767ff9` (lock `9728663`, pre-results amendment `0ea34f1`) |
   | round 13b capacity sweep (`results/real/results_round13b.txt`) | results `25e3df0` (lock `c934d33`, pre-results amendments `7501486`); blind-theory scorecard `60db67b` |
   | round 14 carrier test (`results/real/results_round14.txt`) | results `f798687` (lock `708211f`, pre-results amendment `d2f32fa`) |
+  | round 14 post-hoc validity diagnostics (`results/real/results_round14_validity.txt`) | this commit — **exploratory, not a registered endpoint**; evaluator + response written pre-results (`f9b5541`) |

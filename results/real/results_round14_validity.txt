@@ -1,0 +1,37 @@
+ROUND 14 POST-HOC VALIDITY DIAGNOSTICS
+==============================================================================
+EXPLORATORY. Not a registered endpoint. The round-14 registered results in
+results_round14.txt are unchanged by anything below.
+SAEs: 16   widths: [16384]   bootstrap: 10000 over SAEs, seed 0
+scored (SAE, letter) cells: 147
+
+------------------------------------------------------------------------------
+m = 16384   (16 SAEs, 147 scored cells)   <-- PRIMARY
+
+ D1  does the selected carrier actually fire?
+     (reviewer's blocking claim: argmax falls through to an INACTIVE latent)
+  inactive-carrier frac, letter dir      0.0000   95% CI [0.0000, 0.0000]   n_SAE=16
+  inactive-carrier frac, random dir      0.0000   95% CI [0.0000, 0.0000]   n_SAE=16
+
+ D2  per-trial concentration  [THE ONE THAT DECIDES THE CONCLUSION]
+     high on A => each absorbed trial HAS a carrier, just a varying one
+                  (compositional absorption -- 'diffuse' would be wrong)
+     low  on A => mass is spread thinly => loss / threshold suppression
+  per-trial top share, absorbed (A)      0.5935   95% CI [0.5839, 0.6031]   n_SAE=16
+  per-trial top share, control (C)       0.6322   95% CI [0.5852, 0.6768]   n_SAE=16
+  A / C ratio                            0.939   (A comparable to normal trials)
+  distinct carriers / |A|                32.3 / 96.0 = 0.337   (near 1 = every trial its own carrier)
+
+ D3  is the P2 null a fair comparator?   [EXPLORATORY -- see RESPONSE caveat;
+     the self-test does NOT exercise this, so treat as indicative only]
+  null, family excluded only (frozen)    0.3484   95% CI [0.3256, 0.3707]   n_SAE=16
+  null, symmetric exclusion (fair)       0.3483   95% CI [0.3258, 0.3701]   n_SAE=16
+  inflation from the asymmetry           +0.0001
+     [  l1] per-trial conc on A = 0.5961 (n_SAE=8)
+     [topk] per-trial conc on A = 0.5908 (n_SAE=8)
+
+==============================================================================
+How to read D2: the claim under test is 'absorbed trials are diffuse'.
+The frozen P4 used the GLOBAL modal carrier and so could not distinguish
+diffuse from concentrated-but-trial-specific. D2 uses each trial's OWN top
+non-family latent, which is the statistic that claim requires.

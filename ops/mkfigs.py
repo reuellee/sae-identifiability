@@ -87,24 +87,49 @@ def fig_endpoint_inflation(r13b):
     return "\n".join(body)
 
 
-def fig_carrier(r14):
-    """Round 14 P2: on absorbed trials the letter direction finds a repeated carrier
-    LESS often than an arbitrary direction does."""
+def fig_carrier(r14, val):
+    """Round 14, two panels telling the two halves of the result.
+
+    LEFT (registered P2): the letter direction finds a REPEATED carrier less often
+    than an arbitrary direction does -- no single broad parent latent.
+    RIGHT (post-hoc D2): per trial, the letter's mass is nearly as concentrated on
+    absorbed trials as on control trials -- carriage is real, just trial-specific.
+    Plotting only the left panel was how the earlier, withdrawn "diffuse" reading
+    looked convincing, so both go in the same figure.
+    """
     cells = [(r["m"], rec["share"], rec["share_null"])
              for r in r14 for rec in r["per_letter"].values() if rec.get("scored")]
+
+    def pmean(field):
+        v = [c[field] for r in val for c in r["per_letter"].values()
+             if field in c and np.isfinite(c[field])]
+        return float(np.mean(v))
+
     body = [r"""\begin{tikzpicture}
-\begin{axis}[width=9cm,height=6.4cm,ybar,bar width=16pt,
+\begin{axis}[name=left,width=7.4cm,height=6.2cm,ybar,bar width=13pt,
   symbolic x coords={m=2048,m=16384},xtick=data,
-  ylabel={top-1 carrier share on absorbed trials},
-  legend pos=north west,legend cell align=left,grid=major,ymin=0]"""]
+  ylabel={top-1 \emph{modal} carrier share},
+  title={\small registered P2: no \emph{recurring} carrier},
+  legend style={at={(0.03,0.97)},anchor=north west,font=\footnotesize},
+  legend cell align=left,grid=major,ymin=0]"""]
     for j, (name, colour) in enumerate((("letter direction", "blue!70"),
                                         ("random-direction null", "gray!60"))):
-        pts = []
-        for m in (2048, 16384):
-            v = [c[1 + j] for c in cells if c[0] == m]
-            pts.append(f"(m={m},{np.mean(v):.5f})")
-        body.append(f"\\addplot[fill={colour},draw=black!50] coordinates {{{' '.join(pts)}}};")
+        pts = " ".join(f"(m={m},{np.mean([c[1 + j] for c in cells if c[0] == m]):.5f})"
+                       for m in (2048, 16384))
+        body.append(f"\\addplot[fill={colour},draw=black!50] coordinates {{{pts}}};")
         body.append(f"\\addlegendentry{{{name}}}")
+    body.append(r"\end{axis}")
+
+    a, c = pmean("d2_pertrial_conc_A"), pmean("d2_pertrial_conc_C")
+    body.append(r"""\begin{axis}[at={(left.east)},xshift=1.9cm,anchor=west,
+  width=7.4cm,height=6.2cm,ybar,bar width=22pt,
+  symbolic x coords={absorbed,control},xtick=data,
+  ylabel={\emph{per-trial} top carrier share},
+  title={\small post-hoc D2: carriage is trial-specific},
+  grid=major,ymin=0,ymax=0.8,
+  nodes near coords,every node near coord/.append style={font=\footnotesize}]""")
+    body.append(f"\\addplot[fill=blue!45,draw=black!50] coordinates "
+                f"{{(absorbed,{a:.4f}) (control,{c:.4f})}};")
     body.append(r"\end{axis}" "\n" r"\end{tikzpicture}")
     return "\n".join(body)
 
@@ -125,10 +150,11 @@ def emit(name, body):
 
 def main():
     r13b, r14 = _load("round13b_results.json"), _load("round14_results.json")
+    val = _load("round14_validity.json")
     ok = True
     ok &= emit("fig_width_sweep", fig_width_sweep(r13b))
     ok &= emit("fig_endpoint_inflation", fig_endpoint_inflation(r13b))
-    ok &= emit("fig_carrier", fig_carrier(r14))
+    ok &= emit("fig_carrier", fig_carrier(r14, val))
     for f in os.listdir(FIGS):                      # xelatex litter
         if f.rsplit(".", 1)[-1] in ("aux", "log", "out"):
             os.remove(os.path.join(FIGS, f))

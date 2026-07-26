@@ -35,13 +35,28 @@ arXiv:2602.11881, arXiv:2605.07922) which attack the pathology at training time.
 
 ## What that leaves as this project's contribution
 
-1. The absorption endpoint infers a merge from an **absence** and, tested directly for
-   a carrier, the absence looks like loss/threshold suppression (round 14).
-2. The single-latent form of the endpoint additionally **inflates absorption 23–33%**
-   by counting feature splitting (rounds 13a/13b), with a splitting-corrected family
-   endpoint given.
+**Revised 2026-07-26 after the round-14 correction — item 1 previously claimed
+something the data do not support, and is restated.**
+
+1. The absorption endpoint infers a merge from an **absence**. Tested directly, the
+   absence *is* accompanied by carriage — per-trial concentration on absorbed trials
+   is 93.9% of that on normal trials — but by a **token-specific composite that
+   changes trial to trial**, not by any single recurring parent latent (modal carrier
+   top-1 on 14.1% of trials vs a 34.0% random-direction null). So the finding is
+   "absorption here is *distributed*", not "the metric measures loss". The earlier
+   loss reading was withdrawn before publication; see
+   `reviews/RESPONSE_round14-review.md`.
+2. The single-latent form of the endpoint **inflates absorption 23–33%** by counting
+   feature splitting (rounds 13a/13b), with a splitting-corrected family endpoint
+   given. *This is the strongest surviving metric claim.*
 3. The endpoint is **monotone in dictionary width** in the direction opposite to the
    capacity story (round 13b), i.e. it co-moves with fragmentation.
+
+Note the effect on positioning: with item 1 restated, the work is less a "this metric
+is invalid" critique and more a characterisation of *what the metric actually counts*
+— splitting-inflated, width-sensitive, and satisfied by distributed rather than
+single-parent absorption. That is a weaker headline and a more defensible one, and it
+does not collide with either neighbouring audit.
 
 Positioning: Chanin asks whether SAEBench metrics are *reliable*; Bal asks whether
 *recovery* metrics measure what they claim; this work asks whether the *absorption*

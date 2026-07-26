@@ -3,10 +3,10 @@
 **Living paper draft.** This document is the formal distillation of `report.md`
 (the session-log-style record) at the current repository state; claims follow
 the guardrails established in `reviews/`. Experimental provenance: README
-table (results CSV → commit). *Current through round 13b (2026-07-25).* The
+table (results CSV → commit). *Current through round 14 (2026-07-26).* The
 theory sections (§1–§13) are the strongest content; the detector (§17), the
 gating-corrected estimator (§18/round 9), the TopK note (round 10) and the
-real-model rounds 11–13b (§8b; round 11 exploratory, rounds 12–13b
+real-model rounds 11–14 (§8b; round 11 exploratory, rounds 12–14
 pre-registered) are scoped empirical results, flagged as such.
 "External review" throughout means **LLM-assisted adversarial review**
 (Gemini 2.5 Pro + GPT-5.6), which materially improved the work but is **not**
@@ -56,9 +56,16 @@ capacity story on this endpoint: measured absorption falls monotonically as
 the dictionary shrinks (paired $-0.0445$, CI $[-0.0493, -0.0397]$), a small
 L1$-$TopK gap opens only in the *low*-absorption scarce regime (interaction
 $+0.0070$, CI $[+0.0014, +0.0135]$; the round's least-powered registered
-test), and the endpoint co-moves with feature fragmentation — leaving the
-construct validity of first-letter absorption metrics, rather than the
-architecture comparison, as the central open question.
+test), and the endpoint co-moves with feature fragmentation. A carrier
+analysis of the absorbed trials themselves finds no single recurring latent
+playing the parent role — the modal carrier is the top contributor on 14.1%
+of absorbed trials against a 34.0% random-direction null — but, per trial, the
+letter's mass is 93.9% as concentrated as on normally represented trials
+($0.5935$ vs $0.6322$), carried by a token-specific composite that changes
+trial to trial. Absorption at this endpoint is therefore *distributed* rather
+than absent, and the residual concern about first-letter metrics is the
+narrower one that they overstate absorption by 23–33% through feature
+splitting and vary systematically with dictionary width.
 
 ---
 
@@ -711,14 +718,81 @@ misses. Both outcomes are reported at equal prominence.
   parent is silent, and the object to look for is a **composite**, not a
   parent. The round-14 scorer searches $\arg\max$ over latents *not* in
   $F_L$, which is the right target; only the prose here was inverted.
-- The highest-value next experiment is therefore the **residual projection
-  check** — on "absorbed" trials, does a parent latent's activation
-  increase to carry the child's missing mass? It is post-hoc but cheap and
-  decisive for the endpoint's meaning: all 48 round-13b weight files plus
-  round 12's 16 are in hand. Until it is run, first-letter absorption
-  rates (this project's and SAEBench-style metrics generally) should be
-  read as composite fragmentation-sensitive quantities, not as validated
-  measures of parent–child merging.
+- That made the carrier check the highest-value next experiment: on
+  "absorbed" trials, is the letter direction's mass picked up by some
+  latent outside $F_L$, or by nothing? It is post-hoc but cheap — all 48
+  round-13b weight files plus round 12's 16 are in hand. Round 14 runs it,
+  and the answer is not the one this subsection anticipated.
+
+### 8b.7 Round 14: the absorbed set has carriers, but no *recurring* one
+
+Round 14 (registered, lock `708211f`, amendment and evaluator pre-results)
+re-analyses the frozen 13b weights, no new training. Per token it decomposes
+the letter direction per latent, $c_i = f_i (d_i \cdot u_L)$, and takes the
+carrier to be $\arg\max_i c_i$ over $i \notin F_L$ — i.e. over exactly the
+composites the mechanism of §4 predicts. Sets: $A$ absorbed (13b's numerator),
+$C$ a family latent fires, $N$ lost. Gate 1 requires the harness to reproduce
+13b's `rate_family` and passes at $\max|d| = 0.0016$.
+
+**Registered outcome: no consistent carrier.** At $m = 16384$ the modal
+carrier is the top contributor on only **14.1%** of absorbed trials against a
+random-direction null of **34.0%** (paired $-0.199$, CI
+$[-0.217, -0.181]$); it fires *less* than the family (0.0235 vs 0.0837); and
+it holds **9.2%** of the positive letter-direction mass where the top family
+latent holds **57.2%** on control trials. The registered compensation test P1
+came out CONFIRMED but is **uninformative by construction** — it selects the
+carrier on $A$ and then compares on $A$ versus $C$, conditioning the statistic
+on the outcome. The verdict is left as the frozen evaluator produced it and is
+not cited as evidence; the design error is mine and is documented rather than
+repaired after the fact.
+
+**A correction, and it matters more than the registered result.** An
+adversarial review observed that the concentration statistic applies the
+*global modal* carrier to every absorbed trial, so its value is small
+automatically once that latent wins only 14.1% of the time — it cannot
+separate "the mass is spread thinly" from "the mass is concentrated on a
+different latent each trial". Recomputing concentration **per trial**, with
+each trial's own top non-family latent
+(`analysis/round14_validity.py`; exploratory, not a registered endpoint):
+
+| | per-trial top share | 95% CI |
+|---|---|---|
+| absorbed trials ($A$) | **0.5935** | $[0.5839, 0.6031]$ |
+| control trials ($C$) | 0.6322 | $[0.5852, 0.6768]$ |
+
+Absorbed trials are **93.9% as concentrated as normally represented trials**,
+with $\sim 32$ distinct carriers across $\sim 96$ absorbed trials. So the
+letter's mass *is* carried when the family is silent — by a token-specific
+composite that changes from trial to trial, which is what §4's mechanism
+predicts and what [@chanin2024absorption] describes. **An earlier draft read
+these trials as representational loss; that reading is withdrawn.**
+
+![Round 14 at $m=16384$. The letter direction finds a *repeated* carrier less
+often than an arbitrary direction does (left) — there is no single broad
+parent. But per trial the letter's mass is nearly as concentrated on absorbed
+trials as on normal ones (right): carriage is real and
+trial-specific.](figs/fig_carrier.pdf){width=82%}
+
+**What round 14 establishes, stated at the width where it has power.** There
+is no single, broad, recurring latent playing the parent role across absorbed
+trials; carriage is distributed. It does *not* show that absorption fails to
+occur, and it does not license calling the endpoint a measure of loss. Power
+is the binding limitation: the registered $|A| \ge 20$ floor leaves fewer than
+half the cells scored even at $m = 16384$, and $m = 2048$ is effectively
+unpowered (7/192 TopK cells, median $|A| = 2$), so no $m=2048$ claim is relied
+on and the capacity contrast P5 is not interpretable.
+
+**Standing of the construct-validity concern after round 14.** It is
+narrower than §8b.6 anticipated. The carrier check does not support it: the
+mass is carried. What continues to support scoping first-letter absorption
+metrics carefully is the *other*, independent line — the single-latent form
+overstates absorption by 23–33% by counting splitting (13a, 13b P4), and the
+endpoint is monotone in dictionary width, co-moving with fragmentation (13b
+P1). Those rest on their own evidence and are untouched here. The honest
+summary is that this endpoint measures "the letter is present and no
+letter-selective latent fires", that the missing mass goes to varying
+token-specific composites, and that the quantity is width-sensitive — not that
+it fails to track absorption.
 
 ## 9. Related work
 

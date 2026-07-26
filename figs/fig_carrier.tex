@@ -6,14 +6,25 @@
 \usepackage{amsmath}
 \begin{document}
 \begin{tikzpicture}
-\begin{axis}[width=9cm,height=6.4cm,ybar,bar width=16pt,
+\begin{axis}[name=left,width=7.4cm,height=6.2cm,ybar,bar width=13pt,
   symbolic x coords={m=2048,m=16384},xtick=data,
-  ylabel={top-1 carrier share on absorbed trials},
-  legend pos=north west,legend cell align=left,grid=major,ymin=0]
+  ylabel={top-1 \emph{modal} carrier share},
+  title={\small registered P2: no \emph{recurring} carrier},
+  legend style={at={(0.03,0.97)},anchor=north west,font=\footnotesize},
+  legend cell align=left,grid=major,ymin=0]
 \addplot[fill=blue!70,draw=black!50] coordinates {(m=2048,0.31951) (m=16384,0.13801)};
 \addlegendentry{letter direction}
 \addplot[fill=gray!60,draw=black!50] coordinates {(m=2048,0.37577) (m=16384,0.33486)};
 \addlegendentry{random-direction null}
+\end{axis}
+\begin{axis}[at={(left.east)},xshift=1.9cm,anchor=west,
+  width=7.4cm,height=6.2cm,ybar,bar width=22pt,
+  symbolic x coords={absorbed,control},xtick=data,
+  ylabel={\emph{per-trial} top carrier share},
+  title={\small post-hoc D2: carriage is trial-specific},
+  grid=major,ymin=0,ymax=0.8,
+  nodes near coords,every node near coord/.append style={font=\footnotesize}]
+\addplot[fill=blue!45,draw=black!50] coordinates {(absorbed,0.5944) (control,0.6235)};
 \end{axis}
 \end{tikzpicture}
 \end{document}

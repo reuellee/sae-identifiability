@@ -138,5 +138,49 @@ dropped rather than how many.
 
 ## Outcome
 
-*(Filled in from `results/real/results_round14_validity.txt` once the diagnostic
-completes; the registered round-14 endpoints are unchanged regardless.)*
+Diagnostics run on the 16 frozen m=16384 weights; 147 scored cells, **exactly
+matching the frozen round-14 count**, so the A/C sets are provably the same trials.
+Full output in `results/real/results_round14_validity.txt`.
+
+| | result | verdict |
+|---|---|---|
+| **D1** inactive-carrier fraction | **0.0000** (letter and null) | review's [BLOCKING] finding **rejected** |
+| **D2** per-trial concentration, absorbed | **0.5935** CI [0.5839, 0.6031] | — |
+| **D2** per-trial concentration, control | 0.6322 CI [0.5852, 0.6768] | ratio **0.939** |
+| **D3** null, frozen vs symmetric | 0.3484 → 0.3483 | my own objection **rejected** |
+
+**The review's blocking finding is rejected** — three independent lines
+(combinatorial, the distribution of $\kappa$, synthetic measurement) predicted 0,
+and the real weights give exactly 0.
+
+**My own extra finding is also rejected, and I was wrong.** I argued the P2 null was
+inflated by an asymmetric exclusion. Making the exclusion symmetric moves it by
+$+0.0001$. The registered P2 comparator is sound. Reported because it fell against
+me, not despite it.
+
+**F4.1 is confirmed, and it overturns the summary's headline.** Per trial, absorbed
+trials are **93.9% as concentrated** as normally represented trials — 0.5935 against
+0.6322 — with ~32 distinct carriers over ~96 absorbed trials. The frozen P4's 9.2%
+was the *global modal* carrier's share, small by construction because that latent
+wins only 14.1% of the time. So the data are consistent with **absorption
+distributed over many token-specific composites**, which is what the Chanin
+mechanism predicts, and are **not** evidence of representational loss.
+
+`SUMMARY_round14.md` accordingly **withdraws** "the absence looks like loss /
+threshold suppression". The registered P1–P5 verdicts and every registered number
+are unchanged; what changes is an inference I drew from them. What survives is
+narrower and still worth reporting: no *single, broad, recurring* latent carries the
+letter across absorbed trials.
+
+**Net effect on the verdict.** The reviewer said DO NOT PUSH for the wrong reason,
+and was right that the commits should not have gone out as written — for a reason it
+ranked second. That is a good argument for running the review even when its headline
+objection turns out to be false: the finding that mattered was the one it did not
+mark blocking, and I would not have caught it myself.
+
+**Effect on the paper's thesis.** The construct-validity critique is now materially
+weaker than rounds 12–14 had been trending toward and must be scoped back. The
+surviving evidence is the *other* line — 13a/13b's 23–33% splitting inflation of the
+single-latent endpoint, and 13b's width-monotonicity/fragmentation co-movement —
+neither of which this diagnostic touches. The claim "the absorption endpoint
+measures loss rather than absorption" is not supported and is not made.

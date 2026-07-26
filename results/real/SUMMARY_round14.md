@@ -6,6 +6,46 @@ evaluator; Amendment 1 (d2f32fa) fixed a words-file loader crash before any
 round-14 number existed. 32 SAEs re-analysed (m=16384 primary, m=2048 contrast),
 no new training.**
 
+> ## ⚠ CORRECTION (2026-07-26, before publication) — read this first
+>
+> **Every registered number below stands. One inference drawn from them does not,
+> and it was the headline.** An adversarial review
+> (`reviews/GEMINI_round14_2026-07-26.md`, adjudicated in
+> `reviews/RESPONSE_round14-review.md`) pointed out that P4 applies the *global
+> modal* carrier `κ` to every absorbed trial while the control side uses the best
+> *family* latent. Since `κ` is the top contributor on only 14.1% of trials, its
+> mean share is small **by construction** — so P4 cannot tell "the mass is spread
+> thinly" apart from "the mass is concentrated, on a different latent each trial".
+>
+> A post-hoc diagnostic recomputing concentration **per trial**, using each trial's
+> own top non-family latent (`analysis/round14_validity.py`,
+> `results_round14_validity.txt`), gives at m=16384:
+>
+> | | per-trial top share | 95% CI |
+> |---|---|---|
+> | absorbed trials (A) | **0.5935** | [0.5839, 0.6031] |
+> | control trials (C) | 0.6322 | [0.5852, 0.6768] |
+>
+> Absorbed trials are **93.9% as concentrated as normally represented trials**, with
+> ~32 distinct carriers serving ~96 absorbed trials. That is the signature of
+> absorption distributed across many token-specific composites — which is what the
+> Chanin mechanism actually predicts — **not** of representational loss.
+>
+> **Therefore the conclusion "the absence looks like loss / threshold suppression"
+> is WITHDRAWN.** What survives is strictly narrower and is stated in
+> "What this does and does not establish" below: there is no *single, broad,
+> recurring* latent carrying the letter across absorbed trials. Carriage is
+> trial-specific, and P2/P3/P4 measure exactly that and nothing more.
+>
+> Two further diagnostics, reported whichever way they fell:
+> - **D1 = 0.0000.** The review's [BLOCKING] claim — that the argmax silently falls
+>   through to an *inactive* latent — is rejected on the real weights, as it was on
+>   synthetic data and by the distribution of `κ` over the dictionary.
+> - **D3 = +0.0001.** I suspected the P2 null was inflated because the family is
+>   excluded for the letter direction but nothing is excluded for a random
+>   direction. Making the exclusion symmetric moves the null from 0.3484 to 0.3483.
+>   **My objection was wrong**; the registered P2 comparator is fine.
+
 ## Registered verdicts
 
 | | m=2048 | m=16384 |
@@ -52,13 +92,19 @@ predicts the opposite.
 
 **P4 (concentration).** On absorbed trials the modal carrier holds **9.2%** of the
 positive letter-direction mass at m=16384 (24.9% at m=2048). On control trials the
-top family latent holds **57.2%** (67.7%). Absorbed trials are diffuse; normally
-represented trials are concentrated.
+top family latent holds **57.2%** (67.7%). ~~Absorbed trials are diffuse; normally
+represented trials are concentrated.~~ **← WITHDRAWN, see the correction at the
+top.** The 9.2% is the *global modal* carrier's share, which is small by
+construction because that latent wins on only 14.1% of trials. Per trial, using
+each trial's own top non-family latent, the share is **0.5935** against **0.6322**
+on control trials — absorbed trials are *not* diffuse.
 
-Together: when the family is silent, the letter's residual presence is spread
-thinly across many idiosyncratic latents rather than picked up by any identifiable
-parent. **That is the signature of representational loss / threshold suppression,
-not of hierarchical absorption into a parent latent.**
+Together: when the family is silent, no *single recurring* latent picks the letter
+up — but on each individual trial the letter direction's mass **is** concentrated,
+on a latent that changes from trial to trial (~32 distinct carriers over ~96
+absorbed trials). **That is consistent with absorption distributed over many
+token-specific composites, and it is not evidence of representational loss.** The
+earlier reading of this paragraph inverted that conclusion and is retracted.
 
 ## Power — the serious limitation
 
@@ -80,28 +126,44 @@ is not claimed.
 
 ## What this does and does not establish
 
-- It does **not** show absorption never occurs. It shows that *the trials this
-  program's endpoint labels "absorbed"* do not carry the carrier signature that
-  hierarchical absorption requires, at the one width with usable power.
+- It does **not** show absorption never occurs — and after the correction it does
+  not point that way either. What it shows is that the trials this endpoint labels
+  "absorbed" have **no single, broad, recurring carrier**: no one latent plays the
+  parent role across trials. Each trial *does* have a concentrated carrier; the
+  identity varies.
 - It does **not** touch the architecture conclusions. Rounds 12/13a/13b stand
   unchanged either way.
-- It **does** support the thesis defense's Finding 1
-  (`reviews/DEFENSE_round13b_2026-07-25/`): the first-letter absorption metric
-  infers absorption from an absence and, tested directly, the absence looks like
-  loss. Combined with 13b (endpoint monotone in dictionary width, co-moving with
-  fragmentation), the construct-validity concern is now supported by two
-  independent lines of evidence.
-- Consequence for the paper: language in PAPER §8b and anywhere the SAEBench-style
-  first-letter metric is called "absorption" needs to be scoped to what is actually
-  measured — *the letter is present in the reconstruction and no selective latent
-  fires* — rather than asserting a merge into a parent.
+- It **does not** support the strong form of the thesis defense's Finding 1
+  (`reviews/DEFENSE_round13b_2026-07-25/`). The defense proposed that the metric
+  infers absorption from an absence; that much is true by definition of the
+  endpoint. But its decisive test — is the missing mass carried? — comes back
+  **yes, trial-specifically**. The claim that "the absence looks like loss" was mine
+  to make and mine to retract, and it is retracted.
+- What remains of the construct-validity concern is the *other* line, which is
+  untouched: 13b's endpoint is monotone in dictionary width and co-moves with
+  fragmentation, and 13a/13b show the single-latent form inflates absorption by
+  23–33% via splitting. Those stand on their own evidence.
+- Consequence for the paper: PAPER §8b should describe the endpoint as measuring
+  *"the letter is present in the reconstruction and no letter-selective latent
+  fires"*, note that the mass is then carried by a varying token-specific composite,
+  and **not** claim that this pattern is representational loss. The relevant
+  contrast is single-broad-parent absorption (not supported) versus distributed
+  compositional absorption (consistent with these data).
 
 ## Next
 
-A successor round should (a) fix P1's selection defect as above, (b) raise |A| by
-pooling trials across seeds within a letter rather than scoring per (SAE, letter),
-and (c) test the decoder-side claim directly: regress the child's residual mass on
-the parent latent's activation, rather than inferring from an argmax.
+A successor round should (a) fix P1's selection defect by **sample-splitting within
+A** — pick `κ` on half of A, evaluate on the disjoint half against C (this is the
+reviewer's suggestion and is better than the select-on-C fix originally proposed
+here, which risks choosing latents irrelevant to A); (b) raise |A| by pooling trials
+across seeds within a letter rather than scoring per (SAE, letter); and (c) go after
+the question the correction actually opens, which is now the interesting one: the
+per-trial carriers are token-specific composites, so **are they the *right* ones?**
+Ablate a trial's carrier and check the letter's effect disappears — the
+interventional half of the question round 14 answered correlationally. Note
+arXiv:2607.12166 (2026-07-13) already builds a general causal-audit instrument for
+SAE features; start from it rather than rebuilding one, and keep the
+absorption-specific angle, which it does not cover.
 
 ## Cost / ops
 
