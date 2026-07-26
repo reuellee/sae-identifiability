@@ -498,7 +498,7 @@ location and orientation (estimation given the pair, Arm-A style);
 background-corrected operational estimation and orientation remain open
 (the estimator's swap-equivariance $\hat\rho_D \to 1 - \hat\rho_D$ is a
 candidate orientation signal, untested). Prior art: the leak phenomenon is
-documented (arXiv:2409.14507 App. A.3; arXiv:2505.11756); a verified
+documented ([@chanin2024absorption] App. A.3 [@chanin2025feature]); a verified
 literature sweep found no existing statistical estimator correction on
 binarized co-activation counts (novelty hedged; sweep archived). Full
 scoring: `results/round9/SUMMARY.md`; prereg
@@ -585,6 +585,11 @@ width profile is perfectly monotone in **both** architectures
 | L1 | 0.0133 | 0.0361 | 0.0542 |
 | TopK | 0.0071 | 0.0145 | 0.0551 |
 
+![Round 13b: measured absorption *rises* with dictionary width in both
+architectures, the opposite of the registered prediction. Points are means
+over 8 seeds; bars are standard errors. Generated from the frozen
+`round13b_results.json` by `ops/mkfigs.py`.](figs/fig_width_sweep.pdf){width=72%}
+
 Two artifact explanations were checked and excluded: (i) denominator
 selection — all 48 SAEs score the identical 24 letters with identical
 denominator $n = 17{,}981$, so the comparison is exactly matched; (ii) the
@@ -619,6 +624,11 @@ widths but stays flat $1.21 \to 1.22 \to 1.25$ for TopK. **P4
 (secondary):** the single-latent metric's splitting inflation is 23–33%
 at every width, replicating 13a's metric finding. **P5 (confound
 control):** does not fire, as reported under P1.
+
+![The SAEBench-style single-latent endpoint scores more "absorption" than the
+splitting-corrected family endpoint at every width and in both architectures;
+the gap is feature splitting counted as absorption. Means over 8
+seeds.](figs/fig_endpoint_inflation.pdf){width=72%}
 
 ### 8b.5 Blind-committed theory notes and their scorecard
 
@@ -697,39 +707,55 @@ misses. Both outcomes are reported at equal prominence.
 
 ## 9. Related work
 
-Chanin et al. (arXiv:2409.14507) coined and mechanistically explained
+Chanin et al. [@chanin2024absorption] coined and mechanistically explained
 absorption; their toy analysis proves any nonzero co-occurrence favors
 absorption in a model without a child-solo rate — the closed-form boundary
-$\varepsilon^*(\lambda, q)$ appears unclaimed. C$^2$R (arXiv:2606.30609)
+$\varepsilon^*(\lambda, q)$ appears unclaimed. C$^2$R [@jin2026cross]
 proves a per-sample sparsity preference ordering; Cui et al.
-(arXiv:2506.15963) give closed forms in an asymptotic limit without an $L_1$
-term. Penalty-as-remedy is prior art (OrtSAE, arXiv:2509.22033; C$^2$R) —
+[@cui2025limits] give closed forms in an asymptotic limit without an $L_1$
+term. Penalty-as-remedy is prior art (OrtSAE [@korznikov2025ortsae]; C$^2$R) —
 the derived $\beta^*$, the anti-rotation obstruction, $\varepsilon^{**}(\beta)$,
-and $p_0^*$ appear unclaimed. Matryoshka SAEs (arXiv:2503.17547) reduce
-absorption architecturally; feature hedging (arXiv:2505.11756) documents the
+and $p_0^*$ appear unclaimed. Matryoshka SAEs [@bussmann2025learning] reduce
+absorption architecturally; feature hedging [@chanin2025feature] documents the
 continuous tilt empirically. Classical sparse coding gives the positive
-regime (Donoho–Elad uniqueness; Hillar–Sommer identifiability). The
+regime [@donoho2003optimally; @hillar2015uniqueness]. The
 label-free frequency identifiability analysis draws on mixture/topic-model
-identifiability (Arora–Ge–Moitra 2012; Anandkumar et al. 2014;
-Allman–Matias–Rhodes 2009; Fu–Huang–Sidiropoulos 2016), whose common
+identifiability [@arora2012learning; @anandkumar2014tensor;
+@allman2009identifiability; @fu2016robust], whose common
 linear-independence condition is exactly what full absorption degenerates.
 For the detector arc: prior work groups SAE features into feature
-families spanning levels of abstraction (O'Neill et al., arXiv:2408.00657),
-clusters functional structure (Michaud et al., arXiv:2410.19750), and
-imposes hierarchy as a training constraint (Tree SAE, arXiv:2605.07922;
-HSAE, arXiv:2602.11881); Chanin et al. measure absorption with NPMI given
+families spanning levels of abstraction (O'Neill et al. [@oneill2024disentangling]),
+clusters functional structure (Michaud et al. [@li2024geometry]), and
+imposes hierarchy as a training constraint (Tree SAE [@cao2026tree];
+HSAE [@luo2026from]); Chanin et al. measure absorption with NPMI given
 probe-based labels; encoder holes and activation-histogram multimodality
 were observed and proposed as detection signals in Chanin et al.'s
-toy-model posts and Chanin & Till's "Broken Latents" (2024). A label-free
+toy-model posts and Chanin & Till's "Broken Latents" [@chanin2024broken]. A label-free
 post-hoc detector of absorbed *pairs* — geometry band + two-sided
 co-firing lift + containment veto, with locked thresholds, held-out
 validation, and a shuffled-firing null — appears unclaimed
 (full sweep: `notes/novelty-round8-detector.md`). Seed-level feature
-instability (Paulo & Belrose; arXiv:2606.12138) contextualizes S1: the
+instability [@paulo2025sparse; @gerasimov2026unstable] contextualizes S1: the
 seed-stable pair *clusters* we find persist even though individual
-features generally do not. SynthSAEBench (arXiv:2602.14687) offers
+features generally do not. SynthSAEBench [@chanin2026synthsaebench] offers
 ground-truth synthetic SAE evaluation without absorption metrics — a
 natural future host for detector benchmarking.
+
+The metric-criticism this paper belongs to is now an active line, and the
+present contribution is a specific and complementary one. SAEBench
+[@karvonen2025saebench] standardised the first-letter absorption score that
+§8b measures. Chanin [@chanin2026sparse] audits SAEBench's metrics for
+*reliability* — reseed noise, ground-truth correlation, discriminability —
+and finds several unfit for use; Bal [@bal2026from] audits *recovery*
+metrics for construct validity, showing that decoder-geometry alignment and
+encoder-activation behaviour are separate claims and that up to 77% of
+geometrically "recovered" features never fire. Neither asks the question in
+§8b.7: whether the absorption endpoint, which infers a merge from the
+*absence* of a firing selective latent, is accompanied by any carrier at
+all. Leask et al. [@leask2025sparse] independently argue SAE features are
+not canonical units, and hierarchical architectures
+[@muchane2025incorporating] target the same pathology from the training
+side.
 
 ## 10. Limitations and open problems
 
@@ -780,18 +806,13 @@ natural future host for detector benchmarking.
 
 ## References
 
-- D. Chanin et al., *A is for Absorption: Studying Feature Splitting and
-  Absorption in Sparse Autoencoders*, arXiv:2409.14507.
-- B. Bussmann et al., *Matryoshka Sparse Autoencoders*, arXiv:2503.17547.
-- OrtSAE: *Orthogonal Sparse Autoencoders*, arXiv:2509.22033.
-- Jin et al., *C$^2$R: Cross-sample Consistency Regularization*, arXiv:2606.30609.
-- Cui et al., arXiv:2506.15963 (asymptotic closed forms).
-- Chanin, Dulka \& Garriga-Alonso, *Feature Hedging*, arXiv:2505.11756.
-- D. Donoho, M. Elad, PNAS 2003 (uniqueness); C. Hillar, F. Sommer, 2015
-  (dictionary identifiability).
-- S. Arora, R. Ge, A. Moitra, FOCS 2012; A. Anandkumar et al., JMLR 2014;
-  E. Allman, C. Matias, J. Rhodes, Ann. Stat. 2009; X. Fu, K. Huang,
-  N. Sidiropoulos, NeurIPS 2016.
+<!-- Generated by pandoc --citeproc from refs.bib (arXiv works, produced by
+     ops/mkbib.py straight from the arXiv API) and refs_manual.bib (journal and
+     forum works). Do not hand-maintain a list here: the previous one drifted,
+     and one entry cited a real but WRONG paper for over a round. -->
+
+::: {#refs}
+:::
 
 ---
 

@@ -88,8 +88,9 @@ cat "$TMP/meta.yaml" "$TMP/body.md" > "$TMP/paper.md"
 pandoc "$TMP/paper.md" \
   --from=markdown+tex_math_dollars+raw_tex+pipe_tables \
   --pdf-engine=xelatex \
+  --citeproc --bibliography=refs.bib --bibliography=refs_manual.bib \
   --include-in-header=ops/paper_header.tex \
-  --resource-path=.:figures \
+  --resource-path=.:figs:figures \
   -V documentclass=article -V papersize=a4 -V fontsize=11pt \
   -V geometry:margin=1in -V linkcolor=black \
   -V mainfont="TeX Gyre Pagella" -V mathfont="TeX Gyre Pagella Math" \
