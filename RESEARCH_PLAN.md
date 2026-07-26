@@ -136,6 +136,36 @@ single layer / single task remains the standing generalization caveat
 7. **Write-up decision** (owner): LW/AF post or arXiv note. Repo is
    preprint-circulatable per external review; blocked only on owner choice.
 
+## External corroboration of §5.1's non-monotone dose response (2026-07-26)
+
+Recorded here rather than in PAPER.md, because the source is an unpublished
+third-party report with no citable artifact — supporting context, not evidence to
+lean on.
+
+A separate GPT session produced a semi-real experiment (120 SAEs; planted binary
+factors mixed into digit-classifier hidden activations; Gram penalty swept over
+β ∈ {0, 0.025, 0.0625, 0.25, 0.5}). I independently replicated all 120 runs from its
+frozen sources: verdicts reproduce and primary effect sizes agree within 2.4e−3
+(record and adjudication in `finite-certificates/ai/coherence-transfer/`).
+
+Its L1 dose profile is an inverted U — one-atom alignment 0.730 (β=0) → **0.965**
+(β=0.0625) → 0.472 (β=0.5), with its `faithful_geometry` flag going 0/12 → **12/12**
+→ 0/12. That is the qualitative shape §5.1 derives analytically: a coherence penalty
+helps at moderate strength and **overdosing worsens it** (ε\*\*(β) increasing in β
+above β\*).
+
+Two caveats keep this honest. The setups measure different quantities (an absorption
+boundary vs planted-factor alignment), so this is qualitative agreement, not a
+replication of the toy result. And its strong-β endpoint is the *destruction* of the
+one-atom encoding — alignment falls to a computed chance baseline of 0.434 while family
+cosine holds at 0.994 — which is a different phenomenon from the absorption transition
+even though the dose response has the same shape.
+
+Worth having anyway: an exact two-latent analysis and a 120-SAE semi-real sweep
+arriving independently at "moderate penalty helps, strong penalty hurts" is cheap
+evidence that the non-monotonicity is not an artifact of the toy model's two-latent
+restriction.
+
 ## Standing constraints
 
 - Confirmatory claims: prereg → pre-results commit → run frozen → report as
