@@ -22,16 +22,27 @@
 # and gemx could not produce the id at all. Verify ids and author lists against the
 # arXiv API (ops/mkbib.py, ops/check_citations.sh) before anything reaches the paper.
 #
+# RUN FROM AN EMPTY DIRECTORY -- this is the big one.
+# gemx sets GEMINI_CLI_TRUST_WORKSPACE=true, so the CLI treats its CWD as a workspace
+# and will happily spend its whole tool budget grepping and reading local files
+# instead of searching the web. Launched from the repo root it emits "Ripgrep is not
+# available. Falling back to GrepTool" and then dies on the timeout having never run
+# a search. That is almost certainly a large part of the "gemx is flaky in batch"
+# history: it was not flaky, it was exploring a hundred-file research repo. Every
+# call below runs in a scratch directory containing nothing.
+#
 # Usage: ops/deep_research.sh <queries.txt> [outdir]
 #   queries.txt: one question per line, "tag|question". Blank lines and # ignored.
 set -uo pipefail
-QF=${1:?usage: ops/deep_research.sh <queries.txt> [outdir]}
+QF=$(readlink -f "${1:?usage: ops/deep_research.sh <queries.txt> [outdir]}")
 OUT=${2:-$(dirname "$QF")/answers}
 ATTEMPTS=${ATTEMPTS:-4}
 PER_TRY=${PER_TRY:-240}
 
 command -v gemx >/dev/null || { echo "gemx not on PATH"; exit 1; }
-mkdir -p "$OUT"
+mkdir -p "$OUT"; OUT=$(readlink -f "$OUT")
+SCRATCH=$(mktemp -d); trap 'rm -rf "$SCRATCH"' EXIT
+cd "$SCRATCH"
 
 PREFIX='Answer in ONE pass. Run google_web_search if you need it, then write the
 answer immediately -- do NOT iterate, do NOT re-plan, do NOT call more than a few

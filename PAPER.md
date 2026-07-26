@@ -694,8 +694,23 @@ misses. Both outcomes are reported at equal prominence.
   with hierarchical merging.** The thesis-defense review raised the same
   concern independently (`reviews/DEFENSE_round13b_2026-07-25/`, Q2
   Finding 1): the metric flags "no family latent fired" without verifying
-  that the child's missing mass is picked up by a parent latent. The
+  that the missing mass is picked up by anything. The
   capacity profile makes that concern concrete rather than hypothetical.
+
+  *Direction of the merge, stated carefully, because earlier drafts of this
+  subsection had it backwards.* The letter feature ("starts with L") is the
+  **general/parent** concept and a token such as *short* is the **child**;
+  under the absorbed dictionary $\{a_p, a_m\}$ of §4 the joint event is coded
+  by the composite $a_m$ alone, so it is the **parent latent that falls
+  silent** while a token-specific composite carries the letter direction —
+  exactly the "hole" in the *starts-with-S* latent reported by
+  [@chanin2024absorption], and exactly what §1 describes. The family $F_L$ is
+  built from letter *selectivity*, so it captures the general latents; a
+  composite that fires on one token is not selective for the letter and is
+  correctly outside $F_L$. The endpoint therefore fires precisely when the
+  parent is silent, and the object to look for is a **composite**, not a
+  parent. The round-14 scorer searches $\arg\max$ over latents *not* in
+  $F_L$, which is the right target; only the prose here was inverted.
 - The highest-value next experiment is therefore the **residual projection
   check** — on "absorbed" trials, does a parent latent's activation
   increase to carry the child's missing mass? It is post-hoc but cheap and
