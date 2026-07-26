@@ -65,3 +65,28 @@ complementary entry" is stronger and more honest than claiming an isolated novel
   Abdessalem Bal, and the oracle could not produce the id. The paper is real; the
   attribution was invented. Treat grounded-search author lists as leads to verify, not
   as facts — the API lookup is cheap and decisive.
+
+## Consequence for the north star (read this before planning round 15)
+
+`RESEARCH_PLAN.md`'s stated pivot is **causal validity**: "whether a *recovered* child
+code actually mediates the child feature's effect (ablation/intervention)". That is,
+almost exactly, what arXiv:2607.12166 did thirteen days ago — subject every feature
+passing a cosine-recovery bar to ablation and steering, and report what fraction is
+causally inert (up to 77% in a degraded SAE, 9% in a good one, 14% in a production
+SAE). It also ships the method as a reusable instrument, `sae-causal-audit`.
+
+This does not scoop rounds 12–14, which are about the *absorption* endpoint. It does
+partly occupy the ground the plan intended to move onto next, so the next round should
+be chosen with that in mind:
+
+- **Do not rebuild the general causal-audit apparatus.** If an intervention stage is
+  wanted, start from the published instrument and cite it.
+- **The absorption-specific question is still open and is the better target**: on
+  trials the metric calls absorbed, does *ablating the putative carrier* remove the
+  child's effect? Bal asks whether recovered features are causally real in general;
+  nobody has asked whether the thing absorption metrics implicitly posit — a parent
+  latent carrying a child — is causally real. Round 14 is the correlational half of
+  that question; the interventional half is unclaimed.
+- Related distinction to preserve: Bal's inertness is about *encoder activation* given
+  decoder geometry. Round 14's finding is about *where the mass goes* when the
+  selective latent is silent. Different failure, same methodological moral.
