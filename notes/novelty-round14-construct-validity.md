@@ -58,6 +58,28 @@ is invalid" critique and more a characterisation of *what the metric actually co
 single-parent absorption. That is a weaker headline and a more defensible one, and it
 does not collide with either neighbouring audit.
 
+## The round-12 null is itself unclaimed, and cuts against the published consensus
+
+A separate grounded query — has anyone published a **null result**, no difference in
+measured absorption between SAE architectures at matched $L_0$ on a real language
+model? — also returned **NONE FOUND**. Every located work reports a *difference*:
+SAEBench [@karvonen2025saebench] reports TopK and JumpReLU often *worsening*
+absorption relative to ReLU, and the Matryoshka paper [@bussmann2025learning]
+reports a substantial architectural improvement.
+
+This makes round 12's **P1 NOT CONFIRMED** ($+0.0030$, CI $[-0.0010, +0.0067]$ at
+matched $L_0 = 32$, 8 seeds per arm) more interesting than a filed-away negative: it
+is a pre-registered, matched-sparsity, multi-seed null that disagrees with the
+direction the field reports. The honest framing is not "we failed to find the
+effect" but "under matched $L_0$ with seed-level CIs, the architecture gap we
+expected from the literature does not reproduce on this endpoint and model" — with
+the obvious caveats that this is one model, one layer, one endpoint, and that the
+comparison in SAEBench is not run at matched $L_0$ in the same way.
+
+That asymmetry — the field measures a difference, we measure none at matched $L_0$,
+and the endpoint itself is splitting-inflated and width-sensitive — is a more
+coherent story for the note than any single one of the three findings alone.
+
 Positioning: Chanin asks whether SAEBench metrics are *reliable*; Bal asks whether
 *recovery* metrics measure what they claim; this work asks whether the *absorption*
 metric measures what it claims. The three are siblings and should be cited as such —
