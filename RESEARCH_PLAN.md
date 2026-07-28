@@ -60,15 +60,31 @@ most plausibly driven by splitting.**
 
 **New top priorities (2026-07-25, post-13b):**
 
-1. **Residual-projection construct-validity check** on the in-hand weights
-   (48 round-13b + 16 round-12 files, plus 13a's family-endpoint
-   artifacts). On trials the endpoint calls "absorbed", does a
-   parent/composite latent's activation increase to carry the child's
-   missing mass (true absorption), or does nothing compensate (fragmentation
-   / threshold loss)? Post-hoc and CPU-cheap, but **decisive for what the
-   endpoint means** — it adjudicates the fragmentation reading of 13b P1
-   and the defense's Q2 Finding 1. Label as exploratory/post-hoc; no new
-   training.
+1. ~~**Residual-projection construct-validity check** on the in-hand weights.~~
+   **EXECUTED as round 14 (2026-07-26; `results/real/SUMMARY_round14.md`,
+   lock `708211f`).** The absorbed set has **no single, broad, recurring
+   carrier**; per-trial mass IS concentrated, on a trial-varying
+   token-specific composite — consistent with distributed compositional
+   absorption, NOT evidence of representational loss (the initial "loss"
+   headline was WITHDRAWN pre-publication after adversarial review; P1's
+   selection defect documented, its CONFIRMED verdict stands but is
+   uninformative). Successors registered in SUMMARY §Next: sample-splitting
+   carrier selection, seed-pooled |A|, and the carrier causal-ablation test
+   (start from arXiv:2607.12166).
+
+1b. **Round 15 (IN FLIGHT, 2026-07-28): external-suite transfer test —
+   Gemma Scope 2 cross-validation.**
+   `notes/prereg-round15-gemmascope-crossval.md` + frozen
+   `experiments/gemmascope_crossval.py` / `analysis/analyze_round15.py` /
+   `ops/run_round15.sh`. DeepMind's public JumpReLU suite on Gemma 3 1B
+   (resid_post, layer 13 = 50% depth; widths 16k/65k/262k at l0_medium; L0
+   and layer series descriptive). Registered: P1 width-direction transfer
+   (13b's absorption-rises-with-width), P2 splitting-grows-with-width, P3
+   single-latent inflation (13a). Letters are the unit (single-seed suite).
+   Model activations via the ungated mirror `unsloth/gemma-3-1b-pt`
+   (provenance caveat registered). First evidence either way on whether the
+   program's real-scale patterns are pipeline-specific or properties of
+   sparse dictionary learning.
 2. **Prereg a fragmentation-corrected absorption endpoint** informed by #1
    (e.g. requiring parent-mass pickup, or normalizing for family size /
    live-latent count), then re-run the architecture and capacity contrasts
@@ -83,8 +99,11 @@ most plausibly driven by splitting.**
 
 Still live from the round-11 framing: detector validation against
 ground-truth absorption labels (blocked on #1/#2 — the labels themselves are
-what's in question); Gemma-2-2B (SAEBench standard) once an HF token is on
-the box; scale to 8B+ only with a bigger-GPU quota grant. Single model /
+what's in question); ~~Gemma-2-2B (SAEBench standard) once an HF token is on
+the box~~ **superseded by round 15**: Gemma Scope 2 (released post-plan)
+provides open pretrained SAEs + transcoders for ALL Gemma 3 sizes, ungated,
+and the gated-model blocker is routed around via the unsloth mirror; scale
+to 8B+ only with a bigger-GPU quota grant. Single model /
 single layer / single task remains the standing generalization caveat
 (prereg §"what this cannot do").
 
