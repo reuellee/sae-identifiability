@@ -1,0 +1,27 @@
+{
+ "note": "file sha256s are exact (hashed from the files used); repo SHAs resolved post-run 2026-07-28",
+ "sae_repo_sha": "b738dc06961818c011fb2e44a316352ca0f4e873",
+ "model_repo_sha": "34a98bf3eaecc08c699516f625eb5e56e4c5d99d",
+ "files": {
+  "layer_13_width_16k_l0_medium/config.json": "bae1ac1c32e7ce3b9e791009fa29155d7df2999bf974d33832db8db2f284b257",
+  "layer_13_width_16k_l0_medium/params.safetensors": "2b57a8bfb01d73b5cb7d26b48d6d8f1ec5c2b1d8554488e5a81796a4b710829d",
+  "layer_13_width_262k_l0_medium/config.json": "81a5aaaac6e85760b87282e307285232d18245dbdf3e08ff106e9bfc84421a34",
+  "layer_13_width_262k_l0_medium/params.safetensors": "1ca624bd71e0465fd9caf7e7740bbcbb1faa4b1ddf1c120357b497c091969d09",
+  "layer_13_width_65k_l0_big/config.json": "cf5d65d4c16fec136b45ad3c1e40db637f1087c3782a5db824f2bec3a50adecc",
+  "layer_13_width_65k_l0_big/params.safetensors": "f64eea8a43826f30b437f41b2314428d33415ceb99e9b149e8074acb1aea9287",
+  "layer_13_width_65k_l0_medium/config.json": "bbdce4212ebbc4772d7e27ba1f87f60706172a916c712d10ff1f28f6bc01040a",
+  "layer_13_width_65k_l0_medium/params.safetensors": "f8a4dd46db38d71f63552e8ed60261eca508be77a94f33bfcd0b3355ae7cbb2b",
+  "layer_13_width_65k_l0_small/config.json": "513a5dce795fe7a7b6af1712c0421e65c772da2c22c4b40bf1190abc68b9e5ba",
+  "layer_13_width_65k_l0_small/params.safetensors": "2510181fda1fbf9c059ee3f7e4e4bb0410825ee7147ee02fb420b7cfe9af76fb",
+  "layer_17_width_16k_l0_medium/config.json": "336c34ff5bf0587d19b4e4fa451c838d6a1c6166db74a0aeddb23e3ae1432c25",
+  "layer_17_width_16k_l0_medium/params.safetensors": "96150bbb6625547ca053e94ca46831b52e4f38cb250a470dd9e232acc3762456",
+  "layer_22_width_16k_l0_medium/config.json": "fa0ff95404a98883734432479c5a1029b2d4d6914ec97c1d0d43248f402f8722",
+  "layer_22_width_16k_l0_medium/params.safetensors": "817f25110301e056d89dcec355b181d069681e137d914557ddffcd9398906469",
+  "layer_7_width_16k_l0_medium/config.json": "f7077b819b80d9df1f2aa81edc0847f21d230f5bc154a95abd0db56a4ca6b057",
+  "layer_7_width_16k_l0_medium/params.safetensors": "ed375d8bf47a45419c6c3b180deb71486acc44a36a8d10bd8b3a06e914dce36b",
+  "words_gemma-3-1b_L13.pt": "1a87a6028626a0e715ffdf63c28ec7cd604146c51252fdeea2d5054049347db2",
+  "words_gemma-3-1b_L17.pt": "23163672073e8cd4205bb9ebaf8166a22cc653e5414f860bae52035a13a91627",
+  "words_gemma-3-1b_L22.pt": "6b5cb8f1ac391db163274279f915ede8ccc12426d6398ceb17d73e8a79b0917d",
+  "words_gemma-3-1b_L7.pt": "9c10cda93e4a4272d180108f5121c0cc11ec628c17d2e361a31ff9d79d58d81d"
+ }
+}

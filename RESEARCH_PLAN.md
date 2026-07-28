@@ -72,19 +72,26 @@ most plausibly driven by splitting.**
    carrier selection, seed-pooled |A|, and the carrier causal-ablation test
    (start from arXiv:2607.12166).
 
-1b. **Round 15 (IN FLIGHT, 2026-07-28): external-suite transfer test —
-   Gemma Scope 2 cross-validation.**
-   `notes/prereg-round15-gemmascope-crossval.md` + frozen
-   `experiments/gemmascope_crossval.py` / `analysis/analyze_round15.py` /
-   `ops/run_round15.sh`. DeepMind's public JumpReLU suite on Gemma 3 1B
-   (resid_post, layer 13 = 50% depth; widths 16k/65k/262k at l0_medium; L0
-   and layer series descriptive). Registered: P1 width-direction transfer
-   (13b's absorption-rises-with-width), P2 splitting-grows-with-width, P3
-   single-latent inflation (13a). Letters are the unit (single-seed suite).
-   Model activations via the ungated mirror `unsloth/gemma-3-1b-pt`
-   (provenance caveat registered). First evidence either way on whether the
-   program's real-scale patterns are pipeline-specific or properties of
-   sparse dictionary learning.
+1b. ~~Round 15: external-suite transfer test — Gemma Scope 2
+   cross-validation.~~ **EXECUTED 2026-07-28 (lock `9b8d203`, Amendment 1
+   `7b4c03b`; `results/real/SUMMARY_round15.md`). P1 CONFIRMED: absorption
+   rises with width on DeepMind's suite too (+0.0745 CI [+0.0351,+0.1188]) —
+   13b's inverted capacity direction is NOT a pipeline artifact. P2 NOT
+   CONFIRMED: family size does not move (diff 0.0000) — the splitting
+   co-movement does NOT transfer; the width→absorption effect has no
+   family-growth mediator on this suite. P3 NOT CONFIRMED at the material
+   bar. D1 (new axis): absorption FALLS as L0 rises at fixed width — the two
+   capacity axes point in opposite directions.**
+
+   Successors spawned by round 15:
+   - **L0-axis prereg** (top candidate): D1's monotone L0 direction at fixed
+     width, never varied on Pythia (13b matched L0 by design). Cheap: our own
+     Pythia SAEs retrained at 3 L0s, or Gemma Scope's L0 series at more
+     widths. Registered directional prediction available from D1.
+   - **Mechanism dissociation:** what drives width→absorption if not family
+     growth? Ties directly to round 14's trial-specific composites; a
+     sub-τ split-structure census (sel distribution below the family bar
+     across widths) is CPU-cheap on the in-hand artifacts.
 2. **Prereg a fragmentation-corrected absorption endpoint** informed by #1
    (e.g. requiring parent-mass pickup, or normalizing for family size /
    live-latent count), then re-run the architecture and capacity contrasts

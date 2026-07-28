@@ -18,3 +18,4 @@ PAPER.pdf
 figs/*.pdf
 figs/*.aux
 figs/*.log
+results/real/r15_words/

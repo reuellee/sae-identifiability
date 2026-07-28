@@ -1,0 +1,30 @@
+gates: {"g0_frozen_config": true, "g0_cells_present": true, "conform_16384": true, "fvu_indist_16384": 0.0419, "conform_65536": true, "fvu_indist_65536": 0.0392, "conform_262144": true, "fvu_indist_262144": 0.0367, "letters_per_cell": {"16384": 24, "65536": 22, "262144": 24}, "inter_16k_262k": 23, "g3_probed_letters": 26, "g1_conformance": true, "g2_cells": true, "g2_intersection": true, "g3_words": true}
+cell w=16384: L0=73.91/cfg60 fvu=0.4574 rate_single=0.1186 rate_family=0.0963 clean_letters=24
+cell w=65536: L0=71.74/cfg60 fvu=0.4047 rate_single=0.1798 rate_family=0.1571 clean_letters=22
+cell w=262144: L0=77.2/cfg60 fvu=0.4515 rate_single=0.2031 rate_family=0.192 clean_letters=24
+P1 (PRIMARY) rate_family 262k-16k: CONFIRMED (mean=+0.0745, CI [+0.0351,+0.1188], n_letters=23, positive 17/23)
+P2 (KEY SECONDARY) fam_size_uncapped 262k-16k: NOT CONFIRMED (mean=+0.0000, CI [-0.3478,+0.3913], n_letters=23, positive 4/23)
+   fam cap hits across width-series cells: 0
+D: per-letter Spearman(rate_family, width) mean=+0.467 over 21 letters (descriptive)
+P3 (secondary) relative inflation (bar 0.10): NOT CONFIRMED (mean=+0.351, CI [+0.068,+0.829], n_letters=18, dropped_below_floor=3; 13a found 0.23-0.33)
+   inflation w=16384: single=0.1186 family=0.0963 relative=+23.2%
+   inflation w=65536: single=0.1798 family=0.1571 relative=+14.4%
+   inflation w=262144: single=0.2031 family=0.192 relative=+5.8%
+D4 (sensitivity) P1 with 16k-fixed eligibility (waived tau at 262k): mean=+0.0802, CI [+0.0416,+0.1234], n_letters=24, letters_losing_clean_at_262k=1
+D1 (descriptive) L0 series @65k layer13:
+   l0_small: cfgL0=20 measured=25.47 rate_family=0.1941 rate_single=0.1966 mean_fam_size=1.56
+   l0_medium: cfgL0=60 measured=71.74 rate_family=0.1571 rate_single=0.1798 mean_fam_size=1.91
+   l0_big: cfgL0=150 measured=164.97 rate_family=0.0945 rate_single=0.1181 mean_fam_size=2.50
+D2 (descriptive) layer series @16k medium:
+   layer_7: rate_family=0.1112 clean_letters=25 fvu=0.3729
+   layer_13: rate_family=0.0963 clean_letters=24 fvu=0.4574
+   layer_17: rate_family=0.0406 clean_letters=25 fvu=0.2912
+   layer_22: rate_family=0.0613 clean_letters=7 fvu=0.3504
+D3 (descriptive) theta grid (family rate):
+   layer_13_width_16k_l0_medium: {"0": 0.0963, "0.01": 0.0963, "0.05": 0.0963, "0.1": 0.0963}
+   layer_13_width_65k_l0_big: {"0": 0.0945, "0.01": 0.0945, "0.05": 0.0945, "0.1": 0.0945}
+   layer_13_width_65k_l0_medium: {"0": 0.1571, "0.01": 0.1571, "0.05": 0.1571, "0.1": 0.1571}
+   layer_13_width_65k_l0_small: {"0": 0.1941, "0.01": 0.1941, "0.05": 0.1941, "0.1": 0.1941}
+   layer_17_width_16k_l0_medium: {"0": 0.0406, "0.01": 0.0406, "0.05": 0.0406, "0.1": 0.0406}
+   layer_22_width_16k_l0_medium: {"0": 0.0613, "0.01": 0.0613, "0.05": 0.0613, "0.1": 0.0613}
+   layer_7_width_16k_l0_medium: {"0": 0.1112, "0.01": 0.1112, "0.05": 0.1112, "0.1": 0.1112}

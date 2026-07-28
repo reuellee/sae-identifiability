@@ -1,0 +1,14 @@
+{
+ "layer_13_width_16k_l0_medium": {
+  "l0_indist": 66.42,
+  "fvu_indist": 0.0419
+ },
+ "layer_13_width_65k_l0_medium": {
+  "l0_indist": 67.01,
+  "fvu_indist": 0.0392
+ },
+ "layer_13_width_262k_l0_medium": {
+  "l0_indist": 67.3,
+  "fvu_indist": 0.0367
+ }
+}
