@@ -40,7 +40,7 @@ deps)
 push)
   vssh 'mkdir -p ~/r15/results'
   vscp "$REPO/experiments/gemmascope_crossval.py" "$REPO/analysis/analyze_round15.py" \
-       "$REPO/ops/vm_watchdog.sh" "$NAME:~/r15/"
+       "$REPO/experiments/gemmascope_indist.py" "$REPO/ops/vm_watchdog.sh" "$NAME:r15/"
   vssh 'chmod +x ~/r15/vm_watchdog.sh && ls ~/r15/'
   ;;
 dl)
@@ -115,8 +115,9 @@ MODE=score LAYERS=7,13,17,22 OUTDIR=~/r15/results \
   WORDS_DIR=~/r15/results \
   SAE_DIRS="$SAE_DIRS" OUT=~/r15/results/round15_rows.json \
   python3 gemmascope_crossval.py
-ROWS=~/r15/results/round15_rows.json OUT=~/r15/results/results_round15.txt \
-  python3 analyze_round15.py
+SAE_ROOT=~/r15/sae OUT=~/r15/results/indist.json python3 gemmascope_indist.py
+ROWS=~/r15/results/round15_rows.json INDIST=~/r15/results/indist.json \
+  OUT=~/r15/results/results_round15.txt python3 analyze_round15.py
 test -s ~/r15/results/round15_rows.json
 test -s ~/r15/results/results_round15.txt
 echo DONE_ROUND15
@@ -134,11 +135,11 @@ status)
   ;;
 collect)
   mkdir -p "$REPO/results/real"
-  for f in round15_rows.json results_round15.txt PROVENANCE.json PROVENANCE.txt; do
-    vscp "$NAME:~/r15/results/$f" "$REPO/results/real/" || log "missing: $f"
+  for f in round15_rows.json results_round15.txt indist.json PROVENANCE.json PROVENANCE.txt; do
+    vscp "$NAME:r15/results/$f" "$REPO/results/real/" || log "missing: $f"
   done
-  vscp "$NAME:~/r15/full.log" "$REPO/results/real/round15_full.log"
-  vscp "$NAME:~/vm_watchdog.log" "$REPO/results/real/round15_watchdog.log" || true
+  vscp "$NAME:r15/full.log" "$REPO/results/real/round15_full.log"
+  vscp "$NAME:vm_watchdog.log" "$REPO/results/real/round15_watchdog.log" || true
   log "collected. Upload words + rows to GCS from the laptop with ops/gcs_adc.sh (user ADC)."
   ;;
 clean)

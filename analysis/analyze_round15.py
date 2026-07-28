@@ -76,6 +76,14 @@ def main():
     cells_ok = EXPECTED_CELLS <= set(by.keys())
     gates["g0_frozen_config"] = bool(cfg_ok)
     gates["g0_cells_present"] = bool(cells_ok)
+    # Amendment 1 (PRE-RESULTS, 2026-07-28): the implementation half of Gate 1
+    # runs on IN-DISTRIBUTION sequences (experiments/gemmascope_indist.py ->
+    # INDIST json; fvu_indist <= 0.25). The word-set FVU conflates domain shift
+    # with implementation error (pilot: word FVU 0.503 vs in-dist FVU 0.0419)
+    # and is now reported descriptively. The word-set L0 band is unchanged.
+    ind = {}
+    if os.environ.get("INDIST") and os.path.exists(os.environ["INDIST"]):
+        ind = json.load(open(os.environ["INDIST"]))
     wrows = {}
     for width in W_SERIES:
         r = by.get((PRIMARY_LAYER, width, "medium"))
@@ -85,8 +93,10 @@ def main():
             continue
         cfg = r.get("config_l0") or 0
         ok_l0 = cfg > 0 and 0.5 * cfg <= r["measured_l0"] <= 1.5 * cfg
-        ok_fvu = r["fvu"] <= 0.5
-        gates[f"conform_{width}"] = bool(ok_l0 and ok_fvu)
+        fvi = ind.get(r["sae"], {}).get("fvu_indist")
+        ok_ind = fvi is not None and fvi <= 0.25
+        gates[f"conform_{width}"] = bool(ok_l0 and ok_ind)
+        gates[f"fvu_indist_{width}"] = fvi
     g1 = all(gates.get(f"conform_{width}", False) for width in W_SERIES)
 
     cl = {width: clean_letters(wrows[width]) if wrows[width] else set() for width in W_SERIES}

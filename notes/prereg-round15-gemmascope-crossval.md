@@ -155,6 +155,28 @@ selection. D4 is descriptive; P1's registered rule stands.
 4. **Probe parity.** Presence/retention probes are fit once on the raw residuals,
    SAE-independent, and reused across all SAEs — the 13a code path.
 
+## Amendment 1 (PRE-RESULTS, 2026-07-28)
+
+Declared before any registered quantity exists (the SMOKE pilot's numbers are
+pilot-only, on 1500 words). The pilot found: word-set FVU **0.503** for the 16k
+cell while the in-distribution oracle (real corpus sequences from the suite's
+own `examples.safetensors`, run through the identical encoder path) gives FVU
+**0.0419** with L0 66.4 vs config 60 — the implementation is verified correct
+and the word-set FVU is dominated by domain shift, as the Gate-1 caveat
+anticipated. Also: the blind encoder-variant rule selected `raw` decisively
+(batch L0 64.3 raw vs 2765.1 centered), agreeing with the Gemma Scope 2
+technical paper (pre-encoder bias folded into released weights); and the
+sae-lens oracle was unavailable (registry lacks the release name), replaced by
+the in-distribution oracle above, which is stronger (same-distribution, exact
+formula, no third-party loader).
+
+**Change:** Gate 1's implementation check is the in-distribution oracle —
+per width-series SAE, `fvu_indist ≤ 0.25` (`experiments/gemmascope_indist.py`,
+committed with this amendment) — replacing the word-set FVU ≤ 0.5 bound, which
+becomes a **reported descriptive** quantity. The word-set L0 band ([0.5×, 1.5×]
+config `l0`) is unchanged. No endpoint, θ, τ, cap, unit, prediction, or verdict
+rule is touched; the change is blind to every endpoint.
+
 ## Pilot (declared in advance)
 
 A SMOKE pass on the single cell (16k, l0_medium, layer 13) checks: weights load,
