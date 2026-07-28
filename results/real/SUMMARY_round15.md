@@ -1,4 +1,4 @@
-# Round 15 — the width→absorption direction transfers to Gemma Scope 2; the splitting co-movement does not
+# Round 15 — the width→absorption direction reproduces on Gemma Scope 2; the splitting co-movement does not
 
 **Prereg `notes/prereg-round15-gemmascope-crossval.md`, LOCK `9b8d203`, Amendment 1
 (PRE-RESULTS) `7b4c03b`. Frozen evaluator `analysis/analyze_round15.py` output:
@@ -97,11 +97,22 @@ gives L0 in the thousands), matching the GS2 technical paper. Provenance:
 - One seed per config (suite limitation); letters were the registered unit.
 - Model weights via the ungated `unsloth/gemma-3-1b-pt` mirror; bit-identity
   with `google/gemma-3-1b-pt` asserted by the mirror, hashes recorded.
-- What it **does** establish: the program's headline real-scale regularity —
-  absorption increasing with dictionary width at matched L0 — is not an
-  artifact of our training recipe, and the assumed mediator (splitting as
-  family growth) fails to transfer, which sharpens the mechanism question the
-  round-14 carrier result already raised.
+- What it **does** establish (scoped per `reviews/CODEX_REVIEW_2026-07-28.md`
+  finding 1): **the positive within-suite width→absorption association
+  reproduced in one independently trained JumpReLU suite.** The CI is over
+  letters conditional on one model, one word sample, and one released SAE per
+  width — it quantifies letter heterogeneity, not retraining or cross-suite
+  uncertainty. A *transfer claim* ("not an artifact of any training recipe")
+  requires multi-seed replication (Gemma Scope 2 ships `262k_l0_medium_seed_1`
+  — a cheap partial) and/or replication on further suites (4b-pt, 270m-pt);
+  queued in the plan. Within that scope, the assumed mediator (splitting as
+  family growth) failing to move while absorption doubles remains the round's
+  sharpest fact.
+- The endpoint was measured under domain shift (isolated BOS+word tokens;
+  word-set FVU 0.40–0.46 vs in-dist 0.037–0.042). The similar FVU across
+  widths makes a trivial reconstruction-quality account of P1 unlikely, but a
+  sequence-context replication matching the training distribution would
+  materially strengthen it (queued).
 
 ## Cost / ops
 

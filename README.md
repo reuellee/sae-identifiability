@@ -5,13 +5,15 @@ recover true features — centered on **feature absorption** (a parent/child con
 pair merging into one latent) in an analytically solvable model.
 
 **Status: actively developed technical report** (started 2026-07-21; revised
-through 2026-07-24). **Eleven experiment rounds** so far (3,800+ trained SAEs
-in the toy/semi-synthetic rounds plus round 11's real Pythia-1.4B SAEs; all
-*confirmatory* predictions pre-registered — rounds 9 and 10 dual-reviewed
-*before* their lock, and the whole repo reviewed at HEAD by GPT-5.6
-(`reviews/WHOLE_REPO_REVIEW_GPT-5.6_2026-07-24.md`, verdict: major revision —
-theory strong, empirical/exploratory claims scoped down; round 11's semantic
-claim withdrawn). Round 10 is a deliberately-reported **negative** round on
+through 2026-07-28). **Fifteen experiment rounds** so far (3,800+ trained SAEs
+in the toy/semi-synthetic rounds; real Pythia-1.4B rounds 11–14; round 15 on
+DeepMind's public Gemma Scope 2 suite). **`CLAIM_LEDGER.md` is the canonical
+round-by-round record** — every registered claim → lock commit → frozen scorer
+→ verdict. All *confirmatory* predictions pre-registered with dual (Gemini +
+GPT) pre-lock review; whole-repo reviews at
+`reviews/WHOLE_REPO_REVIEW_GPT-5.6_2026-07-24.md` and
+`reviews/CODEX_REVIEW_2026-07-28.md` (both: major revision — theory strong,
+empirical claims scoped; adjudications in the adjacent RESPONSE files). Round 10 is a deliberately-reported **negative** round on
 TopK SAEs; round 11 is exploratory. "Review" throughout = **LLM-assisted
 adversarial review** (Gemini + GPT), not human peer review), theory
 computationally verified (sympy — not a proof assistant), semi-synthetic

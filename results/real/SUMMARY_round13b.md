@@ -184,3 +184,21 @@ snapshot and runs as the default compute SA with no storage scopes, so every
 weights plus results were pulled with `ops/collect_r13b.sh` and pushed to
 `gs://sae-identifiability-artifacts-ebd5a273/round13b/` from the orchestrator under
 user ADC. `ops/preflight.sh` now catches this class before a round starts.
+
+## Correction (2026-07-28, post-publication of the round; verdict unchanged)
+
+The whole-repo Codex review (`reviews/CODEX_REVIEW_2026-07-28.md`, finding 3)
+identified that the P1 POOLED interval treats the 16 per-arch seed differences
+(8 L1 + 8 TopK, the same 8 seeds twice) as independent, while the prereg
+registered "pooled, 10k bootstrap **over seeds**". Recomputed with the seed as
+the clustering unit (arch-averaged within seed, n=8; independently reproduced
+from the committed `round13b_results.json`):
+
+- reported (as-run):        −0.0445, bootstrap CI [−0.0493, −0.0397]
+- seed-clustered t interval: **−0.0445, CI [−0.0515, −0.0374]**
+- seed-clustered bootstrap:  −0.0445, CI [−0.0498, −0.0389]
+
+**P1 FALSIFIED-DIRECTION stands comfortably under the corrected procedure.**
+The as-run output is preserved verbatim above; the seed-clustered interval is
+the one to cite. The frozen evaluator is not retro-edited; this note is the
+correction of record.

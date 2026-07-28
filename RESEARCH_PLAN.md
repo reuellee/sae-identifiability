@@ -83,7 +83,7 @@ most plausibly driven by splitting.**
    bar. D1 (new axis): absorption FALLS as L0 rises at fixed width — the two
    capacity axes point in opposite directions.**
 
-   Successors spawned by round 15:
+   Successors spawned by round 15 (+ the 2026-07-28 Codex whole-repo review):
    - **L0-axis prereg** (top candidate): D1's monotone L0 direction at fixed
      width, never varied on Pythia (13b matched L0 by design). Cheap: our own
      Pythia SAEs retrained at 3 L0s, or Gemma Scope's L0 series at more
@@ -92,6 +92,19 @@ most plausibly driven by splitting.**
      growth? Ties directly to round 14's trial-specific composites; a
      sub-τ split-structure census (sel distribution below the family bar
      across widths) is CPU-cheap on the in-hand artifacts.
+   - **Upgrade r15 to a transfer claim** (review finding 1): score the shipped
+     `262k_l0_medium_seed_1` (one extra SAE, same harness — cheap seed
+     replication) and/or repeat the width series on `gemma-scope-2-270m-pt` /
+     `-4b-pt`. Until then the claim is "reproduced in one independent suite".
+   - **Sequence-context replication** (review finding 4): the first-letter
+     endpoint on in-context tokens (prompt-embedded words) instead of isolated
+     BOS+word — removes the domain-shift conditionality (word FVU 0.40–0.46).
+   - **r14 carrier successor sharpened** (review finding 2): held-out carrier
+     selection + ablation, reporting signed/absolute contribution against the
+     raw probe margin — concentration alone does not establish carriage.
+   - **Paper tasks** (review findings 5–7, mostly DONE 2026-07-28 for 6/7):
+     theorem-by-theorem novelty table vs 2409.14507 / 2505.11756 / 2506.15963
+     / 2606.30609 (extends docs_novelty_adjudication.md) remains open.
 2. **Prereg a fragmentation-corrected absorption endpoint** informed by #1
    (e.g. requiring parent-mass pickup, or normalizing for family size /
    live-latent count), then re-run the architecture and capacity contrasts

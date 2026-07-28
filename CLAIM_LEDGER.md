@@ -20,6 +20,11 @@ prereg + scorer before results; exploratory rounds are labeled.*
 | 14 | Does "absorbed" have a carrier? (32 frozen SAEs re-analysed) | lock **`708211f`** (+ Amendment 1 `d2f32fa`) | `analysis/round14_carrier.py` + `analyze_round14.py` (frozen) | P1 CONFIRMED **but uninformative** (registered selection defect, disclosed); **P2 NOT CONFIRMED** (−0.199 CI [−0.217,−0.181] at m=16384); per-trial diagnostic: carriage is trial-specific composites, **"loss" headline WITHDRAWN** pre-publication after adversarial review | `results/real/SUMMARY_round14.md`, reviews/ |
 | 15 | External-suite transfer: Gemma Scope 2 (JumpReLU, Gemma 3 1B), width/L0/layer series, letters as unit | lock **`9b8d203`** (+ Amendment 1 `7b4c03b`: in-dist oracle) | `analysis/analyze_round15.py` (frozen) | All gates PASS (in-dist FVU 0.037–0.042); **P1 CONFIRMED** (+0.0745 CI [+0.0351,+0.1188]: absorption rises with width — 13b's direction transfers across model/arch/pipeline; D4 sensitivity agrees); **P2 NOT CONFIRMED** (fam_size diff 0.0000 — splitting co-movement does NOT transfer); **P3 NOT CONFIRMED** at the material bar (CI lower +0.068 < 0.10; cell inflation +23%/+14%/+6%) | `results/real/SUMMARY_round15.md` |
 
+**Corrections of record:** round 13b P1's pooled CI used 16 arch-diffs where
+the prereg registered seed clusters; seed-clustered recomputation −0.0445,
+t-CI [−0.0515, −0.0374] — verdict unchanged (`SUMMARY_round13b.md` §Correction,
+from `CODEX_REVIEW_2026-07-28.md` finding 3, independently verified).
+
 **Review trail** (all in `reviews/`): round-8 external + research reviews;
 round-9 dual pre-lock + dual results-stage; round-10 dual pre-lock + Gemini
 results-stage; round-11 Gemini results-stage; **whole-repo review 2026-07-24**

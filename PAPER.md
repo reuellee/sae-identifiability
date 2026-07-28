@@ -2,8 +2,11 @@
 
 **Living paper draft.** This document is the formal distillation of `report.md`
 (the session-log-style record) at the current repository state; claims follow
-the guardrails established in `reviews/`. Experimental provenance: README
-table (results CSV → commit). *Current through round 14 (2026-07-26).* The
+the guardrails established in `reviews/`. Experimental provenance:
+`CLAIM_LEDGER.md` is canonical (README table for early rounds). *Current
+through round 15 (2026-07-28); §8b's round-15 integration is abstract-level
+only pending the next full pass. Whole-repo Codex review 2026-07-28
+(`reviews/CODEX_REVIEW_2026-07-28.md` + RESPONSE) adjudicated.* The
 theory sections (§1–§13) are the strongest content; the detector (§17), the
 gating-corrected estimator (§18/round 9), the TopK note (round 10) and the
 real-model rounds 11–14 (§8b; round 11 exploratory, rounds 12–14
@@ -24,7 +27,8 @@ optimum of the SAE objective: the set of active dictionary *directions* is
 uniquely determined, though columns and codes are not. Away from that wall we
 derive the exact loss crossover between the pure faithful and pure absorbed
 candidate dictionaries,
-$\varepsilon^*(\lambda,q) = \frac{\lambda q\,(8-4\sqrt2-\lambda)}{2\,(1-(2-\sqrt2)\lambda)} \approx 1.17\,\lambda q,$
+$\varepsilon^*(\lambda,q) = \frac{\lambda q\,(8-4\sqrt2-\lambda)}{2\,(1-(2-\sqrt2)\lambda)} \approx 1.17\,\lambda q$
+(valid on the active branch $\lambda < \sqrt2$),
 and show that the continuously optimized dictionary instead tilts smoothly
 through intermediate angles, with its functional midpoint near
 $0.88\,\varepsilon^*$ and SGD's near $0.58$–$0.70\,\varepsilon^*$. A
@@ -60,12 +64,19 @@ test), and the endpoint co-moves with feature fragmentation. A carrier
 analysis of the absorbed trials themselves finds no single recurring latent
 playing the parent role — the modal carrier is the top contributor on 14.1%
 of absorbed trials against a 34.0% random-direction null — but, per trial, the
-letter's mass is 93.9% as concentrated as on normally represented trials
-($0.5935$ vs $0.6322$), carried by a token-specific composite that changes
-trial to trial. Absorption at this endpoint is therefore *distributed* rather
-than absent, and the residual concern about first-letter metrics is the
-narrower one that they overstate absorption by 23–33% through feature
-splitting and vary systematically with dictionary width.
+*positive letter-direction projection* is 93.9% as concentrated as on normally
+represented trials ($0.5935$ vs $0.6322$), with the top latent changing trial
+to trial. This is concentration conditional on positive projection: it does
+not by itself establish how much letter mass exists, whether negative
+contributions cancel it, or that the top latent causally mediates the letter
+(the held-out-selection ablation that would establish carriage is the
+registered successor). What it rules out is a single recurring parent, and
+what it leaves is *consistent with* distributed token-specific carriage rather
+than absence. The residual concern about first-letter metrics is the narrower
+one that they overstate absorption by 23–33% through feature splitting and
+vary systematically with dictionary width — a width association that
+reproduces on an independently trained public suite (Gemma Scope 2/JumpReLU,
+round 15) where, notably, split-family size does not move at all.
 
 ---
 
@@ -761,11 +772,20 @@ each trial's own top non-family latent
 | control trials ($C$) | 0.6322 | $[0.5852, 0.6768]$ |
 
 Absorbed trials are **93.9% as concentrated as normally represented trials**,
-with $\sim 32$ distinct carriers across $\sim 96$ absorbed trials. So the
-letter's mass *is* carried when the family is silent — by a token-specific
-composite that changes from trial to trial, which is what §4's mechanism
-predicts and what [@chanin2024absorption] describes. **An earlier draft read
-these trials as representational loss; that reading is withdrawn.**
+with $\sim 32$ distinct carriers across $\sim 96$ absorbed trials. Scope
+(per the 2026-07-28 whole-repo review, finding 2): this statistic is
+concentration of the *positive* letter-direction projection, conditional on
+some positive mass existing — it does not measure how much mass exists
+relative to the probe margin, whether negative contributions cancel it, or
+whether the top latent *causally* mediates the letter
+([@chanin2024absorption] established carriage by ablation, not concentration).
+So the supported reading is: **no single recurring parent exists, and the
+positive projection on absorbed trials is concentrated on a trial-varying
+latent — a pattern *consistent with* token-specific compositional carriage,
+with the causal half (held-out carrier selection + ablation against the raw
+probe margin) the registered successor.** An earlier draft read these trials
+as representational loss; that reading is withdrawn — and the opposite strong
+reading ("the mass *is* carried") is likewise not yet established.
 
 ![Round 14 at $m=16384$. The letter direction finds a *repeated* carrier less
 often than an arbitrary direction does (left) — there is no single broad
