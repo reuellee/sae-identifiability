@@ -84,10 +84,13 @@ most plausibly driven by splitting.**
    capacity axes point in opposite directions.**
 
    Successors spawned by round 15 (+ the 2026-07-28 Codex whole-repo review):
-   - **L0-axis prereg** (top candidate): D1's monotone L0 direction at fixed
-     width, never varied on Pythia (13b matched L0 by design). Cheap: our own
-     Pythia SAEs retrained at 3 L0s, or Gemma Scope's L0 series at more
-     widths. Registered directional prediction available from D1.
+   - ~~**L0-axis prereg** (top candidate)~~ **Round 16 LOCKED 2026-07-29
+     (`30cdc52`, dual pre-lock review applied) and PAUSED pre-results by
+     owner call 2026-07-30** — cost: all 32 cells sit at m=16384 (~19–21h
+     L4, ~$17–20 on-demand; spot churned). No SAE trained, no calibration
+     completed, nothing unblinded; the lock stands and the run can resume
+     any time via `ops/r16_vm.sh` + `ops/l4_r16.sh` (resume-safe,
+     manifest-bound). The frozen scorer/evaluator must be used as locked.
    - **Mechanism dissociation:** what drives width→absorption if not family
      growth? Ties directly to round 14's trial-specific composites; a
      sub-τ split-structure census (sel distribution below the family bar
