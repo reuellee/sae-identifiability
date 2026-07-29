@@ -1,6 +1,6 @@
 # Round 12 — real-model causal L1-vs-TopK absorption test (Pythia-1.4B L12)
 
-Registered, locked at commit `0722212`. Frozen scorer `analysis/analyze_round12.py`.
+Registered, locked at commit `c0eb337`. Frozen scorer `analysis/analyze_round12.py`.
 16 SAEs = 8 seeds × {TopK k=32, L1 λ=4.5}, m=16384, d=2048, matched at L0≈32.
 Ran on L4 `dev-gpu-2` (us-east1-b), ~8h, box deleted on completion.
 

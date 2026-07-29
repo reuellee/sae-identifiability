@@ -1,7 +1,7 @@
 # Round 13a — is the first-letter absorption endpoint measuring absorption or feature splitting?
 
-Registered: `notes/prereg-round13a-family-endpoint.md`, locked `9728663`
-(+ Amendment 1 and the evaluator committed pre-results, `0ea34f1`).
+Registered: `notes/prereg-round13a-family-endpoint.md`, locked `d2d42fe`
+(+ Amendment 1 and the evaluator committed pre-results, `8f033ab`).
 Frozen scorer `analysis/round13a_family_endpoint.py`, evaluator
 `analysis/analyze_round13a.py`. Full output: `results_round13a.txt`.
 

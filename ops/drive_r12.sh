@@ -51,7 +51,7 @@ LAM=$(cat chosen_lambda.txt 2>/dev/null || echo "?")
 # 4. faithful SUMMARY (verbatim frozen-scorer verdict)
 if [ -f results_round12.txt ]; then
   { echo "# Round 12 — real-model first-letter absorption (L1 vs TopK): RESULTS"; echo
-    echo "Pre-registered and LOCKED (commit 0722212). L1 λ=$LAM, calibrated at the 15k"
+    echo "Pre-registered and LOCKED (commit c0eb337). L1 λ=$LAM, calibrated at the 15k"
     echo "training-step budget (fixing the 8k-vs-15k L0 drift from the first attempt) and"
     echo "matched to TopK's L0=32. TF32 enabled (infra; both arches identical). SAE dead%"
     echo "is reported, not re-engineered. Scored by the FROZEN analysis/analyze_round12.py;"

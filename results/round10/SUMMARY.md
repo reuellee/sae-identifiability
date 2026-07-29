@@ -1,6 +1,6 @@
 # Round 10: absorption under TopK SAEs — registered scoring (a largely negative round)
 
-Prereg `notes/prereg-topk-absorption.md`, **lock `f2e92fc`** (bars, metric,
+Prereg `notes/prereg-topk-absorption.md`, **lock `4d62b90`** (bars, metric,
 arms, scorer frozen; nothing changed after lock). Run: 960 fresh-seed runs
 (arm A 768 + arm B 96 + arm C 96), one spot-L4 session (us-central1-a, ~8 min
 wall), weights saved. Scored by the frozen `analysis/analyze_round10.py`.

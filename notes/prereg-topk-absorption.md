@@ -131,6 +131,6 @@ vacuous cells block; ε grid extended to 0.60; composite/uniqueness/ε=0
 overclaims corrected; counterexample added to the verifier; scorer committed
 before lock).
 
-**LOCKED 2026-07-24, commit `f2e92fc`** (this line added by the
-immediately-following amendment; nothing else changes after `f2e92fc` except
+**LOCKED 2026-07-24, commit `4d62b90`** (this line added by the
+immediately-following amendment; nothing else changes after `4d62b90` except
 by dated amendment).

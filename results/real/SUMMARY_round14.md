@@ -1,8 +1,8 @@
 # Round 14 — the absorbed set has no consistent carrier
 
 **Frozen evaluator output: `results_round14.txt`. Raw: `round14_results.json`.
-Prereg `notes/prereg-round14-carrier.md` LOCKED at 708211f with the scorer and
-evaluator; Amendment 1 (d2f32fa) fixed a words-file loader crash before any
+Prereg `notes/prereg-round14-carrier.md` LOCKED at 2a81a98 with the scorer and
+evaluator; Amendment 1 (1265f11) fixed a words-file loader crash before any
 round-14 number existed. 32 SAEs re-analysed (m=16384 primary, m=2048 contrast),
 no new training.**
 

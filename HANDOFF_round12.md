@@ -1,7 +1,7 @@
 # HANDOFF — round 12 completion (2026-07-24)
 
 Ownership handed to the **orchestrator** so the laptop session could close.
-Round 12 is the pre-registered, **LOCKED** (commit `0722212`) confirmatory
+Round 12 is the pre-registered, **LOCKED** (commit `c0eb337`) confirmatory
 matched-seed L1-vs-TopK real-SAE first-letter-absorption experiment on
 Pythia-1.4B L12. Dual pre-lock review complete (Gemini LOCK-READY; GPT 12
 findings, 3 P1-critical fixed+verified — see `reviews/`).
@@ -25,7 +25,7 @@ findings, 3 P1-critical fixed+verified — see `reviews/`).
 ## INTEGRITY (must hold)
 - **Every recipe choice is BLIND to the absorption result** — λ by L0, TF32 by
   speed, nothing tuned to move L1−TopK. Never inspect absorption and adjust a
-  knob. The frozen metric/scorer/predictions (commit 0722212) are UNCHANGED, so
+  knob. The frozen metric/scorer/predictions (commit c0eb337) are UNCHANGED, so
   **no re-review is needed** (re-running Gemini/GPT here just respawns churn).
 - The calibration is on **seed 0**; the gate is on the **8-seed mean**. Aim
   seed-0 L0 **near 32** (margin), because seeds scatter and the mean must clear ±3.

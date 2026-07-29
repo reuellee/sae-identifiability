@@ -9,7 +9,7 @@
 #       arches identical, negligible precision). dead% (46-57%) is REPORTED, not
 #       re-engineered (both arches share the recipe -> controlled).
 # INTEGRITY: lambda is chosen BLIND to absorption (by L0 only). Metric/scorer/
-# predictions are the LOCKED artifacts (commit 0722212) and are NOT touched.
+# predictions are the LOCKED artifacts (commit c0eb337) and are NOT touched.
 set -e
 BUCKET=gs://sae-identifiability-artifacts-ebd5a273/round12
 cd ~/r12

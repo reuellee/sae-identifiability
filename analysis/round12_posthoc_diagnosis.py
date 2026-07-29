@@ -1,7 +1,7 @@
 """Round-12 POST-HOC diagnosis: why is P1 a null?
 
 *** EXPLORATORY / POST-HOC. NOT a registered result. ***
-The registered primary (analysis/analyze_round12.py, frozen at lock 0722212) stands
+The registered primary (analysis/analyze_round12.py, frozen at lock c0eb337) stands
 as reported: P1 NOT CONFIRMED. Nothing here amends it. This script asks the
 follow-up question the registered scorer cannot: *what is the null made of?*, in
 order to generate a round-13 pre-registration. Every number below is

@@ -144,7 +144,7 @@ Put the domain directly in the theorem and abstract.
 
 ## Verification scope
 
-Reviewed at commit `aba8c66`.
+Reviewed at commit `a4a89c3`.
 
 The review inspected the formal paper, README, claim ledger, preregistrations,
 frozen evaluators, experiment/scoring code, committed raw JSON outputs, result

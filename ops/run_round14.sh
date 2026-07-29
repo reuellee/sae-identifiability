@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Round 14 driver: carrier analysis on frozen weights, CPU-only ephemeral VM.
-# Prereg: notes/prereg-round14-carrier.md (LOCKED at 708211f, before any r14 number).
+# Prereg: notes/prereg-round14-carrier.md (LOCKED at 2a81a98, before any r14 number).
 #
 # NOTE vs the prereg's Ops paragraph: that paragraph says activations come from
 # acts_eval.pt. They do not -- analysis/round14_carrier.py reads only the WORDS file

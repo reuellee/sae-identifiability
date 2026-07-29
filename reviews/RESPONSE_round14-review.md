@@ -1,7 +1,7 @@
 # Response to `GEMINI_round14_2026-07-26.md`
 
 Adjudication of the adversarial review of the two unpushed round-14 commits
-(`d2f32fa`, `f798687`). Reviews in this project are never auto-adopted; each finding
+(`1265f11`, `7b5c722`). Reviews in this project are never auto-adopted; each finding
 is accepted, rejected, or scoped here, with the evidence that decided it.
 
 The review's verdict was **DO NOT PUSH**, on two findings it marked [BLOCKING]. One of
@@ -85,7 +85,7 @@ was read: it separates a carrier world from a diffuse world by 0.578 (0.874 vs 0
 The review independently reaches the same diagnosis of P1's selection-on-outcome flaw,
 and agrees that leaving the registered verdict as CONFIRMED while annotating it as
 uninformative is the correct prereg practice rather than a violation. No change; this
-is what `f798687` already does.
+is what `7b5c722` already does.
 
 ### F2.3 [ACCEPTED — an improvement on my own proposed fix]
 

@@ -165,8 +165,8 @@ python3 experiments/sae_round3.py        # corrected-boundary validation + rich 
   | round 8 E1–E3 (`results/round8/`) | results `68f444c` (lock `a539c76`, pre-collection amendment `69ca642`) |
   | natural-feature adjudication of S1 (`results/round8/natfeat_*`) | this commit (pre-results lock `0603d38`) |
   | S1 stability, corrected+exclusion rerun (`results/round8/s1_*`) | v1 `841e8cd` (superseded); v2 with oracle-touch exclusion: this commit |
-  | round 12 real-scale arch test (`results/real/results_round12.txt`) | lock `11ac8b9`, λ amendment `ef443c9`; clean re-score with the 70m contaminant excluded `22ad0ae` |
-  | round 13a family endpoint (`results/real/results_round13a.txt`) | results `1767ff9` (lock `9728663`, pre-results amendment `0ea34f1`) |
-  | round 13b capacity sweep (`results/real/results_round13b.txt`) | results `25e3df0` (lock `c934d33`, pre-results amendments `7501486`); blind-theory scorecard `60db67b` |
-  | round 14 carrier test (`results/real/results_round14.txt`) | results `f798687` (lock `708211f`, pre-results amendment `d2f32fa`) |
-  | round 14 post-hoc validity diagnostics (`results/real/results_round14_validity.txt`) | this commit — **exploratory, not a registered endpoint**; evaluator + response written pre-results (`f9b5541`) |
+  | round 12 real-scale arch test (`results/real/results_round12.txt`) | lock `ea05279`, λ amendment `9997304`; clean re-score with the 70m contaminant excluded `9b032fb` |
+  | round 13a family endpoint (`results/real/results_round13a.txt`) | results `1c7d99d` (lock `d2d42fe`, pre-results amendment `8f033ab`) |
+  | round 13b capacity sweep (`results/real/results_round13b.txt`) | results `04f8cb0` (lock `705de54`, pre-results amendments `3437e95`); blind-theory scorecard `0430579` |
+  | round 14 carrier test (`results/real/results_round14.txt`) | results `7b5c722` (lock `2a81a98`, pre-results amendment `1265f11`) |
+  | round 14 post-hoc validity diagnostics (`results/real/results_round14_validity.txt`) | this commit — **exploratory, not a registered endpoint**; evaluator + response written pre-results (`2cd5e74`) |

@@ -424,7 +424,7 @@ features is untested.
 
 The pipeline's frequency stage assumed clean gating and inherited a large leak bias
 (ρ̂ ≈ 0.75 vs true 0.5, §17). Round 9 (prereg `notes/prereg-gating-corrected-rho.md`,
-lock `b0276cc`; theory `theory/gating_corrected_rho.md`; dual pre-lock external review —
+lock `e043307`; theory `theory/gating_corrected_rho.md`; dual pre-lock external review —
 Gemini 2.5 Pro *minor*, GPT-5.6 *major*, all required changes applied, archived with a
 point-by-point response in `reviews/`) replaced it with the **dominance-partition
 estimator** ρ̂_D: classify each pair-active token by its exclusive firing pattern
@@ -485,7 +485,7 @@ false-positive control.
 
 Every result above is for L1 SAEs; practitioners use TopK/BatchTopK/JumpReLU. Round 10
 (theory `theory/topk_absorption.md`, prereg `notes/prereg-topk-absorption.md` lock
-`f2e92fc`, dual pre-lock review — Gemini minor, **GPT-5.6 major**; results-stage review
+`4d62b90`, dual pre-lock review — Gemini minor, **GPT-5.6 major**; results-stage review
 Gemini ACCEPT) asked whether absorption survives, and produced a productive negative result.
 
 **Theory (verified, and correctly scoped by the review).** For a *capacity-limited*
@@ -532,15 +532,15 @@ feature abstractions.
 The §19 head-to-head was run, at real scale, as the pre-registered rounds 12–13b on
 Pythia-1.4B L12 (first-letter absorption, SAEs matched at L0=32). Rounds 11–13a are
 recorded in `results/real/SUMMARY.md`, `SUMMARY_round12.md`, `SUMMARY_round13a.md` and
-distilled in PAPER.md §8b; in brief: round 12 (16 SAEs, m=16384, lock `0722212`) returned
+distilled in PAPER.md §8b; in brief: round 12 (16 SAEs, m=16384, lock `c0eb337`) returned
 **P1 NOT CONFIRMED** — paired L1−TopK diff +0.0030, CI [−0.0010, +0.0067] — and round 13a
-(family-endpoint re-score, lock `9728663`) showed the null is **not a splitting artifact**:
+(family-endpoint re-score, lock `d2d42fe`) showed the null is **not a splitting artifact**:
 the single-latent endpoint inflates absorption ~25% via splitting, absorption survives the
 correction (0.0542, CI [0.0494, 0.0592]), the arch null persists (−0.0012,
 CI [−0.0081, +0.0049]), and the real architecture difference is *splitting*
 (L1 2.61 vs TopK 1.25 latents/letter).
 
-**Round 13b** (capacity sweep, lock `c934d33`, Amendments 1+2 pre-results; 48 fresh SAEs,
+**Round 13b** (capacity sweep, lock `705de54`, Amendments 1+2 pre-results; 48 fresh SAEs,
 m ∈ {2048, 4096, 16384} × {L1, TopK} × 8 seeds on round 12's cached activations) tested the
 last registered rescue, H1: that round 12 sat in a spare-capacity regime and scarcity would
 reveal the toy-predicted absorption. All gates and the manipulation check passed (dead%

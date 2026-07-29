@@ -9,7 +9,7 @@ attribution (P2).*
 **STATUS: LOCKED 2026-07-24.** Frozen artifacts = the metric
 (`experiments/real_firstletter.py`), the scorer (`analysis/analyze_round12.py`),
 the word-set rule, θ=0, the probe protocol, 8 seeds, and the P1/P2/P3 predictions
-below, as of commit `0722212` (this lock commit changes only status). Dual
+below, as of commit `c0eb337` (this lock commit changes only status). Dual
 pre-lock LLM-assisted adversarial review complete: **Gemini 2.5 Pro → LOCK-READY**
 (2 rounds); **GPT via codex → 12 findings, all dispositioned** (`reviews/`), the
 3 that let P1 mislead fixed and **re-verified by GPT as correctly implemented**

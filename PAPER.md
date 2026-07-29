@@ -468,7 +468,7 @@ scan needs a positive-cosine **asymmetric-containment** gate (the exact metric
 that rejects all 15 here) on an ASCII-clean corpus. Full result:
 `results/round8/natfeat_SUMMARY.md`.
 
-**Round 9 (pre-registered, lock `b0276cc`; dual pre-lock external review —
+**Round 9 (pre-registered, lock `e043307`; dual pre-lock external review —
 Gemini 2.5 Pro minor, GPT-5.6 major, all required changes applied before
 lock): gating-corrected $\rho$ estimation.** The counting estimator's leak
 inflation ($\hat\rho \approx 0.75$ vs $0.5$) is corrected by a token-level
@@ -540,7 +540,7 @@ L1 $\lambda$ calibrated to $L_0 \approx 32$, blind to absorption).
 Round 11 (exploratory, no lock) built the extract–cache–train pipeline; its
 semantic "$\sim 27\times$ redundancy" reading was **withdrawn** as
 confounded (see `CLAIM_LEDGER.md`) and is not relied on anywhere below.
-Round 12 (registered, lock `0722212`; 16 SAEs $=$ 8 seeds
+Round 12 (registered, lock `c0eb337`; 16 SAEs $=$ 8 seeds
 $\times$ {L1 $\lambda{=}4.5$, TopK $k{=}32$} at $m = 16384$): **P1 NOT
 CONFIRMED** — paired per-seed L1$-$TopK first-letter absorption diff
 $+0.0030$, 95% CI $[-0.0010, +0.0067]$ ($n = 8$, 5/8 positive). A stale
@@ -559,7 +559,7 @@ absorption pressure.
 
 ### 8b.2 Round 13a: the null is not a splitting artifact (H2 refuted)
 
-Round 13a (registered, lock `9728663`, amendment + evaluator pre-results)
+Round 13a (registered, lock `d2d42fe`, amendment + evaluator pre-results)
 re-scored the frozen round-12 SAEs against each letter's whole split family
 instead of one designated latent. Registered verdicts: absorption
 **survives** the correction (family rate $0.0542$, CI $[0.0494, 0.0592]$;
@@ -575,7 +575,7 @@ $|F_L|$ is L1 $2.61$ vs TopK $1.25$ (paired $+1.36$, CI $[+0.94, +1.88]$,
 
 ### 8b.3 Round 13b: capacity-sweep design, gates, manipulation check
 
-Round 13b (prereg lock `c934d33`; Amendments 1–2 at `7501486`, both
+Round 13b (prereg lock `705de54`; Amendments 1–2 at `3437e95`, both
 pre-results and based on timing/$L_0$ measurements only: adaptive
 $\lambda$ calibration, and dropping $m = 8192$ for budget) trained 48
 fresh SAEs — 3 widths $m \in \{2048, 4096, 16384\}$ $\times$ {L1, TopK}
@@ -652,7 +652,7 @@ seeds.](figs/fig_endpoint_inflation.pdf){width=72%}
 
 Two theory notes were derived by agents under an enforced blinding
 instruction and committed before any 13b number was read
-(`9adaea3`, `ac4b7ca`; results were auto-committed by the ops pipeline
+(`d8bf165`, `87c3214`; results were auto-committed by the ops pipeline
 $\sim 10$ minutes earlier, so the predictions are blind-to-results though
 the results predate the commits on the clock — chronology auditable from
 git plus agent transcripts, stated plainly in `SUMMARY_round13b.md`).
@@ -737,7 +737,7 @@ misses. Both outcomes are reported at equal prominence.
 
 ### 8b.7 Round 14: the absorbed set has carriers, but no *recurring* one
 
-Round 14 (registered, lock `708211f`, amendment and evaluator pre-results)
+Round 14 (registered, lock `2a81a98`, amendment and evaluator pre-results)
 re-analyses the frozen 13b weights, no new training. Per token it decomposes
 the letter direction per latent, $c_i = f_i (d_i \cdot u_L)$, and takes the
 carrier to be $\arg\max_i c_i$ over $i \notin F_L$ — i.e. over exactly the

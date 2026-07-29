@@ -1,6 +1,6 @@
 # Whole-repo review — GPT-5.6 Sol (High), chatgpt.com, 2026-07-24
 
-*Comprehensive adversarial review of the ENTIRE repo at HEAD 6248c01. GPT fetched
+*Comprehensive adversarial review of the ENTIRE repo at HEAD 73681f5. GPT fetched
 the public repo, independently reran the theory checks + round-9/10 frozen scorers
 (reproduced), and compared against the SAE literature. Verdict: MAJOR REVISION —
 "scientifically promising, unusually honest, but not yet publication-ready";
@@ -241,8 +241,8 @@ Round 8's amendment was made before result collection but while the run was in f
 
 The overall honesty discipline is real.
 
-* Round 9 names lock `b0276cc`, uses a frozen scorer, reports P1O/P2O as inconclusive and P3 as falsified, and retains later numerical corrections without changing verdicts.
-* Round 10 names lock `f2e92fc`, reports a largely negative round, explicitly separates preregistered verdicts from post-hoc diagnosis, and does not claim that the trained experiment verified the oracle theorem.
+* Round 9 names lock `e043307`, uses a frozen scorer, reports P1O/P2O as inconclusive and P3 as falsified, and retains later numerical corrections without changing verdicts.
+* Round 10 names lock `4d62b90`, reports a largely negative round, explicitly separates preregistered verdicts from post-hoc diagnosis, and does not claim that the trained experiment verified the oracle theorem.
 * Round 11 is explicitly marked exploratory rather than confirmatory. ([GitHub][14])
 
 The main honesty problem is not suppression; it is **interpretive overshoot after an exploratory result**, especially Round 11's "robust ratio" and "supports the original hypothesis."
@@ -373,28 +373,28 @@ Minimum design:
 
 That one experiment would answer the repository's most important unresolved question: **does the toy geometry predict a reproducible difference in causally validated feature absorption between real SAE objectives?** It would also validate-or falsify-the label-free detector on exactly the real phenomenon it is intended to measure.
 
-[1]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/real/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/real/SUMMARY.md"
-[2]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/PAPER.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/PAPER.md"
-[3]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_analyze.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_analyze.py"
-[4]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/results/real/sae_pythia-1.4b_L12_topk_x8_pairs.json?download=text "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/results/real/sae_pythia-1.4b_L12_topk_x8_pairs.json?download=text"
-[5]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_train_sae.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_train_sae.py"
-[6]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_extract.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/experiments/real_extract.py"
+[1]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/real/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/real/SUMMARY.md"
+[2]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/PAPER.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/PAPER.md"
+[3]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_analyze.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_analyze.py"
+[4]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/results/real/sae_pythia-1.4b_L12_topk_x8_pairs.json?download=text "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/results/real/sae_pythia-1.4b_L12_topk_x8_pairs.json?download=text"
+[5]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_train_sae.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_train_sae.py"
+[6]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_extract.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/experiments/real_extract.py"
 [7]: https://arxiv.org/html/2503.09532v3 "https://arxiv.org/html/2503.09532v3"
-[8]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/general_no_go.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/general_no_go.md"
-[9]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/topk_absorption.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/topk_absorption.md"
-[10]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/round10/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/round10/SUMMARY.md"
-[11]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/notes/prereg-topk-absorption.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/notes/prereg-topk-absorption.md"
-[12]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/verify_absorption_theory.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/theory/verify_absorption_theory.py"
-[13]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/notes/prereg-gating-corrected-rho.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/notes/prereg-gating-corrected-rho.md"
-[14]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/round9/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/results/round9/SUMMARY.md"
-[15]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/results/round8/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/results/round8/SUMMARY.md"
-[16]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/notes/prereg-round8-scaling-robustness.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01085d2695cca530e99d036791ff56511db/notes/prereg-round8-scaling-robustness.md"
-[17]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/README.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/README.md"
+[8]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/general_no_go.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/general_no_go.md"
+[9]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/topk_absorption.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/topk_absorption.md"
+[10]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/round10/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/round10/SUMMARY.md"
+[11]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/notes/prereg-topk-absorption.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/notes/prereg-topk-absorption.md"
+[12]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/verify_absorption_theory.py "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/theory/verify_absorption_theory.py"
+[13]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/notes/prereg-gating-corrected-rho.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/notes/prereg-gating-corrected-rho.md"
+[14]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/round9/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/results/round9/SUMMARY.md"
+[15]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/results/round8/SUMMARY.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/results/round8/SUMMARY.md"
+[16]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/notes/prereg-round8-scaling-robustness.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f56c6bfd2a27dd3ec89bdd9d1f2a7623c04/notes/prereg-round8-scaling-robustness.md"
+[17]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/README.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/README.md"
 [18]: https://arxiv.org/html/2409.14507v2 "https://arxiv.org/html/2409.14507v2"
 [19]: https://arxiv.org/html/2503.17547v1 "https://arxiv.org/html/2503.17547v1"
 [20]: https://arxiv.org/abs/2509.22033 "https://arxiv.org/abs/2509.22033"
 [21]: https://arxiv.org/html/2606.30609v1 "https://arxiv.org/html/2606.30609v1"
 [22]: https://arxiv.org/abs/2502.04878 "https://arxiv.org/abs/2502.04878"
 [23]: https://arxiv.org/abs/2505.11756 "https://arxiv.org/abs/2505.11756"
-[24]: https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/RESEARCH_PLAN.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/6248c01/RESEARCH_PLAN.md"
+[24]: https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/RESEARCH_PLAN.md "https://raw.githubusercontent.com/reuellee/sae-identifiability/73681f5/RESEARCH_PLAN.md"
 

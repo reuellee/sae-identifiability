@@ -34,4 +34,4 @@ open-ended new-findings pass, per advisor guidance to avoid the review treadmill
   FAILS (|Δ|=8); no auto-widening.
 - #5 matched-letter: YES — true intersection across every SAE; P1 confirmation
   gated on the L1>TopK sign holding on common letters.
-Verdict: **#1/#4/#5 CORRECTLY FIXED.** Round 12 LOCKED at commit 0722212.
+Verdict: **#1/#4/#5 CORRECTLY FIXED.** Round 12 LOCKED at commit c0eb337.

@@ -1,8 +1,8 @@
 # Round 13b — capacity sweep: H1 is refuted, and the endpoint tracks fragmentation
 
 **Frozen evaluator output: `results_round13b.txt`. Raw: `round13b_results.json`.
-Prereg: `notes/prereg-round13b-capacity.md` (locked c934d33, Amendments 1+2 at
-7501486, both pre-results). Evaluator `analysis/analyze_round13b.py` committed at
+Prereg: `notes/prereg-round13b-capacity.md` (locked 705de54, Amendments 1+2 at
+3437e95, both pre-results). Evaluator `analysis/analyze_round13b.py` committed at
 the lock. 48 SAEs = 3 widths × {L1, TopK} × 8 seeds, Pythia-1.4B L12, round-12's
 cached activations, 15k steps.**
 
@@ -121,8 +121,8 @@ absorbs 1.87× TopK at m=2048 versus 0.98× at m=16384.)*
 **These are AUDITED-BLIND predictions, not pre-registered ones. The distinction is
 load-bearing and is not the standard P1–P5 met.** For P1–P5 the lock commit precedes
 the training run, so git alone proves the criteria could not have been fitted. Here it
-does not: the results were committed at 18:54:56 (`25e3df0`) and the theory notes at
-19:04:39 (`9adaea3`) and 19:05:22 (`ac4b7ca`) — **ten minutes later**. On timestamps
+does not: the results were committed at 18:54:56 (`04f8cb0`) and the theory notes at
+19:04:39 (`d8bf165`) and 19:05:22 (`87c3214`) — **ten minutes later**. On timestamps
 alone the "pre-unblinding" claim is unsupported, and a reviewer checking `git log`
 will see exactly that.
 

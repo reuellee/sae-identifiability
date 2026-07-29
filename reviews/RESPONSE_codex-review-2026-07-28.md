@@ -1,6 +1,6 @@
 # Response to the Codex whole-repo review of 2026-07-28
 
-Review: `CODEX_REVIEW_2026-07-28.md` (at commit `aba8c66`). Point-by-point;
+Review: `CODEX_REVIEW_2026-07-28.md` (at commit `a4a89c3`). Point-by-point;
 **[A]ccepted / [Q]ueued / [N]oted** — applied same day unless queued.
 
 1. **Round 15 does not establish model-level transfer. [A]** Correct: the CI

@@ -1,7 +1,7 @@
 # Whole-repo review: response (2026-07-24)
 
 Review: `WHOLE_REPO_REVIEW_GPT-5.6_2026-07-24.md` (GPT-5.6 Sol, High; fetched
-the public repo at HEAD `6248c01`, independently reran the theory checks and
+the public repo at HEAD `73681f5`, independently reran the theory checks and
 the round-9/10 frozen scorers — reproduced; verdict **MAJOR REVISION**, with
 the affirmation that *no failed results were hidden or reclassified into
 successes*). Every finding was correct. Dispositions below; all applied unless

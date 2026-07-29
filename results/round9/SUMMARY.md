@@ -1,6 +1,6 @@
 # Round 9: gating-corrected ρ estimators — registered scoring
 
-Prereg `notes/prereg-gating-corrected-rho.md`, **lock `b0276cc`** (bars from
+Prereg `notes/prereg-gating-corrected-rho.md`, **lock `e043307`** (bars from
 D1's error budget; nothing changed after lock). Run: 384 fresh-seed runs
 (SC 288 + RC 96), one spot-L4 session (us-central1-a, 36 min wall,
 ≈ $0.20), weights saved (`weights_r9_*.pt`), scored by the frozen

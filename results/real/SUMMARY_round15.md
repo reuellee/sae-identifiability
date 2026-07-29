@@ -1,7 +1,7 @@
 # Round 15 — the width→absorption direction reproduces on Gemma Scope 2; the splitting co-movement does not
 
-**Prereg `notes/prereg-round15-gemmascope-crossval.md`, LOCK `9b8d203`, Amendment 1
-(PRE-RESULTS) `7b4c03b`. Frozen evaluator `analysis/analyze_round15.py` output:
+**Prereg `notes/prereg-round15-gemmascope-crossval.md`, LOCK `83acf67`, Amendment 1
+(PRE-RESULTS) `b925580`. Frozen evaluator `analysis/analyze_round15.py` output:
 `results_round15.txt` (verbatim below). 8 public Gemma Scope 2 JumpReLU SAEs on
 Gemma 3 1B resid_post; no training; letters as the unit (single-seed suite);
 dual pre-lock review (Gemini + GPT) in `reviews/`.**
