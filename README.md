@@ -4,6 +4,35 @@ Exact theory + GPU experiments on when sparse autoencoders (SAEs) can and cannot
 recover true features — centered on **feature absorption** (a parent/child concept
 pair merging into one latent) in an analytically solvable model.
 
+## Headline results
+
+The strongest verified findings, with verdicts exactly as registered in
+[`CLAIM_LEDGER.md`](CLAIM_LEDGER.md) ("confirmed" = pre-registered endpoint
+passed under a frozen scorer with LLM-adversarial review — not human peer
+review):
+
+1. **Absorption rises with SAE width, and the effect transfers externally**
+   — confirmed on DeepMind's public Gemma Scope 2 suite (JumpReLU SAEs,
+   Gemma 3 1B), a different model, architecture, and training pipeline from
+   the one where the direction was discovered (round 15 P1: +0.0745,
+   CI [+0.0351, +0.1188]).
+2. **The program's own hypothesis was refuted by its own locked experiment**
+   — the pre-registered capacity-scarcity prediction inverted: absorption
+   *falls* under scarcity (round 13b P1: −0.0445, seed-clustered CI
+   [−0.0515, −0.0374]). That inverted direction is what round 15 then
+   confirmed externally.
+3. **A solvable model with exact regime structure** — the ε\*(λ,q)
+   pure-strategy crossover, a non-identifiability wall, and a no-go theorem
+   for coherence penalties with a √2 critical occurrence ratio
+   (machine-checked in sympy; scope stated in the theory notes).
+4. **The field's standard single-latent absorption metric inflates ~25%**
+   relative to the family-corrected endpoint on the same frozen SAEs
+   (round 13a).
+5. **A boundary of the theory, reported as one**: splitting co-movement does
+   *not* transfer to the external suite (round 15 P2: family-size difference
+   0.0000), and two label-free estimators were refuted with understood
+   mechanisms.
+
 **Status: actively developed technical report** (started 2026-07-21; revised
 through 2026-07-28). **Fifteen experiment rounds** so far (3,800+ trained SAEs
 in the toy/semi-synthetic rounds; real Pythia-1.4B rounds 11–14; round 15 on
