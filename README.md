@@ -23,15 +23,18 @@ review):
    confirmed externally.
 3. **A solvable model with exact regime structure** — the ε\*(λ,q)
    pure-strategy crossover, a non-identifiability wall, and a no-go theorem
-   for coherence penalties with a √2 critical occurrence ratio
-   (machine-checked in sympy; scope stated in the theory notes).
+   for coherence penalties with a critical occurrence ratio (p₀\* in the
+   ledger; its value is √2 in the undercomplete orthonormal setting — §7.1b,
+   [`theory/general_no_go.md`](theory/general_no_go.md)). Machine-checked in
+   sympy; scope stated in the theory notes.
 4. **The field's standard single-latent absorption metric inflates ~25%**
    relative to the family-corrected endpoint on the same frozen SAEs
    (round 13a).
 5. **A boundary of the theory, reported as one**: splitting co-movement does
    *not* transfer to the external suite (round 15 P2: family-size difference
-   0.0000), and two label-free estimators were refuted with understood
-   mechanisms.
+   0.0000); the round-8 natural-feature adjudication registered **NULL**; and
+   two label-free estimators failed with understood mechanisms (report §15b —
+   a report finding, not a ledger row).
 
 **Status: actively developed technical report** (started 2026-07-21; revised
 through 2026-07-28). **Fifteen experiment rounds** so far (3,800+ trained SAEs
